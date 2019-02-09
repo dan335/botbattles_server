@@ -13,7 +13,7 @@ public class SocketListener implements WebSocketListener {
     Session session;
 
     // rate limiting
-    double rate = 50;   // num messages
+    double rate = 200;   // num messages
     double per = 5000;  // per ms
     double allowance;
     long lastCheck;
@@ -50,23 +50,30 @@ public class SocketListener implements WebSocketListener {
     @Override
     public void onWebSocketText(String message)
     {
-        // rate limit
-        long current = new Date().getTime();
-        long timePassed = current - lastCheck;
-        lastCheck = current;
-        allowance += timePassed * (rate / per);
-        if (allowance > rate) {
-            allowance = rate;   // throttle
-        }
-        if (allowance < 1) {
-            // limit
-            session.close();
-            return;
-        } else {
-            allowance -= 1;
-        }
+        try {
+            // rate limit
+            long current = new Date().getTime();
+            long timePassed = current - lastCheck;
+            lastCheck = current;
+            allowance += timePassed * (rate / per);
+            if (allowance > rate) {
+                allowance = rate;   // throttle
+            }
+            if (allowance < 1) {
+                // limit
+                System.out.println("Rate limiting session.");
+                session.close();
+                return;
+            } else {
+                allowance -= 1;
+            }
 
-        IncomingMessage.Decode(message, session);
+            IncomingMessage.Decode(message, session);
+        } catch (Throwable ex) {
+            System.err.println("Uncaught exception - " + ex.getMessage());
+            ex.printStackTrace(System.err);
+        }
+        
     }
     
     

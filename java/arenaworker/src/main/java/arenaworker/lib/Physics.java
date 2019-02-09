@@ -255,6 +255,53 @@ public class Physics {
 
 
 
+    public static void PositionalCorrection( ObjCircle a, ObjRectangle b) {
+        Vector2 closest = new Vector2();
+        closest.x = Math.min(Math.max(a.position.x, b.position.x - b.scale.x / 2), b.position.x + b.scale.x / 2);
+        closest.y = Math.min(Math.max(a.position.y, b.position.y - b.scale.y / 2), b.position.y + b.scale.y / 2);
+
+        boolean isInside = false;
+
+        if (
+            closest.x > b.position.x - b.scale.x/2 &&
+            closest.x < b.position.x + b.scale.x/2 &&
+            closest.y > b.position.y - b.scale.y/2 &&
+            closest.y < b.position.y + b.scale.y/2
+        ){
+            isInside = true;
+
+            // Find closest axis
+            double distancePositiveX = Math.abs(a.position.x - (b.position.x + b.scale.x));
+            double distanceNegativeX = Math.abs(a.position.x - (b.position.x - b.scale.x));
+            double distancePositiveY = Math.abs(a.position.y - (b.position.y + b.scale.y));
+            double distanceNegativeY = Math.abs(a.position.y - (b.position.y - b.scale.y));
+
+            double smallest = Math.min(Math.min(distancePositiveX, distanceNegativeX), Math.min(distancePositiveY, distanceNegativeY));
+
+            if (distancePositiveX == smallest) {
+                closest.x = b.position.x + b.scale.x / 2;
+            } else if (distanceNegativeX == smallest) {
+                closest.x = b.position.x - b.scale.x / 2;
+            } else if (distancePositiveY == smallest) {
+                closest.y = b.position.y + b.scale.y / 2;
+            } else {
+                closest.y = b.position.y - b.scale.y / 2;
+            }
+        }
+
+        Vector2 collisionNormal = closest.subtract(a.position);
+
+        if (isInside) {
+            collisionNormal = collisionNormal.scale(-1);
+        }
+        
+        collisionNormal.normalize();
+
+        PositionalCorrection(a, b, collisionNormal, isInside);
+    }
+
+
+
     public static void PositionalCorrection( ObjCircle a, ObjRectangle b, Vector2 collisionNormal, boolean isInside) {
         double penetrationDepth;
 
@@ -271,55 +318,6 @@ public class Physics {
         a.needsUpdate = true;
     }
 
-
-    // public static void PositionalCorrectionOld( ObjCircle a, ObjRectangle b) {
-    //     Vector2 closest = new Vector2();
-
-    //     closest.x = Math.min(Math.max(a.position.x, b.position.x - b.scale.x / 2), b.position.x + b.scale.x / 2);
-    //     closest.y = Math.min(Math.max(a.position.y, b.position.y - b.scale.y / 2), b.position.y + b.scale.y / 2);
-
-    //     if (a.position.x > b.position.x - b.scale.x/2 && a.position.x < b.position.x + b.scale.x/2) {
-
-    //     }
-
-
-    //     double penetrationDepth = a.radius - Vector2.distance(a.position, closest);
-
-    //     if (penetrationDepth < 0) {
-    //         return;
-    //     }
-
-    //     // mass = 0 is infinite mass
-    //     double aInverseMass, bInverseMass;
-    //     if (a.mass == 0) {
-    //         aInverseMass = 0;
-    //     } else {
-    //         aInverseMass = 1 / a.mass;
-    //     }
-        
-    //     bInverseMass = 0;
-
-    //     Vector2 collisionNormal = new Vector2(
-    //         closest.x - a.position.x,
-    //         closest.y - a.position.y
-    //     );
-
-    //     collisionNormal.normalize();
-
-    //     double percent = 0.5; // usually 20% to 80%
-    //     double slop = 0.01;
-    //     double amount = Math.max( penetrationDepth - slop, 0) / (aInverseMass + bInverseMass) * percent;
-    //     Vector2 correction = new Vector2(
-    //         amount * collisionNormal.x,
-    //         amount * collisionNormal.y
-    //     );
-
-    //     a.position = a.position.subtract(correction.scale(aInverseMass));
-    //     //b.position = b.position.add(correction.scale(bInverseMass));
-
-    //     a.needsUpdate = true;
-    //     //b.needsUpdate = true;
-    // }
 
 
 

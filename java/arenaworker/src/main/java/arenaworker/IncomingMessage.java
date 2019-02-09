@@ -63,6 +63,15 @@ public class IncomingMessage {
     }
 
 
+    static void mousemove(JSONObject json, Session session) {
+        Client client = Clients.GetClient(session);
+        if (client != null) {
+            client.player.mousePos.x = json.getDouble("x");
+            client.player.mousePos.y = json.getDouble("y");
+        }
+    }
+
+
 
     static void SendJsonToSession(Session session, String json) {
         if (session.isOpen()) {

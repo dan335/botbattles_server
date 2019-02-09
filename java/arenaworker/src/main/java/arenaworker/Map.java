@@ -98,11 +98,11 @@ public class Map {
     public void Tick() {
         if (game.isStarted) {
             if (game.tickStartTime - lastUpdate >= game.settings.mapUpdateInterval) {
-                long msSinceLastUpdate = game.tickStartTime - lastUpdate;
-                double seconds = msSinceLastUpdate / 1000;
-                size -= game.settings.mapShrinkPerSecond * seconds;
-                UpdateWalls();
-                UpdateClients();
+                if (size > game.settings.mapMinSize) {
+                    size -= game.settings.mapShrinkPerInterval;
+                    UpdateWalls();
+                    UpdateClients();
+                }
             }
         }
     }

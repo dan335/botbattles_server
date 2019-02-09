@@ -16,27 +16,33 @@ public class App
 
     public static void main( String[] args )
     {
-        //local
-        // mongoClient = new MongoClient("127.0.0.1", 3001);
-        // database = mongoClient.getDatabase("meteor"); 
-
-        Server server = new Server(3020);
-        
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
-        
-        // Add websocket servlet
-        ServletHolder wsHolder = new ServletHolder("servlet", new SocketServlet());
-        context.addServlet(wsHolder, "/ws");
-
         try {
+            //local
+            // mongoClient = new MongoClient("127.0.0.1", 3001);
+            // database = mongoClient.getDatabase("meteor"); 
+
+            Server server = new Server(3020);
+            
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.setContextPath("/");
+            server.setHandler(context);
+            
+            // Add websocket servlet
+            ServletHolder wsHolder = new ServletHolder("servlet", new SocketServlet());
+            context.addServlet(wsHolder, "/ws");
+
             server.start();
             server.join();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            try {
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        System.out.println("Arena worker started.");
+            System.out.println("Arena worker started.");
+        } catch (Throwable ex) {
+            System.err.println("Uncaught exception - " + ex.getMessage());
+            ex.printStackTrace(System.err);
+        }
     }
 }

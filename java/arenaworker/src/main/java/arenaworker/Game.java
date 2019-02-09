@@ -193,9 +193,9 @@ public class Game implements Runnable {
             for (Obj o : objs) {
                 if (o.id != b.id) {
                     if (o instanceof Player) {
-                        // if (Physics.circleInRectangle((ObjCircle)o, (ObjRectangle)b)) {
-                        //     Physics.PositionalCorrection((ObjCircle)o, (ObjRectangle)b);
-                        // }
+                        if (Physics.circleInRectangle((ObjCircle)o, (ObjRectangle)b)) {
+                            Physics.PositionalCorrection((ObjCircle)o, (ObjRectangle)b);
+                        }
                     } else if (o instanceof Obstacle) {
                         if (Physics.circleInRectangle((ObjCircle)o, (ObjRectangle)b)) {
                             o.Destroy("obstacleDestroy");

@@ -30,6 +30,8 @@ public class Client {
         if (game.clients.size() == 0) {
             GameManager.DestroyGame(game);
         }
+
+        session.close();
     }
 
 

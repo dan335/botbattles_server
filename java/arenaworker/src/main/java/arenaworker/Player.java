@@ -2,6 +2,7 @@ package arenaworker;
 
 import org.json.JSONObject;
 
+import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 import java.util.Date;
 
@@ -11,6 +12,7 @@ public class Player extends ObjCircle {
     boolean isEngineOnRight = false;
     boolean isEngineOnUp = false;
     boolean isEngineOnDown = false;
+    Vector2 mousePos = new Vector2();
     
 
     public Player(Client client, Game game) {
@@ -76,6 +78,8 @@ public class Player extends ObjCircle {
         engineForce.normalize();
         
         forces = engineForce.scale(game.settings.shipEngineSpeed);
+
+        this.rotation = Physics.slowlyRotateToward(this.position, this.rotation, this.mousePos, 20);
 
         super.Tick();
 
