@@ -75,6 +75,8 @@ public class Physics {
     // }
 
 
+
+
     // rectangle cannot be rotated
     public static void resolveCollision(ObjCircle a, ObjRectangle b) {
         if (b.rotation != 0) {
@@ -182,6 +184,9 @@ public class Physics {
 
     
     // https://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
+    
+    
+
     public static void resolveCollision(ObjCircle a, ObjCircle b) {
         
         Vector2 relativeVelocity = new Vector2(
@@ -313,7 +318,7 @@ public class Physics {
 
         collisionNormal.normalize();
 
-        a.position = a.position.subtract(collisionNormal.scale(penetrationDepth));
+        a.position = a.position.subtract(collisionNormal.scale(penetrationDepth * 0.5));
 
         a.needsUpdate = true;
     }

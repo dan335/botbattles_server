@@ -2,8 +2,12 @@ package arenaworker;
 
 import org.json.JSONObject;
 
+import arenaworker.abilities.*;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
+import arenaworker.projectiles.Projectile;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 public class Player extends ObjCircle {
@@ -12,10 +16,15 @@ public class Player extends ObjCircle {
     boolean isEngineOnRight = false;
     boolean isEngineOnUp = false;
     boolean isEngineOnDown = false;
-    Vector2 mousePos = new Vector2();
+    Vector2 mousePosition = new Vector2();
+    Ability[] abilities = new Ability[4];
     
 
-    public Player(Client client, Game game) {
+    public Player(
+            Client client,
+            Game game,
+            String[] abilityTypes
+        ) {
         super(game);
 
         this.client = client;
@@ -24,9 +33,48 @@ public class Player extends ObjCircle {
         position = game.map.GetEmptyPos(200, -game.map.size/2, -game.map.size/2, game.map.size/2, game.map.size/2);
         mass = 1;
 
+        for (int i = 0; i < 4; i++) {
+            Class<?> cls;
+            try {
+                cls = Class.forName("arenaworker.abilities." + abilityTypes[i]);
+            } catch (ClassNotFoundException ex) {
+                ex.printStackTrace();
+                cls = Blasters.class;
+            }
+
+            Ability ability;
+            try {
+                ability = (Ability) cls.getDeclaredConstructor(new Class[] {Player.class}).newInstance(this);
+            } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException ex) {
+                ex.printStackTrace();
+                ability = new Blasters(this);
+            }
+
+            abilities[i] = ability;
+        }
+
         game.map.grid.insert(this);
 
         SendInitialToAll("bogus");
+    }
+
+
+    public void SetMousePosition(double x, double y) {
+        if (mousePosition.x != x || mousePosition.y != y) {
+            mousePosition.x = x;
+            mousePosition.y = y;
+            needsUpdate = true;
+        }
+    }
+
+
+    public void AbilityKeyDown(int num) {
+        abilities[num].Start();
+    }
+
+
+    public void AbilityKeyUp(int num) {
+        abilities[num].Stop();
     }
 
 
@@ -79,9 +127,15 @@ public class Player extends ObjCircle {
         
         forces = engineForce.scale(game.settings.shipEngineSpeed);
 
-        this.rotation = Physics.slowlyRotateToward(this.position, this.rotation, this.mousePos, 20);
+        //this.rotation = Physics.slowlyRotateToward(this.position, this.rotation, this.mousePosition, 20);
+        Vector2 mouse = mousePosition.subtract(position);
+        this.rotation = Math.atan2(mouse.y, mouse.x);
 
         super.Tick();
+
+        for (int i = 0; i < 4; i++) {
+            abilities[i].Tick();
+        }
 
         SendUpdate("shipUpdate");
     }
@@ -119,6 +173,18 @@ public class Player extends ObjCircle {
     }
 
 
+    @Override
+    public void SendInitialToClient(Client client, String type) {
+        super.SendInitialToClient(client, type);
+
+        for (Ability a : abilities) {
+            for (Projectile p : a.projectiles) {
+                p.SendInitialToClient(client);
+            }
+        }
+    }
+
+
 
     @Override
     public JSONObject InitialData() {
@@ -126,8 +192,12 @@ public class Player extends ObjCircle {
         json.put("id", id);
         json.put("x", position.x);
         json.put("y", position.y);
+        json.put("name", client.name);
         return json;
     }
 
-    
+
+    public void ProjectileHit(Projectile projectile) {
+        // TODO
+    }
 }

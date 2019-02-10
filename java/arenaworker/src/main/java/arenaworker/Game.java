@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jetty.websocket.api.Session;
 
 import arenaworker.lib.Physics;
+import arenaworker.projectiles.Projectile;
 
 public class Game implements Runnable {
     public final String id = UUID.randomUUID().toString();
@@ -44,8 +45,15 @@ public class Game implements Runnable {
     }
 
 
-    public void JoinGame(Session session) {
-        Client client = new Client(session, this);
+    public void JoinGame(
+        Session session,
+        String name,
+        String abilityType1,
+        String abilityType2,
+        String abilityType3,
+        String abilityType4
+    ) {
+        Client client = new Client(session, this, name);
         clients.add(client);
         Clients.AddClient(client);
 
@@ -55,7 +63,16 @@ public class Game implements Runnable {
 
         // if game hasn't started create a player for them
         if (!isStarted) {
-            Player player = new Player(client, this);
+            Player player = new Player(
+                client,
+                this,
+                new String[]{
+                    abilityType1,
+                    abilityType2,
+                    abilityType3,
+                    abilityType4
+                }
+                );
             players.add(player);
             client.AddPlayer(player);
             
@@ -132,6 +149,7 @@ public class Game implements Runnable {
             PlayerPhysics();
             ObstaclePhysics();
             BoxPhysics();
+            ProjectilePhysics();
             
             tickEndTime = Calendar.getInstance().getTimeInMillis();
             long timeTilNext = settings.updateIntervalMs - (tickStartTime - tickEndTime);
@@ -202,6 +220,38 @@ public class Game implements Runnable {
                         }  
                     }
                     // don't react to rectangles
+                }
+            }
+        }
+    }
+
+
+    private void ProjectilePhysics() {
+        for (Player p : players) {
+            for (int i = 0; i < 4; i++) {
+                for (Projectile pr : p.abilities[i].projectiles) {
+                    Set<Obj> objs = map.grid.retrieve(pr.position, pr.radius);
+                    for (Obj o : objs) {
+                        if (o.id != pr.id) {
+                            if (o instanceof Box) {
+                                Box b = (Box) o;
+                                if (Physics.circleInRectangle(pr.position, pr.radius, b.position, b.scale)) {
+                                    pr.Destroy();
+                                }
+                            } else if (o instanceof Player) {
+                                Player pl = (Player) o;
+                                if (pl != p) {
+                                    pl.ProjectileHit(pr);
+                                    pr.Destroy();
+                                }
+                            } else if (o instanceof Obstacle) {
+                                Obstacle ob = (Obstacle) o;
+                                if (Physics.circleInCircle(pr.position.x, pr.position.y, pr.radius, ob.position.x, ob.position.y, ob.radius)) {
+                                    pr.Destroy();
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

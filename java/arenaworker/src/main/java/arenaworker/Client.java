@@ -10,10 +10,12 @@ public class Client {
     Session session;
     Game game;
     Player player;
+    public String name = "Noname";
 
-    public Client(Session session, Game game) {
+    public Client(Session session, Game game, String name) {
         this.session = session;
         this.game = game;
+        this.name = name;
     }
 
 

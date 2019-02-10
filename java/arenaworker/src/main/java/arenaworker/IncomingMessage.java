@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONObject;
+import arenaworker.lib.Vector2;
 
 
 public class IncomingMessage {
@@ -42,8 +43,26 @@ public class IncomingMessage {
     // gameId
     static void joinGame(JSONObject json, Session session) {
         Game game = GameManager.GetGameById(json.getString("gameId"));
+
+        String abilityType1 = json.optString("abilityType1");
+        String abilityType2 = json.optString("abilityType2");
+        String abilityType3 = json.optString("abilityType3");
+        String abilityType4 = json.optString("abilityType4");
+
+        if (abilityType1.length() == 0) abilityType1 = "Blasters";
+        if (abilityType2.length() == 0) abilityType2 = "Blasters";
+        if (abilityType3.length() == 0) abilityType3 = "Blasters";
+        if (abilityType4.length() == 0) abilityType4 = "Blasters";
+
         if (game != null) {
-            game.JoinGame(session);
+            game.JoinGame(
+                session,
+                json.getString("name"),
+                abilityType1,
+                abilityType2,
+                abilityType3,
+                abilityType4
+                );
         }
     }
 
@@ -62,12 +81,24 @@ public class IncomingMessage {
         }
     }
 
+    static void abilityKeyDown(JSONObject json, Session session) {
+        Client client = Clients.GetClient(session);
+        if (client != null) {
+            client.player.AbilityKeyDown(json.getInt("num"));
+        }
+    }
+
+    static void abilityKeyUp(JSONObject json, Session session) {
+        Client client = Clients.GetClient(session);
+        if (client != null) {
+            client.player.AbilityKeyUp(json.getInt("num"));
+        }
+    }
 
     static void mousemove(JSONObject json, Session session) {
         Client client = Clients.GetClient(session);
         if (client != null) {
-            client.player.mousePos.x = json.getDouble("x");
-            client.player.mousePos.y = json.getDouble("y");
+            client.player.SetMousePosition(json.getDouble("x"), json.getDouble("y"));
         }
     }
 

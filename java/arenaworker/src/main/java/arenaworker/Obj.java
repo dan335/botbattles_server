@@ -29,6 +29,7 @@ public class Obj {
     public void Collision(Obj obj, double magnitude, Vector2 force) {}
 
 
+
     public void Tick() {
         final Vector2 priorForces = new Vector2(game.settings.drag * velocity.x, game.settings.drag * velocity.y);
         final Vector2 acceleration = new Vector2(priorForces.x + forces.x, priorForces.y + forces.y);
@@ -62,6 +63,7 @@ public class Obj {
     }
 
 
+    // called from Tick()
     public void SendUpdate(String type) {
         if (needsUpdate) {
             JSONObject json = UpdateData();
