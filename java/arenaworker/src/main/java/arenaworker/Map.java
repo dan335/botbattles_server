@@ -13,7 +13,7 @@ import arenaworker.lib.Vector2;
 public class Map {
     
     JSONObject json;
-    double size;
+    public double size;
     Game game;
     long lastUpdate;
     
@@ -99,11 +99,10 @@ public class Map {
     }
 
 
-    public Vector2 GetEmptyPos(double r, double minX, double minY, double maxX, double maxY) {
+    public Vector2 GetEmptyPos(double r, double minX, double minY, double maxX, double maxY, int maxTries) {
         boolean foundSpot = false;
         Vector2 pos = null;
         int tries = 0;
-        int maxTries = 500;
 
         while (!foundSpot && tries < maxTries) {
             foundSpot = true;
@@ -113,17 +112,16 @@ public class Map {
                 minY + (Math.random() * (maxY - minY))
             );
             
-            Set<Obj> objs = game.grid.retrieve(pos, r);
-            for (Obj o : objs) {
+            Set<Base> objs = game.grid.retrieve(pos, r);
+            for (Base o : objs) {
                 if (foundSpot) {
-                    if (o instanceof ObjCircle) {
-                        ObjCircle oc = (ObjCircle)o;
-                        if (Physics.circleInCircle(oc.position.x, oc.position.y, oc.radius, pos.x, pos.y, r)) {
-                            foundSpot = false;
-                        }
-                    } else if (o instanceof ObjRectangle) {
+                    if (o instanceof ObjRectangle) {
                         ObjRectangle or = (ObjRectangle)o;
                         if (Physics.circleInRectangle(new Vector2(pos.x, pos.y), r, or.position, or.scale)) {
+                            foundSpot = false;
+                        }
+                    } else {
+                        if (Physics.circleInCircle(o.position.x, o.position.y, o.radius, pos.x, pos.y, r)) {
                             foundSpot = false;
                         }
                     }

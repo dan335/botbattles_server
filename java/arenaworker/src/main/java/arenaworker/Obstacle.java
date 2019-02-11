@@ -2,7 +2,7 @@ package arenaworker;
 
 import org.json.JSONObject;
 
-public class Obstacle extends ObjCircle {
+public class Obstacle extends Obj {
 
     public Obstacle(Game game, double x, double y, double radius) {
         super(game, x, y, radius);

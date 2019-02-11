@@ -5,12 +5,12 @@ import org.json.JSONObject;
 import arenaworker.abilities.*;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
-import arenaworker.projectiles.Projectile;
+import arenaworker.abilityobjects.Projectile;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
-public class Player extends ObjCircle {
+public class Player extends Obj {
     Client client;
     boolean isEngineOnLeft = false;
     boolean isEngineOnRight = false;
@@ -18,6 +18,8 @@ public class Player extends ObjCircle {
     boolean isEngineOnDown = false;
     Vector2 mousePosition = new Vector2();
     Ability[] abilities = new Ability[4];
+    double shield = 100;
+    double health = 100;
     
     public Player(
             Client client,
@@ -28,7 +30,7 @@ public class Player extends ObjCircle {
 
         this.client = client;
         
-        position = game.map.GetEmptyPos(200, -game.map.size/2, -game.map.size/2, game.map.size/2, game.map.size/2);
+        position = game.map.GetEmptyPos(200, -game.map.size/2, -game.map.size/2, game.map.size/2, game.map.size/2, 500);
         mass = 1;
         initialUpdateName = "shipInitial";
         updateName = "shipUpdate";
@@ -143,6 +145,9 @@ public class Player extends ObjCircle {
     public void Destroy() {
         game.players.remove(this);
         super.Destroy();
+        for (int i = 0; i < 4; i++) {
+            abilities[i].Destroy();
+        }
     }
 
 
@@ -151,16 +156,16 @@ public class Player extends ObjCircle {
     // when player is created - send to all clients
     @Override
     public void SendInitialToAll() {
-        JSONObject json = InitialData();
-        
         for (Client c : game.clients) {
-            if (c == this.client) {
+            if (c.id == this.client.id) {
+                JSONObject json = InitialData();
                 json.put("t", "playerInitial");
+                c.SendJson(json);
             } else {
+                JSONObject json = InitialData();
                 json.put("t", "shipInitial");
+                c.SendJson(json);
             }
-            
-            c.SendJson(json);
         }
 
         JSONObject replaly = InitialData();
@@ -193,7 +198,43 @@ public class Player extends ObjCircle {
     }
 
 
+    @Override
+    public JSONObject UpdateData() {
+        JSONObject json = super.UpdateData();
+        json.put("health", health);
+        json.put("shield", shield);
+        return json;
+    }
+
+
+    public void TakeDamage(double damage) {
+        if (!game.isStarted) return;
+
+        if (damage > 0) {
+            double shieldToRemove = Math.min(shield, damage);
+            shield -= shieldToRemove;
+            damage -= shieldToRemove;
+            health = Math.max(0, health - damage);
+            needsUpdate = true;
+            if (health <= 0) {
+                Destroy();
+            }
+        }
+    }
+
+
     public void ProjectileHit(Projectile projectile) {
-        // TODO
+        TakeDamage(projectile.damage);
+    }
+
+
+    @Override
+    public void SetPosition(double x, double y) {
+        super.SetPosition(x, y);
+        if (position.x != x || position.y != y) {
+            for (int i = 0; i < 4; i++) {
+                abilities[i].PlayerPositionChanged();
+            }
+        }
     }
 }

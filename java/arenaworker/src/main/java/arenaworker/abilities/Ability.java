@@ -3,7 +3,7 @@ package arenaworker.abilities;
 import arenaworker.Player;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Set;
-import arenaworker.projectiles.*;
+import arenaworker.abilityobjects.*;
 
 
 public class Ability {
@@ -45,5 +45,17 @@ public class Ability {
 
     public void Fire() {
         lastFired = player.game.tickStartTime;
+    }
+
+
+    public void Destroy() {
+        for (Projectile p : projectiles) {
+            p.Destroy();
+        }
+    }
+
+
+    public void PlayerPositionChanged() {
+
     }
 }

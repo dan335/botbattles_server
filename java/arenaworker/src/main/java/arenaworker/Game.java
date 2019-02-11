@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
-import arenaworker.projectiles.Projectile;
+import arenaworker.abilityobjects.Projectile;
 
 public class Game implements Runnable {
     public final String id = UUID.randomUUID().toString();
@@ -101,6 +101,11 @@ public class Game implements Runnable {
             if (players.size() == 2) {
                 secondPlayerJoinTime = tickStartTime;
             }
+        } else {
+            JSONObject msg = new JSONObject();
+            msg.put("t", "spectatorJoined");
+            msg.put("name", client.name);
+            SendJsonToClients(msg);
         }
     }
 
@@ -125,6 +130,10 @@ public class Game implements Runnable {
     void StartGame() {
         isStarted = true;
         gameStartTime = tickStartTime;
+
+        JSONObject msg = new JSONObject();
+        msg.put("t", "gameStarted");
+        SendJsonToClients(msg);
     }
 
 
@@ -211,16 +220,16 @@ public class Game implements Runnable {
 
     private void PlayerPhysics() {
         for (Player p : players) {
-            Set<Obj> objs = grid.retrieve(p.position, p.radius);
-            for (Obj o : objs) {
+            Set<Base> objs = grid.retrieve(p.position, p.radius);
+            for (Base o : objs) {
                 if (o.id != p.id) {
                     if (o instanceof Obstacle || o instanceof Player) {
-                        if (Physics.circleInCircle((ObjCircle)p, (ObjCircle)o)) {
-                            Physics.resolveCollision((ObjCircle)p, (ObjCircle)o);
+                        if (Physics.circleInCircle(p, o)) {
+                            Physics.resolveCollision(p, (Obj)o);
                         }
                     } else if(o instanceof Box) {
-                        if (Physics.circleInRectangle((ObjCircle)p, (ObjRectangle)o)) {
-                            Physics.resolveCollision((ObjCircle)p, (ObjRectangle)o);
+                        if (Physics.circleInRectangle(p, (ObjRectangle)o)) {
+                            Physics.resolveCollision(p, (ObjRectangle)o);
                         }
                     }
                 }
@@ -230,15 +239,15 @@ public class Game implements Runnable {
 
     private void ObstaclePhysics() {
         for (Obstacle obstacle : obstacles) {
-            Set<Obj> objs = grid.retrieve(obstacle.position, obstacle.radius);
-            for (Obj other : objs) {
+            Set<Base> objs = grid.retrieve(obstacle.position, obstacle.radius);
+            for (Base other : objs) {
                 if (other.id != obstacle.id) {
                     if (other instanceof Obstacle) {
-                        if (Physics.circleInCircle((ObjCircle)obstacle, (ObjCircle)other)) {
-                            Physics.resolveCollision((ObjCircle)obstacle, (ObjCircle)other);
+                        if (Physics.circleInCircle(obstacle, other)) {
+                            Physics.resolveCollision(obstacle, (Obj)other);
                         }
                     } else if(other instanceof Box) {
-                        if (Physics.circleInRectangle((ObjCircle)obstacle, (ObjRectangle)other)) {
+                        if (Physics.circleInRectangle(obstacle, (ObjRectangle)other)) {
                             obstacle.Destroy();
                         }
                     }
@@ -250,15 +259,15 @@ public class Game implements Runnable {
 
     private void BoxPhysics() {
         for (Box box : boxes) {
-            Set<Obj> objs = grid.retrieve(box.position, box.scale);
-            for (Obj other : objs) {
+            Set<Base> objs = grid.retrieve(box.position, box.scale);
+            for (Base other : objs) {
                 if (other.id != box.id) {
                     if (other instanceof Player) {
-                        if (Physics.circleInRectangle((ObjCircle)other, (ObjRectangle)box)) {
-                            Physics.PositionalCorrection((ObjCircle)other, (ObjRectangle)box);
+                        if (Physics.circleInRectangle(other, (ObjRectangle)box)) {
+                            Physics.PositionalCorrection((Obj)other, (ObjRectangle)box);
                         }
                     } else if (other instanceof Obstacle) {
-                        if (Physics.circleInRectangle((ObjCircle)other, (ObjRectangle)box)) {
+                        if (Physics.circleInRectangle((Obj)other, (ObjRectangle)box)) {
                             other.Destroy();
                         }  
                     }
@@ -273,8 +282,8 @@ public class Game implements Runnable {
         for (Player p : players) {
             for (int i = 0; i < 4; i++) {
                 for (Projectile projectile : p.abilities[i].projectiles) {
-                    Set<Obj> objs = grid.retrieve(projectile.position, projectile.radius);
-                    for (Obj other : objs) {
+                    Set<Base> objs = grid.retrieve(projectile.position, projectile.radius);
+                    for (Base other : objs) {
                         if (other.id != projectile.id) {
                             if (other instanceof Box) {
                                 Box box = (Box) other;
@@ -284,12 +293,14 @@ public class Game implements Runnable {
                             } else if (other instanceof Player) {
                                 Player otherPlayer = (Player) other;
                                 if (otherPlayer != p) {
-                                    otherPlayer.ProjectileHit(projectile);
-                                    projectile.Destroy();
+                                    if (Physics.circleInCircle(other, projectile)) {
+                                        otherPlayer.ProjectileHit(projectile);
+                                        projectile.Destroy();
+                                    }
                                 }
                             } else if (other instanceof Obstacle) {
-                                if (Physics.circleInCircle((ObjCircle)other, (ObjCircle)projectile)) {
-                                    Physics.resolveCollision((ObjCircle)other, (ObjCircle)projectile);
+                                if (Physics.circleInCircle(other, projectile)) {
+                                    Physics.resolveCollision((Obj)other, (Obj)projectile);
                                     projectile.Destroy();
                                 } 
                             }

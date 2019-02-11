@@ -4,8 +4,8 @@ import java.util.Vector;
 
 import javax.sound.midi.SysexMessage;
 
+import arenaworker.Base;
 import arenaworker.Obj;
-import arenaworker.ObjCircle;
 import arenaworker.ObjRectangle;
 
 public class Physics {
@@ -35,12 +35,12 @@ public class Physics {
         return Math.sqrt(((aPosX - bPosX) * (aPosX - bPosX)) + ((aPosY - bPosY) * (aPosY - bPosY))) < aRadius + bRadius;
     }
     
-    public static boolean circleInCircle(ObjCircle a, ObjCircle b) {
+    public static boolean circleInCircle(Base a, Base b) {
         return Math.sqrt(((a.position.x - b.position.x) * (a.position.x - b.position.x)) + ((a.position.y - b.position.y) * (a.position.y - b.position.y))) < a.radius + b.radius;
     }
 
 
-    public static boolean circleInRectangle(ObjCircle a, ObjRectangle b) {
+    public static boolean circleInRectangle(Base a, ObjRectangle b) {
        return circleInRectangle(a.position, a.radius, b.position, b.scale);
     }
 
@@ -78,7 +78,7 @@ public class Physics {
 
 
     // rectangle cannot be rotated
-    public static void resolveCollision(ObjCircle a, ObjRectangle b) {
+    public static void resolveCollision(Obj a, ObjRectangle b) {
         if (b.rotation != 0) {
             System.out.println("Error: Rectangle cannot be rotated");
         }
@@ -187,7 +187,7 @@ public class Physics {
     
     
 
-    public static void resolveCollision(ObjCircle a, ObjCircle b) {
+    public static void resolveCollision(Obj a, Obj b) {
         Vector2 relativeVelocity = new Vector2(
             b.velocity.x - a.velocity.x,
             b.velocity.y - a.velocity.y
@@ -259,7 +259,7 @@ public class Physics {
 
 
 
-    public static void PositionalCorrection( ObjCircle a, ObjRectangle b) {
+    public static void PositionalCorrection( Obj a, ObjRectangle b) {
         Vector2 closest = new Vector2();
         closest.x = Math.min(Math.max(a.position.x, b.position.x - b.scale.x / 2), b.position.x + b.scale.x / 2);
         closest.y = Math.min(Math.max(a.position.y, b.position.y - b.scale.y / 2), b.position.y + b.scale.y / 2);
@@ -306,7 +306,7 @@ public class Physics {
 
 
 
-    public static void PositionalCorrection( ObjCircle a, ObjRectangle b, Vector2 collisionNormal, boolean isInside) {
+    public static void PositionalCorrection( Obj a, ObjRectangle b, Vector2 collisionNormal, boolean isInside) {
         double penetrationDepth;
 
         if (isInside) {
@@ -323,7 +323,7 @@ public class Physics {
 
 
 
-    public static void PositionalCorrection( ObjCircle a, ObjCircle b ) {
+    public static void PositionalCorrection( Obj a, Obj b ) {
         double distance = Vector2.distance(a.position, b.position);
         double penetrationDepth = a.radius + b.radius - distance;
         

@@ -1,27 +1,24 @@
-package arenaworker.projectiles;
-
-import arenaworker.abilities.*;
-import arenaworker.Client;
-import arenaworker.ObjCircle;
+package arenaworker.abilityobjects;
 
 import org.json.JSONObject;
-import java.util.UUID;
 
+import arenaworker.Obj;
+import arenaworker.abilities.Ability;
 import arenaworker.lib.Vector2;
-import java.util.Date;
 
 
-public class Projectile extends ObjCircle {
+public class Projectile extends Obj {
 
     public Ability ability;
     public double speed = 0.1;
+    public double damage = 10;
     
     
-    public Projectile(Ability ability) {
+    public Projectile(Ability ability, double rotation) {
         super(ability.player.game, ability.player.position.x, ability.player.position.y, 1);
         this.ability = ability;
         ability.projectiles.add(this);
-        rotation = ability.player.rotation;
+        this.rotation = rotation;
     }
 
 

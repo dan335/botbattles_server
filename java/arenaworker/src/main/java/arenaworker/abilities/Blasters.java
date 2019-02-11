@@ -1,7 +1,7 @@
 package arenaworker.abilities;
 
 import arenaworker.Player;
-import arenaworker.projectiles.BlasterBullet;
+import arenaworker.abilityobjects.BlasterBullet;
 
 public class Blasters extends Ability {
     
@@ -14,6 +14,6 @@ public class Blasters extends Ability {
     public void Fire() {
         super.Fire();
 
-        new BlasterBullet(this);
+        new BlasterBullet(this, player.rotation);
     }
 }

@@ -8,58 +8,55 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import arenaworker.Obj;
-import arenaworker.ObjCircle;
+import arenaworker.Base;
 import arenaworker.ObjRectangle;
 import arenaworker.Player;
 
 public class Grid {
     
     private double g;  // optimization
-    private ConcurrentHashMap<String, Set<Obj>> objects = new ConcurrentHashMap<>();  // TODO: needs to be different.  why?
+    private ConcurrentHashMap<String, Set<Base>> objects = new ConcurrentHashMap<>();  // TODO: needs to be different.  why?
     
     public Grid(double size, int divisions) {
         this.g = divisions / size;
     }
     
     
-    public void update(Obj obj) {
-        if (obj instanceof ObjCircle) {
-            ObjCircle o = (ObjCircle)obj;
-            if (!obj.grids.equals(getGridsObjCircleIsIn(o.position, o.radius))) {
-                remove(o);
-                insert(o);
-            }
-        } else if (obj instanceof ObjRectangle) {
+    public void update(Base obj) {
+        if (obj instanceof ObjRectangle) {
             ObjRectangle o = (ObjRectangle)obj;
             if (!obj.grids.equals(getGridsObjRectangleIsIn(o.position, o.scale))) {
                 remove(o);
                 insert(o);
             }
+        } else {
+            if (!obj.grids.equals(getGridsObjCircleIsIn(obj.position, obj.radius))) {
+                remove(obj);
+                insert(obj);
+            }
         }
     }
     
     
-    public void insert(Obj obj) {
-        if (obj instanceof ObjCircle) {
-            ObjCircle o = (ObjCircle)obj;
-            obj.grids = getGridsObjCircleIsIn(o.position, o.radius);
-        } else if (obj instanceof ObjRectangle) {
+    public void insert(Base obj) {
+        if (obj instanceof ObjRectangle) {
             ObjRectangle o = (ObjRectangle)obj;
             obj.grids = getGridsObjRectangleIsIn(o.position, o.scale);
+        } else {
+            obj.grids = getGridsObjCircleIsIn(obj.position, obj.radius);
         }
         
         for (String grid : obj.grids) {
             if (objects.containsKey(grid)) {
                 objects.get(grid).add(obj);
             } else {
-                objects.put(grid, new HashSet<Obj>(Arrays.asList(obj)));
+                objects.put(grid, new HashSet<Base>(Arrays.asList(obj)));
             }
         }
     }
     
     
-    public void remove(Obj obj) {
+    public void remove(Base obj) {
         for (String grid : obj.grids) {
             objects.get(grid).remove(obj);
         }
@@ -68,15 +65,15 @@ public class Grid {
     
     
     
-    public Set<Obj> retrieve(Vector2 pos, double radius) {
-        Set<Obj> retrievedObjects = Collections.newSetFromMap(new ConcurrentHashMap<Obj, Boolean>());
+    public Set<Base> retrieve(Vector2 pos, double radius) {
+        Set<Base> retrievedObjects = Collections.newSetFromMap(new ConcurrentHashMap<Base, Boolean>());
         
         String[] grids = getGridsObjCircleIsIn(pos, radius);
         
         for (String grid : grids) {
             if (objects.containsKey(grid)) {
                 
-                Set<Obj> gridObjects = Collections.newSetFromMap(new ConcurrentHashMap<Obj, Boolean>());
+                Set<Base> gridObjects = Collections.newSetFromMap(new ConcurrentHashMap<Base, Boolean>());
                 gridObjects = objects.get(grid);
                 
                 retrievedObjects.addAll(gridObjects);
@@ -87,15 +84,15 @@ public class Grid {
     }
 
 
-    public Set<Obj> retrieve(Vector2 pos, Vector2 scale) {
-        Set<Obj> retrievedObjects = Collections.newSetFromMap(new ConcurrentHashMap<Obj, Boolean>());
+    public Set<Base> retrieve(Vector2 pos, Vector2 scale) {
+        Set<Base> retrievedObjects = Collections.newSetFromMap(new ConcurrentHashMap<Base, Boolean>());
 
         String[] grids = getGridsObjRectangleIsIn(pos, scale);
 
         for (String grid : grids) {
             if (objects.containsKey(grid)) {
                 
-                Set<Obj> gridObjects = Collections.newSetFromMap(new ConcurrentHashMap<Obj, Boolean>());
+                Set<Base> gridObjects = Collections.newSetFromMap(new ConcurrentHashMap<Base, Boolean>());
                 gridObjects = objects.get(grid);
                 
                 retrievedObjects.addAll(gridObjects);
@@ -106,15 +103,15 @@ public class Grid {
     }
     
     
-    public Set<Obj> retrievePlayers(Vector2 pos, double radius) {
-        Set<Obj> retrievedObjects = new HashSet<>();
-        Set<Obj> tempObjects = new HashSet<>();
+    public Set<Base> retrievePlayers(Vector2 pos, double radius) {
+        Set<Base> retrievedObjects = new HashSet<>();
+        Set<Base> tempObjects = new HashSet<>();
         
         String[] grids = getGridsObjCircleIsIn(pos, radius);
         
         for (String grid : grids) {
             if (objects.containsKey(grid)) {
-                for (Obj o : objects.get(grid)) {
+                for (Base o : objects.get(grid)) {
                     if (Player.class.isAssignableFrom(o.getClass())) {
                        tempObjects.add(o); 
                     }
