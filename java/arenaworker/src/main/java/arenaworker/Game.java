@@ -9,14 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.mongodb.client.MongoCollection;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import arenaworker.abilityobjects.Projectile;
 import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
-import arenaworker.abilityobjects.Projectile;
 
 public class Game implements Runnable {
     public final String id = UUID.randomUUID().toString();
@@ -281,27 +280,27 @@ public class Game implements Runnable {
     private void ProjectilePhysics() {
         for (Player p : players) {
             for (int i = 0; i < 4; i++) {
-                for (Projectile projectile : p.abilities[i].projectiles) {
-                    Set<Base> objs = grid.retrieve(projectile.position, projectile.radius);
+                for (Base ao : p.abilities[i].abilityObjects) {
+                    Set<Base> objs = grid.retrieve(ao.position, ao.radius);
                     for (Base other : objs) {
-                        if (other.id != projectile.id) {
+                        if (other.id != ao.id) {
                             if (other instanceof Box) {
                                 Box box = (Box) other;
-                                if (Physics.circleInRectangle(projectile.position, projectile.radius, box.position, box.scale)) {
-                                    projectile.Destroy();
+                                if (Physics.circleInRectangle(ao.position, ao.radius, box.position, box.scale)) {
+                                    ao.Destroy();
                                 }
                             } else if (other instanceof Player) {
                                 Player otherPlayer = (Player) other;
                                 if (otherPlayer != p) {
-                                    if (Physics.circleInCircle(other, projectile)) {
-                                        otherPlayer.ProjectileHit(projectile);
-                                        projectile.Destroy();
+                                    if (Physics.circleInCircle(other, ao)) {
+                                        otherPlayer.ProjectileHit(ao);
+                                        ao.Destroy();
                                     }
                                 }
                             } else if (other instanceof Obstacle) {
-                                if (Physics.circleInCircle(other, projectile)) {
-                                    Physics.resolveCollision((Obj)other, (Obj)projectile);
-                                    projectile.Destroy();
+                                if (Physics.circleInCircle(other, ao)) {
+                                    Physics.resolveCollision((Obj)other, (Obj)ao);
+                                    ao.Destroy();
                                 } 
                             }
                         }

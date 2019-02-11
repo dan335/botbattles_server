@@ -1,9 +1,11 @@
 package arenaworker.abilities;
 
-import arenaworker.Player;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Set;
-import arenaworker.abilityobjects.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import arenaworker.Base;
+import arenaworker.Player;
+import arenaworker.abilityobjects.Projectile;
 
 
 public class Ability {
@@ -12,7 +14,7 @@ public class Ability {
     long lastFired = 0L;
     public long interval = 1000L;
     boolean isOn = false;
-    public Set<Projectile> projectiles = ConcurrentHashMap.newKeySet();
+    public Set<Base> abilityObjects = ConcurrentHashMap.newKeySet();
 
     public Ability(Player player) {
         this.player = player;
@@ -26,8 +28,8 @@ public class Ability {
             }
         }
 
-        for (Projectile p : projectiles) {
-            p.Tick();
+        for (Base obj : abilityObjects) {
+            obj.Tick();
         }
     }
 
@@ -49,8 +51,8 @@ public class Ability {
 
 
     public void Destroy() {
-        for (Projectile p : projectiles) {
-            p.Destroy();
+        for (Base obj : abilityObjects) {
+            obj.Destroy();
         }
     }
 

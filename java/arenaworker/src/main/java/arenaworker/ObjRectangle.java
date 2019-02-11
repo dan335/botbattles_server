@@ -9,7 +9,7 @@ public class ObjRectangle extends Obj {
     public Vector2 scale = new Vector2(10, 10);
 
     public ObjRectangle(Game game, double x, double y, double scaleX, double scaleY) {
-        super(game, x, y, 0);
+        super(game, x, y, 0, 0);
         this.scale = new Vector2(scaleX, scaleY);
     }
 

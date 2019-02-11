@@ -1,11 +1,6 @@
 package arenaworker;
 
-import java.util.UUID;
-
-import org.json.JSONObject;
-
 import arenaworker.lib.Vector2;
-import java.util.Date;
 
 
 // Obj is Base with physics
@@ -16,8 +11,8 @@ public class Obj extends Base {
     public double restitution = 0.5;
     public double mass = 1;
 
-    public Obj (Game game, double x, double y, double radius) {
-        super(game, x, y, radius);
+    public Obj (Game game, double x, double y, double radius, double rotation) {
+        super(game, x, y, radius, rotation);
     }
 
 

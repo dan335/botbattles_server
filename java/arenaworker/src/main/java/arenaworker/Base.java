@@ -1,11 +1,11 @@
 package arenaworker;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.json.JSONObject;
 
 import arenaworker.lib.Vector2;
-import java.util.Date;
 
 public class Base {
     public final String id = UUID.randomUUID().toString().substring(0, 8);
@@ -27,11 +27,15 @@ public class Base {
     public Game game;
     public boolean needsUpdate = false;
 
-    public Base (Game game, double x, double y, double radius) {
+
+
+
+    public Base (Game game, double x, double y, double radius, double rotation) {
         this.game = game;
         this.position.x = x;
         this.position.y = y;
         this.radius = radius;
+        this.rotation = rotation;
     }
 
 

@@ -1,11 +1,9 @@
 package arenaworker;
 
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;

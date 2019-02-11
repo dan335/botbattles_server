@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONObject;
-import arenaworker.lib.Vector2;
 
 
 public class IncomingMessage {

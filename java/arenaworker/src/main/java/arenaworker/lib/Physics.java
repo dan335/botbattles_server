@@ -1,9 +1,5 @@
 package arenaworker.lib;
 
-import java.util.Vector;
-
-import javax.sound.midi.SysexMessage;
-
 import arenaworker.Base;
 import arenaworker.Obj;
 import arenaworker.ObjRectangle;

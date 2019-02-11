@@ -1,14 +1,13 @@
 package arenaworker;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.json.JSONObject;
 
-import arenaworker.abilities.*;
-import arenaworker.lib.Physics;
-import arenaworker.lib.Vector2;
+import arenaworker.abilities.Ability;
+import arenaworker.abilities.Blasters;
 import arenaworker.abilityobjects.Projectile;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
+import arenaworker.lib.Vector2;
 
 public class Player extends Obj {
     Client client;
@@ -26,7 +25,7 @@ public class Player extends Obj {
             Game game,
             String[] abilityTypes
         ) {
-        super(game, 0, 0, 25);
+        super(game, 0, 0, 25, 0);
 
         this.client = client;
         
@@ -179,8 +178,8 @@ public class Player extends Obj {
         super.SendInitialToClient(client);
 
         for (Ability a : abilities) {
-            for (Projectile p : a.projectiles) {
-                p.SendInitialToClient(client);
+            for (Base obj : a.abilityObjects) {
+                obj.SendInitialToClient(client);
             }
         }
     }
@@ -189,10 +188,7 @@ public class Player extends Obj {
 
     @Override
     public JSONObject InitialData() {
-        JSONObject json = new JSONObject();
-        json.put("id", id);
-        json.put("x", position.x);
-        json.put("y", position.y);
+        JSONObject json = super.InitialData();
         json.put("name", client.name);
         return json;
     }
@@ -223,8 +219,11 @@ public class Player extends Obj {
     }
 
 
-    public void ProjectileHit(Projectile projectile) {
-        TakeDamage(projectile.damage);
+    public void ProjectileHit(Base projectile) {
+        if (projectile instanceof Projectile) {
+            Projectile p = (Projectile)projectile;
+            TakeDamage(p.damage);
+        }
     }
 
 

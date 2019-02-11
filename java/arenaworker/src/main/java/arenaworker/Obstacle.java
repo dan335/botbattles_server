@@ -5,7 +5,7 @@ import org.json.JSONObject;
 public class Obstacle extends Obj {
 
     public Obstacle(Game game, double x, double y, double radius) {
-        super(game, x, y, radius);
+        super(game, x, y, radius, 0);
         game.obstacles.add(this);
         initialUpdateName = "obstacleInitial";
         updateName = "obstacleUpdate";
