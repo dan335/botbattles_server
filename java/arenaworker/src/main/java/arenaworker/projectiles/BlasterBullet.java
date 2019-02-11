@@ -11,6 +11,7 @@ public class BlasterBullet extends Projectile {
         destroyUpdateName = "blasterBulletDestroy";
         speed = 1;
         radius = 5;
+        mass = 0.4;
         SendInitialToAll();
     }
 }

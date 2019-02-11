@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import arenaworker.lib.Grid;
+
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 
@@ -16,7 +16,7 @@ public class Map {
     double size;
     Game game;
     long lastUpdate;
-    public Grid grid;
+    
     Box[] walls = new Box[4];
 
     public Map(JSONObject json, Game game) {
@@ -24,7 +24,11 @@ public class Map {
         this.game = game;
         size = json.getDouble("startSize");
         lastUpdate = game.tickStartTime;
-        grid = new Grid(size + game.settings.wallWidth*2, game.settings.gridDivisions);
+
+        // add mapInitial to game replay
+        JSONObject j = InitialData();
+        j.put("t", "mapInitial");
+        game.AddJsonToReplay(j);
 
         BuildWalls();
 
@@ -33,16 +37,8 @@ public class Map {
             JSONObject ob = obs.getJSONObject(i);
 
             if (ob.getString("shape") == "circle") {
-                Obstacle o = new Obstacle(game);
-                o.position = new Vector2(ob.getDouble("x"), ob.getDouble("y"));
-                o.radius = ob.getDouble("radius");
+                Obstacle o = new Obstacle(game, ob.getDouble("x"), ob.getDouble("y"), ob.getDouble("radius"));
                 o.mass = ob.getDouble("mass");
-                grid.insert(o);
-            } else if (ob.getString("shape") == "rectangle") {
-                Box b = new Box(game);
-                b.position = new Vector2(ob.getDouble("x"), ob.getDouble("y"));
-                b.scale = new Vector2(ob.getDouble("scaleX"), ob.getDouble("scaleY"));
-                grid.insert(b);
             }
         }
     }
@@ -53,45 +49,25 @@ public class Map {
     // 2 : top
     // 3 : bottom
     public void BuildWalls() {
-        walls[0] = new Box(game);
-        walls[0].position = new Vector2(-size/2, 0);
-        walls[0].scale = new Vector2(game.settings.wallWidth, size + game.settings.wallWidth);
-        grid.insert(walls[0]);
-
-        walls[1] = new Box(game);
-        walls[1].position = new Vector2(size/2, 0);
-        walls[1].scale = new Vector2(game.settings.wallWidth, size + game.settings.wallWidth);
-        grid.insert(walls[1]);
-
-        walls[2] = new Box(game);
-        walls[2].position = new Vector2(0, -size/2);
-        walls[2].scale = new Vector2(size + game.settings.wallWidth, game.settings.wallWidth);
-        grid.insert(walls[2]);
-
-        walls[3] = new Box(game);
-        walls[3].position = new Vector2(0, size/2);
-        walls[3].scale = new Vector2(size + game.settings.wallWidth, game.settings.wallWidth);
-        grid.insert(walls[3]);
+        walls[0] = new Box(game, -size/2, 0, game.settings.wallWidth, size + game.settings.wallWidth);
+        walls[1] = new Box(game, size/2, 0, game.settings.wallWidth, size + game.settings.wallWidth);
+        walls[2] = new Box(game, 0, -size/2, size + game.settings.wallWidth, game.settings.wallWidth);
+        walls[3] = new Box(game, 0, size/2, size + game.settings.wallWidth, game.settings.wallWidth);
     }
 
 
     public void UpdateWalls() {
-        walls[0].position.x = -size/2;
-        walls[0].scale.y = size + game.settings.wallWidth;
+        walls[0].SetPosition(-size/2, walls[0].position.y);
+        walls[0].setScale(walls[0].scale.x, size + game.settings.wallWidth);
 
-        walls[1].position.x = size/2;
-        walls[1].scale.y = size + game.settings.wallWidth;
+        walls[1].SetPosition(size/2, walls[1].position.y);
+        walls[1].setScale(walls[1].scale.x, size + game.settings.wallWidth);
 
-        walls[2].position.y = -size/2;
-        walls[2].scale.x = size + game.settings.wallWidth;
+        walls[2].SetPosition(walls[2].position.x, -size/2);
+        walls[2].setScale(size + game.settings.wallWidth, walls[2].scale.y);
 
-        walls[3].position.y = size/2;
-        walls[3].scale.x = size + game.settings.wallWidth;
-
-        for (int i = 0; i < 4; i++) {
-            grid.update(walls[i]);
-            walls[i].needsUpdate = true;
-        }
+        walls[3].SetPosition(walls[3].position.x, size/2);
+        walls[3].setScale(size + game.settings.wallWidth, walls[3].scale.y);
     }
 
 
@@ -111,7 +87,7 @@ public class Map {
     void UpdateClients() {
         JSONObject json = UpdateData();
         json.put("t", "mapUpdate");
-        game.SendJsonToClients(json.toString());
+        game.SendJsonToClients(json);
     }
 
 
@@ -119,8 +95,7 @@ public class Map {
     public void SendInitial(Client client) {
         JSONObject json = InitialData();
         json.put("t", "mapInitial");
-
-        client.SendJson(json.toString());
+        client.SendJson(json);
     }
 
 
@@ -138,7 +113,7 @@ public class Map {
                 minY + (Math.random() * (maxY - minY))
             );
             
-            Set<Obj> objs = grid.retrieve(pos, r);
+            Set<Obj> objs = game.grid.retrieve(pos, r);
             for (Obj o : objs) {
                 if (foundSpot) {
                     if (o instanceof ObjCircle) {

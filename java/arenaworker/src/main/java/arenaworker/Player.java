@@ -19,19 +19,20 @@ public class Player extends ObjCircle {
     Vector2 mousePosition = new Vector2();
     Ability[] abilities = new Ability[4];
     
-
     public Player(
             Client client,
             Game game,
             String[] abilityTypes
         ) {
-        super(game);
+        super(game, 0, 0, 25);
 
         this.client = client;
         
-        radius = 25;
         position = game.map.GetEmptyPos(200, -game.map.size/2, -game.map.size/2, game.map.size/2, game.map.size/2);
         mass = 1;
+        initialUpdateName = "shipInitial";
+        updateName = "shipUpdate";
+        destroyUpdateName = "shipDestroy";
 
         for (int i = 0; i < 4; i++) {
             Class<?> cls;
@@ -53,9 +54,9 @@ public class Player extends ObjCircle {
             abilities[i] = ability;
         }
 
-        game.map.grid.insert(this);
+        game.grid.insert(this);
 
-        SendInitialToAll("bogus");
+        SendInitialToAll();
     }
 
 
@@ -136,21 +137,12 @@ public class Player extends ObjCircle {
         for (int i = 0; i < 4; i++) {
             abilities[i].Tick();
         }
-
-        SendUpdate("shipUpdate");
     }
 
 
     public void Destroy() {
         game.players.remove(this);
-
-        JSONObject json = new JSONObject();
-        json.put("t", "shipDestroy");
-        json.put("id", id);
-        
-        for (Client c : game.clients) {
-            c.SendJson(json.toString());
-        }
+        super.Destroy();
     }
 
 
@@ -158,7 +150,7 @@ public class Player extends ObjCircle {
 
     // when player is created - send to all clients
     @Override
-    public void SendInitialToAll(String type) {
+    public void SendInitialToAll() {
         JSONObject json = InitialData();
         
         for (Client c : game.clients) {
@@ -168,14 +160,18 @@ public class Player extends ObjCircle {
                 json.put("t", "shipInitial");
             }
             
-            c.SendJson(json.toString());
+            c.SendJson(json);
         }
+
+        JSONObject replaly = InitialData();
+        replaly.put("t", "shipInitial");
+        this.game.AddJsonToReplay(replaly);
     }
 
 
     @Override
-    public void SendInitialToClient(Client client, String type) {
-        super.SendInitialToClient(client, type);
+    public void SendInitialToClient(Client client) {
+        super.SendInitialToClient(client);
 
         for (Ability a : abilities) {
             for (Projectile p : a.projectiles) {

@@ -176,7 +176,7 @@ public class Physics {
 
         // b.velocity = b.velocity.add(impulse.scale(ratio));
 
-        a.needsUpdate = true;
+        //a.needsUpdate = true;
         //b.needsUpdate = true;
 
         PositionalCorrection(a, b, collisionNormal, isInside);
@@ -188,7 +188,6 @@ public class Physics {
     
 
     public static void resolveCollision(ObjCircle a, ObjCircle b) {
-        
         Vector2 relativeVelocity = new Vector2(
             b.velocity.x - a.velocity.x,
             b.velocity.y - a.velocity.y
@@ -252,8 +251,8 @@ public class Physics {
 
         b.velocity = b.velocity.add(impulse.scale(ratio));
 
-        a.needsUpdate = true;
-        b.needsUpdate = true;
+        // a.needsUpdate = true;
+        // b.needsUpdate = true;
 
         PositionalCorrection(a, b);
     }
@@ -318,9 +317,7 @@ public class Physics {
 
         collisionNormal.normalize();
 
-        a.position = a.position.subtract(collisionNormal.scale(penetrationDepth * 0.5));
-
-        a.needsUpdate = true;
+        a.SetPosition(a.position.subtract(collisionNormal.scale(penetrationDepth * 0.5)));
     }
 
 
@@ -364,11 +361,8 @@ public class Physics {
             amount * collisionNormal.y
         );
 
-        a.position = a.position.subtract(correction.scale(aInverseMass));
-        b.position = b.position.add(correction.scale(bInverseMass));
-
-        a.needsUpdate = true;
-        b.needsUpdate = true;
+        a.SetPosition(a.position.subtract(correction.scale(aInverseMass)));
+        b.SetPosition(b.position.add(correction.scale(bInverseMass)));
     }
     
     

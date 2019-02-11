@@ -4,22 +4,23 @@ import org.json.JSONObject;
 
 public class Obstacle extends ObjCircle {
 
-    public Obstacle(Game game) {
-        super(game);
+    public Obstacle(Game game, double x, double y, double radius) {
+        super(game, x, y, radius);
         game.obstacles.add(this);
-
-        SendInitialToAll("obstacleInitial");
+        initialUpdateName = "obstacleInitial";
+        updateName = "obstacleUpdate";
+        destroyUpdateName = "obstacleDestroy";
+        game.grid.insert(this);
+        SendInitialToAll();
     }
+
 
 
     @Override
-    public void Tick() {
-        super.Tick();
-        SendUpdate("obstacleUpdate");
+    public void Destroy() {
+        game.obstacles.remove(this);
+        super.Destroy();
     }
-
-
-    
 
 
     @Override

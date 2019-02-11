@@ -30,7 +30,7 @@ public class Settings {
             JSONObject obstacle = new JSONObject();
             obstacle.put("x", x);
             obstacle.put("y", y);
-            obstacle.put("radius", 50);
+            obstacle.put("radius", 60);
             obstacle.put("mass", 5);
             obstacle.put("shape", "circle");    // not used?
             obstacles.put(obstacle);
@@ -45,7 +45,7 @@ public class Settings {
             JSONObject obstacle = new JSONObject();
             obstacle.put("x", x);
             obstacle.put("y", y);
-            obstacle.put("radius", 50);
+            obstacle.put("radius", 40);
             obstacle.put("mass", 1);
             obstacle.put("shape", "circle");    // not used?
             obstacles.put(obstacle);

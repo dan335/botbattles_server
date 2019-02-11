@@ -1,12 +1,20 @@
 package arenaworker;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.jetty.websocket.api.Session;
+import com.mongodb.client.MongoCollection;
 
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import org.eclipse.jetty.websocket.api.Session;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
 import arenaworker.projectiles.Projectile;
 
@@ -27,11 +35,13 @@ public class Game implements Runnable {
     long secondPlayerJoinTime;
     public boolean isStarted = false;
     public double deltaTime = 0;    // 1 if last frame completed in settings.updateIntervalMs
-    
+    public Grid grid;
+    public JSONArray replayJson = new JSONArray();
 
 
     public Game(Settings settings) {
         this.settings = settings;
+        grid = new Grid(2500, settings.gridDivisions);
         map = new Map(settings.defaultMap, this);
         gameCreatedTime = Calendar.getInstance().getTimeInMillis();
         thread = new Thread(this, "game_" + id);
@@ -42,6 +52,18 @@ public class Game implements Runnable {
     // called from GameManager
     public void Destroy() {
         isRunning = false;
+
+        // add replay to db
+        MongoCollection<Document> collection = App.database.getCollection("replays");
+
+        Document document = new Document("createdAt", gameCreatedTime)
+            .append("startedAt", gameStartTime)
+            .append("endedAt", new Date())
+            .append("length", (double)(tickStartTime - gameCreatedTime))
+            .append("json", replayJson.toString())
+            .append("gameId", id);
+
+        collection.insertOne(document);
     }
 
 
@@ -86,15 +108,15 @@ public class Game implements Runnable {
     // client just joined, send them stuff
     void GetObjsInitialData(Client client) {
         for (Player o : players) {
-            o.SendInitialToClient(client, "shipInitial");
+            o.SendInitialToClient(client);
         }
 
         for (Obstacle o : obstacles) {
-            o.SendInitialToClient(client, "obstacleInitial");
+            o.SendInitialToClient(client);
         }
 
         for (Box o : boxes) {
-            o.SendInitialToClient(client, "boxInitial");
+            o.SendInitialToClient(client);
         }
     }
 
@@ -107,18 +129,33 @@ public class Game implements Runnable {
 
 
 
-    public void SendJsonToClients(String json) {
+    public void SendJsonToClients(JSONObject json) {
         for (Client c : clients) {
-            if (c.session.isOpen()) {
-                try {
-                    c.session.getRemote().sendStringByFuture(json);
-                }
-                catch (Throwable e)
-                {
-                    e.printStackTrace();
-                }
-            }
+            c.SendJson(json);
         }
+        AddJsonToReplay(json);
+    }
+
+    public void SendJsonToClients(JSONArray json) {
+        for (Client c : clients) {
+            c.SendJson(json);
+        }
+        AddJsonToReplay(json);
+    }
+
+
+    public void AddJsonToReplay(JSONObject json) {
+        JSONObject r = new JSONObject();
+        r.put("t", new Date());
+        r.put("j", json);
+        replayJson.put(r);
+    }
+
+    public void AddJsonToReplay(JSONArray json) {
+        JSONObject r = new JSONObject();
+        r.put("t", new Date());
+        r.put("j", json);
+        replayJson.put(r);
     }
 
 
@@ -151,6 +188,10 @@ public class Game implements Runnable {
             BoxPhysics();
             ProjectilePhysics();
             
+            for (Client c : clients) {
+                c.Tick();
+            }
+
             tickEndTime = Calendar.getInstance().getTimeInMillis();
             long timeTilNext = settings.updateIntervalMs - (tickStartTime - tickEndTime);
             
@@ -170,14 +211,14 @@ public class Game implements Runnable {
 
     private void PlayerPhysics() {
         for (Player p : players) {
-            Set<Obj> objs = map.grid.retrieve(p.position, p.radius);
+            Set<Obj> objs = grid.retrieve(p.position, p.radius);
             for (Obj o : objs) {
                 if (o.id != p.id) {
-                    if (o instanceof ObjCircle) {
+                    if (o instanceof Obstacle || o instanceof Player) {
                         if (Physics.circleInCircle((ObjCircle)p, (ObjCircle)o)) {
                             Physics.resolveCollision((ObjCircle)p, (ObjCircle)o);
                         }
-                    } else if(o instanceof ObjRectangle) {
+                    } else if(o instanceof Box) {
                         if (Physics.circleInRectangle((ObjCircle)p, (ObjRectangle)o)) {
                             Physics.resolveCollision((ObjCircle)p, (ObjRectangle)o);
                         }
@@ -188,16 +229,18 @@ public class Game implements Runnable {
     }
 
     private void ObstaclePhysics() {
-        for (Obstacle p : obstacles) {
-            Set<Obj> objs = map.grid.retrieve(p.position, p.radius);
-            for (Obj o : objs) {
-                if (o.id != p.id) {
-                    if (o instanceof ObjCircle) {
-                        if (Physics.circleInCircle((ObjCircle)p, (ObjCircle)o)) {
-                            Physics.resolveCollision((ObjCircle)p, (ObjCircle)o);
+        for (Obstacle obstacle : obstacles) {
+            Set<Obj> objs = grid.retrieve(obstacle.position, obstacle.radius);
+            for (Obj other : objs) {
+                if (other.id != obstacle.id) {
+                    if (other instanceof Obstacle) {
+                        if (Physics.circleInCircle((ObjCircle)obstacle, (ObjCircle)other)) {
+                            Physics.resolveCollision((ObjCircle)obstacle, (ObjCircle)other);
                         }
-                    } else if(o instanceof ObjRectangle) {
-                        o.Destroy("obstacleDestroy");
+                    } else if(other instanceof Box) {
+                        if (Physics.circleInRectangle((ObjCircle)obstacle, (ObjRectangle)other)) {
+                            obstacle.Destroy();
+                        }
                     }
                 }
             }
@@ -206,17 +249,17 @@ public class Game implements Runnable {
 
 
     private void BoxPhysics() {
-        for (Box b : boxes) {
-            Set<Obj> objs = map.grid.retrieve(b.position, b.scale);
-            for (Obj o : objs) {
-                if (o.id != b.id) {
-                    if (o instanceof Player) {
-                        if (Physics.circleInRectangle((ObjCircle)o, (ObjRectangle)b)) {
-                            Physics.PositionalCorrection((ObjCircle)o, (ObjRectangle)b);
+        for (Box box : boxes) {
+            Set<Obj> objs = grid.retrieve(box.position, box.scale);
+            for (Obj other : objs) {
+                if (other.id != box.id) {
+                    if (other instanceof Player) {
+                        if (Physics.circleInRectangle((ObjCircle)other, (ObjRectangle)box)) {
+                            Physics.PositionalCorrection((ObjCircle)other, (ObjRectangle)box);
                         }
-                    } else if (o instanceof Obstacle) {
-                        if (Physics.circleInRectangle((ObjCircle)o, (ObjRectangle)b)) {
-                            o.Destroy("obstacleDestroy");
+                    } else if (other instanceof Obstacle) {
+                        if (Physics.circleInRectangle((ObjCircle)other, (ObjRectangle)box)) {
+                            other.Destroy();
                         }  
                     }
                     // don't react to rectangles
@@ -229,26 +272,26 @@ public class Game implements Runnable {
     private void ProjectilePhysics() {
         for (Player p : players) {
             for (int i = 0; i < 4; i++) {
-                for (Projectile pr : p.abilities[i].projectiles) {
-                    Set<Obj> objs = map.grid.retrieve(pr.position, pr.radius);
-                    for (Obj o : objs) {
-                        if (o.id != pr.id) {
-                            if (o instanceof Box) {
-                                Box b = (Box) o;
-                                if (Physics.circleInRectangle(pr.position, pr.radius, b.position, b.scale)) {
-                                    pr.Destroy();
+                for (Projectile projectile : p.abilities[i].projectiles) {
+                    Set<Obj> objs = grid.retrieve(projectile.position, projectile.radius);
+                    for (Obj other : objs) {
+                        if (other.id != projectile.id) {
+                            if (other instanceof Box) {
+                                Box box = (Box) other;
+                                if (Physics.circleInRectangle(projectile.position, projectile.radius, box.position, box.scale)) {
+                                    projectile.Destroy();
                                 }
-                            } else if (o instanceof Player) {
-                                Player pl = (Player) o;
-                                if (pl != p) {
-                                    pl.ProjectileHit(pr);
-                                    pr.Destroy();
+                            } else if (other instanceof Player) {
+                                Player otherPlayer = (Player) other;
+                                if (otherPlayer != p) {
+                                    otherPlayer.ProjectileHit(projectile);
+                                    projectile.Destroy();
                                 }
-                            } else if (o instanceof Obstacle) {
-                                Obstacle ob = (Obstacle) o;
-                                if (Physics.circleInCircle(pr.position.x, pr.position.y, pr.radius, ob.position.x, ob.position.y, ob.radius)) {
-                                    pr.Destroy();
-                                }
+                            } else if (other instanceof Obstacle) {
+                                if (Physics.circleInCircle((ObjCircle)other, (ObjCircle)projectile)) {
+                                    Physics.resolveCollision((ObjCircle)other, (ObjCircle)projectile);
+                                    projectile.Destroy();
+                                } 
                             }
                         }
                     }

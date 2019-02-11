@@ -2,6 +2,8 @@ package arenaworker;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -17,9 +19,17 @@ public class App
     public static void main( String[] args )
     {
         try {
-            //local
-            // mongoClient = new MongoClient("127.0.0.1", 3001);
-            // database = mongoClient.getDatabase("meteor"); 
+            if (System.getenv("ISPRODUCTION") == "true") {
+                mongoClient = new MongoClient("arena-mongodb", 27017);
+            } else {
+                mongoClient = new MongoClient("127.0.0.1", 27017);
+            }
+
+            database = mongoClient.getDatabase("arena");
+
+            // erase old replays
+            MongoCollection<Document> collection = database.getCollection("replays");
+            collection.drop();
 
             Server server = new Server(3020);
             
