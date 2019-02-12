@@ -227,11 +227,11 @@ public class Player extends Obj {
 
     @Override
     public void SetPosition(double x, double y) {
-        super.SetPosition(x, y);
         if (position.x != x || position.y != y) {
             for (int i = 0; i < 4; i++) {
                 abilities[i].PlayerPositionChanged();
             }
         }
+        super.SetPosition(x, y);
     }
 }
