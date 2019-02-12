@@ -14,6 +14,8 @@ public class Base {
     public double rotation = 0;
     public double radius = 1;
 
+    boolean isInGrid = true;
+
     public String initialUpdateName = "bogus";  // for SendInitialToClient() - override this
     public String updateName = "bogus";         // for SendUpdate() - override this
     public String destroyUpdateName = "bogus";
@@ -30,12 +32,17 @@ public class Base {
 
 
 
-    public Base (Game game, double x, double y, double radius, double rotation) {
+    public Base (Game game, double x, double y, double radius, double rotation, boolean addToGrid) {
         this.game = game;
         this.position.x = x;
         this.position.y = y;
         this.radius = radius;
         this.rotation = rotation;
+        this.isInGrid = addToGrid;
+
+        if (addToGrid) {
+            game.grid.insert(this);
+        }
     }
 
 
@@ -53,7 +60,9 @@ public class Base {
             position.x = x;
             position.y = y;
             needsUpdate = true;
-            game.grid.update(this);
+            if (isInGrid) {
+                game.grid.update(this);
+            }
         }
     }
 
@@ -72,7 +81,9 @@ public class Base {
         json.put("t", destroyUpdateName);
         json.put("id", id);
         
-        game.grid.remove(this);
+        if (isInGrid) {
+            game.grid.remove(this);
+        }
         
         game.SendJsonToClients(json);
     }

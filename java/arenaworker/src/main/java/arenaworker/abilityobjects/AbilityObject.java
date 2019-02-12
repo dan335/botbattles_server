@@ -13,8 +13,8 @@ public class AbilityObject extends Base {
     public double damage = 10;
     
     
-    public AbilityObject(Ability ability, double x, double y, double radius, double rotation) {
-        super(ability.player.game, x, y, radius, rotation);
+    public AbilityObject(Ability ability, double x, double y, double radius, double rotation, boolean addToGrid) {
+        super(ability.player.game, x, y, radius, rotation, addToGrid);
         this.ability = ability;
         ability.abilityObjects.add(this);
     }
@@ -27,11 +27,7 @@ public class AbilityObject extends Base {
 
     @Override
     public void Destroy() {
-        JSONObject json = new JSONObject();
-        json.put("t", destroyUpdateName);
-        json.put("id", id);
-        game.SendJsonToClients(json);
-
+        super.Destroy();
         ability.abilityObjects.remove(this);
     }
 }

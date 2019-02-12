@@ -8,10 +8,16 @@ public class ObjRectangle extends Obj {
 
     public Vector2 scale = new Vector2(10, 10);
 
-    public ObjRectangle(Game game, double x, double y, double scaleX, double scaleY) {
-        super(game, x, y, 0, 0);
+    public ObjRectangle(Game game, double x, double y, double scaleX, double scaleY, boolean addToGrid) {
+        super(game, x, y, 0, 0, false);
         this.scale = new Vector2(scaleX, scaleY);
+
+        if (addToGrid) {
+            game.grid.insert(this);
+            isInGrid = true;
+        }
     }
+
 
     public void setScale(double x, double y) {
         if (scale.x != x || scale.x != y) {

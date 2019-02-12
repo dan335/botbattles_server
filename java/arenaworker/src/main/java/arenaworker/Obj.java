@@ -11,8 +11,8 @@ public class Obj extends Base {
     public double restitution = 0.5;
     public double mass = 1;
 
-    public Obj (Game game, double x, double y, double radius, double rotation) {
-        super(game, x, y, radius, rotation);
+    public Obj (Game game, double x, double y, double radius, double rotation, boolean addToGrid) {
+        super(game, x, y, radius, rotation, addToGrid);
     }
 
 

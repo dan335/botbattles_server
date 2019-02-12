@@ -25,7 +25,7 @@ public class Player extends Obj {
             Game game,
             String[] abilityTypes
         ) {
-        super(game, 0, 0, 25, 0);
+        super(game, 0, 0, 25, 0, true);
 
         this.client = client;
         
@@ -54,8 +54,6 @@ public class Player extends Obj {
 
             abilities[i] = ability;
         }
-
-        game.grid.insert(this);
 
         SendInitialToAll();
     }

@@ -13,20 +13,27 @@ public class AbilityObjectPhysics extends Obj {
     public double damage = 10;
     
     
-    public AbilityObjectPhysics(Ability ability, double x, double y, double radius, double rotation) {
-        super(ability.player.game, x, y, radius, rotation);
+    public AbilityObjectPhysics(Ability ability, double x, double y, double radius, double rotation, boolean addToGrid) {
+        super(ability.player.game, x, y, radius, rotation, addToGrid);
         this.ability = ability;
         ability.abilityObjects.add(this);
     }
 
 
+    // override to remove grid
+    @Override
+    public void SetPosition(double x, double y) {
+        if (position.x != x || position.y != y) {
+            position.x = x;
+            position.y = y;
+            needsUpdate = true;
+        }
+    }
+
+
     @Override
     public void Destroy() {
-        JSONObject json = new JSONObject();
-        json.put("t", destroyUpdateName);
-        json.put("id", id);
-        game.SendJsonToClients(json);
-
+        super.Destroy();
         ability.abilityObjects.remove(this);
     }
 }

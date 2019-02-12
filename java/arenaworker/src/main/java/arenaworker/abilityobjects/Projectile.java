@@ -13,8 +13,8 @@ public class Projectile extends AbilityObjectPhysics {
     public double damage = 10;
     
     
-    public Projectile(Ability ability, double x, double y, double radius, double rotation) {
-        super(ability, x, y, radius, rotation);
+    public Projectile(Ability ability, double x, double y, double radius, double rotation, boolean addToGrid) {
+        super(ability, x, y, radius, rotation, addToGrid);
     }
 
 

@@ -9,13 +9,12 @@ import org.json.JSONObject;
 public class Box extends ObjRectangle {
 
     public Box(Game game, double x, double y, double scaleX, double scaleY) {
-        super(game, x, y, scaleX, scaleY);
+        super(game, x, y, scaleX, scaleY, true);
         game.boxes.add(this);
         this.mass = 0;
         initialUpdateName = "boxInitial";
         updateName = "boxUpdate";
         destroyUpdateName = "boxDestroy";
-        game.grid.insert(this);
         SendInitialToAll();
     }
 

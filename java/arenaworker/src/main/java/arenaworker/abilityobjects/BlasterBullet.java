@@ -5,7 +5,7 @@ import arenaworker.abilities.Ability;
 public class BlasterBullet extends Projectile {
     
     public BlasterBullet(Ability ability, double rotation) {
-        super(ability, ability.player.position.x, ability.player.position.y, 12, rotation);
+        super(ability, ability.player.position.x, ability.player.position.y, 12, rotation, false);
         initialUpdateName = "blasterBulletInitial";
         updateName = "blasterBulletUpdate";
         destroyUpdateName = "blasterBulletDestroy";

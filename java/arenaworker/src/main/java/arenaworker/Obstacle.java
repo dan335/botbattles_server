@@ -5,12 +5,11 @@ import org.json.JSONObject;
 public class Obstacle extends Obj {
 
     public Obstacle(Game game, double x, double y, double radius) {
-        super(game, x, y, radius, 0);
+        super(game, x, y, radius, 0, true);
         game.obstacles.add(this);
         initialUpdateName = "obstacleInitial";
         updateName = "obstacleUpdate";
         destroyUpdateName = "obstacleDestroy";
-        game.grid.insert(this);
         SendInitialToAll();
     }
 
