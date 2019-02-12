@@ -36,7 +36,10 @@ public class ShieldBubble extends AbilityObject {
     @Override
     public void Contact(Base otherObject) {
         if (otherObject instanceof Projectile) {
-            otherObject.Destroy();
+            Projectile projectile = (Projectile)otherObject;
+            if (projectile.ability.player != ability.player) {
+                otherObject.Destroy();
+            }
         }
     }
 }

@@ -31,6 +31,7 @@ public class Player extends Obj {
         this.client = client;
         
         position = game.map.GetEmptyPos(200, -game.map.size/2, -game.map.size/2, game.map.size/2, game.map.size/2, 500);
+        game.grid.update(this);
         mass = 1;
         initialUpdateName = "shipInitial";
         updateName = "shipUpdate";
@@ -202,18 +203,19 @@ public class Player extends Obj {
     }
 
 
-    public void TakeDamage(double damage) {
+    public void TakeDamage(Projectile projectile) {
         if (!game.isStarted) return;
 
-        if (damage > 0) {
-            double shieldToRemove = Math.min(shield, damage);
-            shield -= shieldToRemove;
-            damage -= shieldToRemove;
-            health = Math.max(0, health - damage);
-            needsUpdate = true;
-            if (health <= 0) {
-                Destroy();
-            }
+        double damage = projectile.damage;
+        double shieldToRemove = Math.min(shield, damage * projectile.shieldDamageMultiplier);
+        shield -= shieldToRemove;
+        damage -= Math.min(shieldToRemove, damage);
+
+        health = Math.max(0, health - damage);
+
+        needsUpdate = true;
+        if (health <= 0) {
+            Destroy();
         }
     }
 
@@ -221,7 +223,7 @@ public class Player extends Obj {
     public void ProjectileHit(Base projectile) {
         if (projectile instanceof Projectile) {
             Projectile p = (Projectile)projectile;
-            TakeDamage(p.damage);
+            TakeDamage(p);
         }
     }
 

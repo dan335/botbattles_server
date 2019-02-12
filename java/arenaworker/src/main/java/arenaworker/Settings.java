@@ -12,7 +12,7 @@ public class Settings {
     public double mapShrinkPerInterval = 0.2;
     public double mapMinSize = 400;
     public int gridDivisions = 10;
-    public double shipEngineSpeed = 0.15;
+    public double shipEngineSpeed = 0.1;
     public double drag = -0.2;
     public double wallWidth = 80;
 

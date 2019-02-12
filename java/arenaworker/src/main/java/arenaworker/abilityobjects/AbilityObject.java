@@ -11,6 +11,7 @@ public class AbilityObject extends Base {
     public Ability ability;
     public double speed = 0.1;
     public double damage = 10;
+    public double shieldDamageMultiplier = 1;
     
     
     public AbilityObject(Ability ability, double x, double y, double radius, double rotation, boolean addToGrid) {

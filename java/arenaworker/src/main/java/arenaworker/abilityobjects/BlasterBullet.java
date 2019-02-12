@@ -1,9 +1,9 @@
 package arenaworker.abilityobjects;
 
 import arenaworker.Base;
+import arenaworker.Box;
 import arenaworker.Obj;
 import arenaworker.Obstacle;
-import arenaworker.Box;
 import arenaworker.Player;
 import arenaworker.abilities.Ability;
 import arenaworker.lib.Physics;
@@ -17,7 +17,8 @@ public class BlasterBullet extends Projectile {
         destroyUpdateName = "blasterBulletDestroy";
         speed = 1;
         mass = 0.4;
-        damage = 2;
+        damage = 10;
+        shieldDamageMultiplier = 1;
         SendInitialToAll();
     }
 
@@ -28,8 +29,12 @@ public class BlasterBullet extends Projectile {
             Physics.resolveCollision(this, (Obj)otherObject);
             Destroy();
         } else if (otherObject instanceof Player) {
-            Physics.resolveCollision(this, (Obj)otherObject);
-            Destroy();
+            if (ability.player != otherObject) {
+                Physics.resolveCollision(this, (Obj)otherObject);
+                Player player = (Player) otherObject;
+                player.ProjectileHit(this);
+                Destroy();
+            }
         } else if (otherObject instanceof Box) {
             Destroy();
         }
