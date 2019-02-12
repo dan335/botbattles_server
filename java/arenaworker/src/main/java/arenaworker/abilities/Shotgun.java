@@ -8,8 +8,8 @@ public class Shotgun extends Ability {
     int numBullets = 10;
     double angleInDegrees = 30;
     
-    public Shotgun(Player player) {
-        super(player);
+    public Shotgun(Player player, int abilityNum) {
+        super(player, abilityNum);
         interval = 1000L;
     }
 

@@ -22,6 +22,8 @@ public class Obj extends Base {
     public void Tick() {
         final Vector2 priorForces = new Vector2(game.settings.drag * velocity.x, game.settings.drag * velocity.y);
         final Vector2 acceleration = new Vector2(priorForces.x + forces.x, priorForces.y + forces.y);
+        forces.x = 0;
+        forces.y = 0;
 
         if (acceleration.x != 0 || acceleration.y != 0 || velocity.x != 0 || velocity.y != 0) {
             velocity.x = velocity.x + acceleration.x;

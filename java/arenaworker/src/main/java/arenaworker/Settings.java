@@ -15,6 +15,8 @@ public class Settings {
     public double shipEngineSpeed = 0.1;
     public double drag = -0.2;
     public double wallWidth = 80;
+    public long playerHealDelay = 1000L * 2L;
+    public double playerHealPerInterval = 0.03;
 
     public Settings() {
         defaultMap.put("startSize", 1800);

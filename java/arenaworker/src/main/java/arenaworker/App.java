@@ -19,8 +19,8 @@ public class App
     public static void main( String[] args )
     {
         try {
-            mongoClient = new MongoClient("arena-mongodb", 27017);
-            //mongoClient = new MongoClient("127.0.0.1", 27017);
+            //mongoClient = new MongoClient("arena-mongodb", 27017);
+            mongoClient = new MongoClient("127.0.0.1", 27017);
 
             System.out.println("ISPRODUCTION: " + System.getenv("ISPRODUCTION") + " -- " + (System.getenv("ISPRODUCTION") == "true") );
 

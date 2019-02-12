@@ -9,8 +9,8 @@ public class Shield extends Ability {
     double duration = 1000L;
     double lastCreated;
     
-    public Shield(Player player) {
-        super(player);
+    public Shield(Player player, int abilityNum) {
+        super(player, abilityNum);
         interval = 5000L;
     }
 

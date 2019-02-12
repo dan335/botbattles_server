@@ -105,26 +105,30 @@ public class Map {
         while (!foundSpot && tries < maxTries) {
             foundSpot = true;
             
-            pos = new Vector2(
+            Vector2 testPos = new Vector2(
                 minX + (Math.random() * (maxX - minX)),
                 minY + (Math.random() * (maxY - minY))
             );
             
-            Set<Base> objs = game.grid.retrieve(pos, r);
+            Set<Base> objs = game.grid.retrieve(testPos, r);
             for (Base o : objs) {
                 if (foundSpot) {
                     if (o instanceof ObjRectangle) {
                         ObjRectangle or = (ObjRectangle)o;
-                        if (Physics.circleInRectangle(new Vector2(pos.x, pos.y), r, or.position, or.scale)) {
+                        if (Physics.circleInRectangle(new Vector2(testPos.x, testPos.y), r, or.position, or.scale)) {
                             foundSpot = false;
                         }
                     } else {
-                        if (Physics.circleInCircle(o.position.x, o.position.y, o.radius, pos.x, pos.y, r)) {
+                        if (Physics.circleInCircle(o.position.x, o.position.y, o.radius, testPos.x, testPos.y, r)) {
                             foundSpot = false;
                         }
                     }
                     
                 }
+            }
+
+            if (foundSpot) {
+                pos = testPos;
             }
 
             tries++;

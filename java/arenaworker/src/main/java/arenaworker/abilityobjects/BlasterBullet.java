@@ -11,7 +11,7 @@ import arenaworker.lib.Physics;
 public class BlasterBullet extends Projectile {
     
     public BlasterBullet(Ability ability, double rotation) {
-        super(ability, ability.player.position.x, ability.player.position.y, 12, rotation, false);
+        super(ability, ability.player.position.x, ability.player.position.y, 6, rotation, false);
         initialUpdateName = "blasterBulletInitial";
         updateName = "blasterBulletUpdate";
         destroyUpdateName = "blasterBulletDestroy";
@@ -38,5 +38,12 @@ public class BlasterBullet extends Projectile {
         } else if (otherObject instanceof Box) {
             Destroy();
         }
+    }
+
+
+    @Override
+    public void Destroy() {
+        super.Destroy();
+        new Explosion(ability, position.x, position.y, radius * 2, 0);
     }
 }

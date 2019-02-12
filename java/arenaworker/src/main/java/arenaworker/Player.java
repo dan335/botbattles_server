@@ -11,7 +11,7 @@ import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 
 public class Player extends Obj {
-    Client client;
+    public Client client;
     boolean isEngineOnLeft = false;
     boolean isEngineOnRight = false;
     boolean isEngineOnUp = false;
@@ -20,6 +20,8 @@ public class Player extends Obj {
     Ability[] abilities = new Ability[4];
     double shield = 100;
     double health = 100;
+    long lastTakenDamage = 0;
+    boolean isHealing = true;
     
     public Player(
             Client client,
@@ -48,10 +50,10 @@ public class Player extends Obj {
 
             Ability ability;
             try {
-                ability = (Ability) cls.getDeclaredConstructor(new Class[] {Player.class}).newInstance(this);
+                ability = (Ability) cls.getDeclaredConstructor(new Class[] {Player.class, int.class}).newInstance(this, i+1);
             } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException ex) {
                 ex.printStackTrace();
-                ability = new Blasters(this);
+                ability = new Blasters(this, i+1);
             }
 
             abilities[i] = ability;
@@ -138,6 +140,20 @@ public class Player extends Obj {
         for (int i = 0; i < 4; i++) {
             abilities[i].Tick();
         }
+
+        if (lastTakenDamage + game.settings.playerHealDelay < game.tickStartTime) {
+            isHealing = true;
+        }
+
+        if (isHealing) {
+            if (shield < 100) {
+                double newValue = shield + Math.min(game.settings.playerHealPerInterval * game.deltaTime, 100 - shield);
+                if (newValue <= 100) {
+                    shield = newValue;
+                    needsUpdate = true;
+                }
+            }
+        }
     }
 
 
@@ -179,6 +195,7 @@ public class Player extends Obj {
 
         for (Ability a : abilities) {
             for (Base obj : a.abilityObjects) {
+                System.out.println(obj.getClass().toString());
                 obj.SendInitialToClient(client);
             }
         }
@@ -203,17 +220,19 @@ public class Player extends Obj {
     }
 
 
-    public void TakeDamage(Projectile projectile) {
+    public void TakeDamage(double damage, double shieldDamageMultiplier) {
         if (!game.isStarted) return;
+        if (damage <= 0) return;
 
-        double damage = projectile.damage;
-        double shieldToRemove = Math.min(shield, damage * projectile.shieldDamageMultiplier);
+        double shieldToRemove = Math.min(shield, damage * shieldDamageMultiplier);
         shield -= shieldToRemove;
         damage -= Math.min(shieldToRemove, damage);
 
         health = Math.max(0, health - damage);
 
         needsUpdate = true;
+        lastTakenDamage = game.tickStartTime;
+        isHealing = false;
         if (health <= 0) {
             Destroy();
         }
@@ -223,7 +242,7 @@ public class Player extends Obj {
     public void ProjectileHit(Base projectile) {
         if (projectile instanceof Projectile) {
             Projectile p = (Projectile)projectile;
-            TakeDamage(p);
+            TakeDamage(p.damage, p.shieldDamageMultiplier);
         }
     }
 

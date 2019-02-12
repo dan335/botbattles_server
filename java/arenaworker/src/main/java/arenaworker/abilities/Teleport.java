@@ -8,8 +8,8 @@ public class Teleport extends Ability {
     double distance = 400;
     double searchRadius = 80;
     
-    public Teleport(Player player) {
-        super(player);
+    public Teleport(Player player, int abilityNum) {
+        super(player, abilityNum);
         interval = 5000L;
     }
 
