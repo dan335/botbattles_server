@@ -2,6 +2,8 @@ package arenaworker;
 
 import org.json.JSONObject;
 
+import arenaworker.lib.Physics;
+
 // optimizations
 // box cannot be rotated
 // mass must always be 0 (infinite)
@@ -35,5 +37,17 @@ public class Box extends ObjRectangle {
         json.put("scaleX", scale.x);
         json.put("scaleY", scale.y);
         return json;
+    }
+
+
+    @Override
+    public void Contact(Base otherObject) {
+        if (otherObject instanceof Obstacle) {
+            otherObject.Destroy();
+        } else if (otherObject instanceof Player) {
+            Physics.PositionalCorrection(this, (Obj)otherObject);
+        } else if (otherObject instanceof Box) {
+            return;
+        }
     }
 }

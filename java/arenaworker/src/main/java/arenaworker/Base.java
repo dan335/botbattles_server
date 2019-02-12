@@ -89,6 +89,11 @@ public class Base {
     }
 
 
+    public void Contact(Base otherObject) {
+
+    }
+
+
     // called from Tick()
     public void SendUpdate() {
         if (needsUpdate) {

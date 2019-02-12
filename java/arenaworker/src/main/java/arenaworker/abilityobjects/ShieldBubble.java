@@ -2,6 +2,9 @@ package arenaworker.abilityobjects;
 
 import org.json.JSONObject;
 
+import arenaworker.Base;
+import arenaworker.Obstacle;
+import arenaworker.Player;
 import arenaworker.abilities.Ability;
 
 public class ShieldBubble extends AbilityObject {
@@ -27,5 +30,13 @@ public class ShieldBubble extends AbilityObject {
         JSONObject json = super.InitialData();
         json.put("shipId", ability.player.id);
         return json;
+    }
+
+
+    @Override
+    public void Contact(Base otherObject) {
+        if (otherObject instanceof Projectile) {
+            otherObject.Destroy();
+        }
     }
 }

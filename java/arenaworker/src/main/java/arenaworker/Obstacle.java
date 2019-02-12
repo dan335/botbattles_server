@@ -2,6 +2,8 @@ package arenaworker;
 
 import org.json.JSONObject;
 
+import arenaworker.lib.Physics;
+
 public class Obstacle extends Obj {
 
     public Obstacle(Game game, double x, double y, double radius) {
@@ -31,5 +33,17 @@ public class Obstacle extends Obj {
         json.put("rotation", rotation);
         json.put("radius", radius);
         return json;
+    }
+
+
+    @Override
+    public void Contact(Base otherObject) {
+        if (otherObject instanceof Obstacle) {
+            Physics.resolveCollision(this, (Obj)otherObject);
+        } else if (otherObject instanceof Player) {
+            Physics.resolveCollision(this, (Obj)otherObject);
+        } else if (otherObject instanceof Box) {
+            Destroy();
+        }
     }
 }

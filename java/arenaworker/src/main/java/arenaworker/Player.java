@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import arenaworker.abilities.Ability;
 import arenaworker.abilities.Blasters;
 import arenaworker.abilityobjects.Projectile;
+import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 
 public class Player extends Obj {
@@ -233,5 +234,17 @@ public class Player extends Obj {
             }
         }
         super.SetPosition(x, y);
+    }
+
+
+    @Override
+    public void Contact(Base otherObject) {
+        if (otherObject instanceof Obstacle) {
+            Physics.resolveCollision(this, (Obj)otherObject);
+        } else if (otherObject instanceof Player) {
+            Physics.resolveCollision(this, (Obj)otherObject);
+        } else if (otherObject instanceof Box) {
+            Physics.resolveCollision(this, (ObjRectangle)otherObject);
+        }
     }
 }
