@@ -6,10 +6,11 @@ import org.json.JSONObject;
 public class Settings {
     // how long after the 2nd player joins should we wait to start the game
     public long gameWaitToStartTimeMs = 1000L * 5L;
-    public long updateIntervalMs = 33L;
+    public long tickIntervalMs = 17L;
+    public long updateIntervalMs = 40L;
     public JSONObject defaultMap = new JSONObject();
     public long mapUpdateInterval = 1000L * 2L;
-    public double mapShrinkPerInterval = 0.2;
+    public double mapShrinkPerInterval = 0.005;
     public double mapMinSize = 400;
     public int gridDivisions = 10;
     public double shipEngineSpeed = 0.1;
@@ -17,6 +18,7 @@ public class Settings {
     public double wallWidth = 80;
     public long playerHealDelay = 1000L * 2L;
     public double playerHealPerInterval = 0.03;
+    public long maxReplayTime = 1000L * 60L * 5L;
 
     public Settings() {
         defaultMap.put("startSize", 1800);
@@ -32,7 +34,7 @@ public class Settings {
             JSONObject obstacle = new JSONObject();
             obstacle.put("x", x);
             obstacle.put("y", y);
-            obstacle.put("radius", 60);
+            obstacle.put("radius", 70);
             obstacle.put("mass", 5);
             obstacle.put("shape", "circle");    // not used?
             obstacles.put(obstacle);
@@ -47,7 +49,7 @@ public class Settings {
             JSONObject obstacle = new JSONObject();
             obstacle.put("x", x);
             obstacle.put("y", y);
-            obstacle.put("radius", 40);
+            obstacle.put("radius", 50);
             obstacle.put("mass", 1);
             obstacle.put("shape", "circle");    // not used?
             obstacles.put(obstacle);

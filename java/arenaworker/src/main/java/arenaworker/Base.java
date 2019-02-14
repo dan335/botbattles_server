@@ -29,6 +29,7 @@ public class Base {
     public Game game;
     public boolean needsUpdate = false;
 
+    long lastSendUpdate = 0L;
 
 
 
@@ -57,8 +58,9 @@ public class Base {
 
     public void SetPosition(double x, double y) {
         if (position.x != x || position.y != y) {
-            position.x = x;
-            position.y = y;
+
+            position.x = Math.max(Math.min(x, game.map.size/2 - game.settings.wallWidth/2), -game.map.size/2 + game.settings.wallWidth/2);
+            position.y = Math.max(Math.min(y, game.map.size/2 - game.settings.wallWidth/2), -game.map.size/2 + game.settings.wallWidth/2);
             needsUpdate = true;
             if (isInGrid) {
                 game.grid.update(this);
@@ -80,12 +82,11 @@ public class Base {
         JSONObject json = new JSONObject();
         json.put("t", destroyUpdateName);
         json.put("id", id);
+        game.SendJsonToClients(json);
         
         if (isInGrid) {
             game.grid.remove(this);
         }
-        
-        game.SendJsonToClients(json);
     }
 
 
@@ -96,17 +97,19 @@ public class Base {
 
     // called from Tick()
     public void SendUpdate() {
-        if (needsUpdate) {
+        if (needsUpdate && lastSendUpdate + game.settings.updateIntervalMs < game.tickStartTime) {
             JSONObject json = UpdateData();
             json.put("t", updateName);
 
             if (teleportToNextPosition) {
                 json.put("teleport", true);
+                teleportToNextPosition = false;
             }
 
             game.SendJsonToClients(json);
 
             needsUpdate = false;
+            lastSendUpdate = game.tickStartTime;
         }
     }
 

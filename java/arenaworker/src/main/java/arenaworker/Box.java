@@ -50,4 +50,18 @@ public class Box extends ObjRectangle {
             return;
         }
     }
+
+
+    @Override
+    public void SetPosition(double x, double y) {
+        if (position.x != x || position.y != y) {
+
+            position.x = x;
+            position.y = y;
+            needsUpdate = true;
+            if (isInGrid) {
+                game.grid.update(this);
+            }
+        }
+    }
 }

@@ -19,10 +19,22 @@ public class App
     public static void main( String[] args )
     {
         try {
-            //mongoClient = new MongoClient("arena-mongodb", 27017);
-            mongoClient = new MongoClient("127.0.0.1", 27017);
+            boolean isProduction = true;
+            String ISPRODUCTION = System.getenv("ISPRODUCTION");
+            
+            if (ISPRODUCTION == null) {
+                isProduction = false;
+            } else {
+                if (Boolean.parseBoolean(ISPRODUCTION) == false) {
+                    isProduction = false;
+                }
+            }
 
-            System.out.println("ISPRODUCTION: " + System.getenv("ISPRODUCTION") + " -- " + (System.getenv("ISPRODUCTION") == "true") );
+            if (isProduction) {
+                mongoClient = new MongoClient("arena-mongodb", 27017);
+            } else {
+                mongoClient = new MongoClient("127.0.0.1", 27017);
+            }
 
             database = mongoClient.getDatabase("arena");
 

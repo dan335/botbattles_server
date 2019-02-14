@@ -10,7 +10,7 @@ import arenaworker.abilities.Ability;
 public class ShieldBubble extends AbilityObject {
     
     public ShieldBubble(Ability ability) {
-        super(ability, ability.player.position.x, ability.player.position.y, ability.player.radius + 15, 0, false);
+        super(ability, ability.player.position.x, ability.player.position.y, ability.player.radius + 20, 0, false);
         initialUpdateName = "shieldBubbleInitial";
         updateName = "shieldBubbleUpdate";
         destroyUpdateName = "shieldBubbleDestroy";

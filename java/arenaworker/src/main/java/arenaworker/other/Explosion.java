@@ -1,33 +1,33 @@
-package arenaworker.abilityobjects;
+package arenaworker.other;
 
 import java.util.Set;
 
 import arenaworker.Base;
-import arenaworker.Box;
+import arenaworker.Game;
 import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
-import arenaworker.abilities.Ability;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 
-public class Explosion extends AbilityObjectPhysics {
+public class Explosion extends Obj {
 
     public double speed = 0.1;
     public double damage = 10;
     public double shieldDamageMultiplier = 1;
     
-    public Explosion(Ability ability, double x, double y, double radius, double damage) {
-        super(ability, x, y, radius, 0, false);
+    public Explosion(Game game, double x, double y, double radius, double damage) {
+        super(game, x, y, radius, 0, false);
         initialUpdateName = "explosionInitial";
         updateName = "explosionUpdate";
         destroyUpdateName = "explosionDestroy";
         this.damage = damage;
         shieldDamageMultiplier = 1;
+        game.other.add(this);
         
         SendInitialToAll();
 
-        Set<Base> objs = ability.player.game.grid.retrieve(new Vector2(x, y), radius);
+        Set<Base> objs = game.grid.retrieve(new Vector2(x, y), radius);
         for (Base o : objs) {
             if (o instanceof Player) {
                 ApplyDamage((Player)o);
@@ -61,5 +61,15 @@ public class Explosion extends AbilityObjectPhysics {
     @Override
     public void Contact(Base otherObject) {
         
+    }
+
+
+    @Override
+    public void Destroy() {
+        game.other.remove(this);
+    }
+
+    @Override
+    public void SendUpdate() {
     }
 }

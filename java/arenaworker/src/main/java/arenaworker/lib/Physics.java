@@ -32,7 +32,7 @@ public class Physics {
     }
     
     public static boolean circleInCircle(Base a, Base b) {
-        return Math.sqrt(((a.position.x - b.position.x) * (a.position.x - b.position.x)) + ((a.position.y - b.position.y) * (a.position.y - b.position.y))) < a.radius + b.radius;
+        return circleInCircle(a.position.x, a.position.y, a.radius, b.position.x, b.position.y, b.radius);
     }
 
 
@@ -59,22 +59,11 @@ public class Physics {
         return cornerDistance_sq <= Math.pow(radiusA, 2);
     }
 
-    // public static boolean circleInRectangleOld(Vector2 posA, double radiusA, Vector2 posB, Vector2 scaleB) {
-    //     Vector2 closest = new Vector2();
-    //     closest.x = Math.min(Math.max(posA.x, posB.x - scaleB.x / 2), posB.x + scaleB.x / 2);
-    //     closest.y = Math.min(Math.max(posA.y, posB.y - scaleB.y / 2), posB.y + scaleB.y / 2);
-
-    //     double distanceX = posA.x - closest.x;
-    //     double distanceY = posA.y - closest.y;
-
-    //     return Math.pow(distanceX, 2) + Math.pow(distanceY, 2) < Math.pow(radiusA, 2);
-    // }
-
 
 
 
     // rectangle cannot be rotated
-    public static void resolveCollision(Obj a, ObjRectangle b) {
+    public static Collision resolveCollision(Obj a, ObjRectangle b) {
         if (b.rotation != 0) {
             System.out.println("Error: Rectangle cannot be rotated");
         }
@@ -133,7 +122,7 @@ public class Physics {
         
         // do not resolve if velocities are separating
         if (velocityAlongNormal > 0) {
-            return; 
+            return null; 
         }
 
         // calculate resitution
@@ -176,6 +165,8 @@ public class Physics {
         //b.needsUpdate = true;
 
         PositionalCorrection(a, b, collisionNormal, isInside);
+
+        return new Collision(a, b, magnitude);
     }
 
     
@@ -183,7 +174,7 @@ public class Physics {
     
     
 
-    public static void resolveCollision(Obj a, Obj b) {
+    public static Collision resolveCollision(Obj a, Obj b) {
         Vector2 relativeVelocity = new Vector2(
             b.velocity.x - a.velocity.x,
             b.velocity.y - a.velocity.y
@@ -204,7 +195,7 @@ public class Physics {
         
         // do not resolve if velocities are separating
         if (velocityAlongNormal > 0) {
-            return; 
+            return null; 
         }
         
         // calculate resitution
@@ -251,6 +242,8 @@ public class Physics {
         // b.needsUpdate = true;
 
         PositionalCorrection(a, b);
+
+        return new Collision(a, b, magnitude);
     }
 
 

@@ -1,27 +1,32 @@
 package arenaworker.abilities;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONObject;
 
 import arenaworker.Base;
 import arenaworker.Player;
-import arenaworker.abilityobjects.Projectile;
+import arenaworker.lib.Collision;
 
 
 public class Ability {
 
+    public final String id = UUID.randomUUID().toString().substring(0, 8);
+    final int hashcode = id.hashCode();
     public Player player;
     long lastFired = 0L;
     public long interval = 1000L;
     boolean isOn = false;
     public Set<Base> abilityObjects = ConcurrentHashMap.newKeySet();
     public int abilityNum;
+    public String abilityType;
 
-    public Ability(Player player, int abilityNum) {
+    public Ability(Player player, int abilityNum, String abilityType) {
         this.player = player;
         this.abilityNum = abilityNum;
+        this.abilityType = abilityType;
     }
 
 
@@ -64,6 +69,11 @@ public class Ability {
 
     public void PlayerPositionChanged() {
 
+    }
+
+
+    public void PlayerCollision(Collision collision) {
+        
     }
 
 

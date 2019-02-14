@@ -1,7 +1,9 @@
 package arenaworker;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.mongodb.client.MongoCollection;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,7 +20,7 @@ import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
 
 public class Game implements Runnable {
-    public final String id = UUID.randomUUID().toString();
+    public final String id = new ObjectId().toHexString();
     public Settings settings;
     public boolean isRunning = true;
     private Thread thread;
@@ -30,11 +33,13 @@ public class Game implements Runnable {
     public Set<Client> clients = ConcurrentHashMap.newKeySet();   // everyone, players + spectators
     public Set<Obstacle> obstacles = ConcurrentHashMap.newKeySet();
     public Set<Box> boxes = ConcurrentHashMap.newKeySet();
+    public Set<Base> other = ConcurrentHashMap.newKeySet();
     long secondPlayerJoinTime;
     public boolean isStarted = false;
-    public double deltaTime = 0;    // 1 if last frame completed in settings.updateIntervalMs
+    public double deltaTime = 0;
     public Grid grid;
     public JSONArray replayJson = new JSONArray();
+    public Set<PlayerInfo> playerInfo = ConcurrentHashMap.newKeySet();  // info on all players who join game even if they leave
 
 
     public Game(Settings settings) {
@@ -47,17 +52,43 @@ public class Game implements Runnable {
     }
 
 
-    // called from GameManager
-    public void Destroy() {
-        isRunning = false;
+    void SaveToDb() {
+        // add game to db
+        MongoCollection<Document> games = App.database.getCollection("games");
+
+        Document doc = new Document("createdAt", (double)gameCreatedTime)
+            .append("_id", new ObjectId(id))
+            .append("startedAt", (double)gameStartTime)
+            .append("endedAt", new Date())
+            .append("length", (double)(tickStartTime - gameCreatedTime));
+
+        List<Document> playerInfoDocs = new ArrayList<Document>();
+
+        for (PlayerInfo info : playerInfo) {
+            Document playerDoc = new Document("name", info.name)
+                .append("userId", info.userId)
+                .append("isWinner", info.isWinner);
+
+            List<Document> playerInfoAbilities = new ArrayList<Document>();
+            
+            for (int i = 0; i < 4; i++) {
+                Document abilityDoc = new Document("id", info.abilities[i].toString());
+                playerInfoAbilities.add(abilityDoc);
+            }
+
+            playerDoc.append("abilities", playerInfoAbilities);
+
+            playerInfoDocs.add(playerDoc);
+        }
+
+        doc.append("players", playerInfoDocs);
+
+        games.insertOne(doc);
 
         // add replay to db
         MongoCollection<Document> collection = App.database.getCollection("replays");
 
-        Document document = new Document("createdAt", gameCreatedTime)
-            .append("startedAt", gameStartTime)
-            .append("endedAt", new Date())
-            .append("length", (double)(tickStartTime - gameCreatedTime))
+        Document document = new Document("createdAt", new Date().getTime())
             .append("json", replayJson.toString())
             .append("gameId", id);
 
@@ -65,15 +96,37 @@ public class Game implements Runnable {
     }
 
 
+    // called from GameManager
+    public void Destroy() {
+        isRunning = false;
+    }
+
+
+    public void DeclareWinner(Player player) {
+        player.playerInfo.isWinner = true;
+
+        JSONObject msg = new JSONObject();
+        msg.put("t", "winner");
+        msg.put("name", player.client.name);
+        SendJsonToClients(msg);
+
+        SaveToDb();
+    }
+
+
     public void JoinGame(
         Session session,
         String name,
+        String userId,
         String abilityType1,
         String abilityType2,
         String abilityType3,
         String abilityType4
     ) {
-        Client client = new Client(session, this, name);
+        // json.optString returns empty string if json userId is not a string
+        if (userId == "") userId = null;
+
+        Client client = new Client(session, this, name, userId);
         clients.add(client);
         Clients.AddClient(client);
 
@@ -99,6 +152,15 @@ public class Game implements Runnable {
             if (players.size() == 2) {
                 secondPlayerJoinTime = tickStartTime;
             }
+
+            PlayerInfo info = new PlayerInfo(player.id, name, null, new String[]{
+                abilityType1,
+                abilityType2,
+                abilityType3,
+                abilityType4
+            });
+            playerInfo.add(info);
+            player.playerInfo = info;
         } else {
             JSONObject msg = new JSONObject();
             msg.put("t", "spectatorJoined");
@@ -119,6 +181,10 @@ public class Game implements Runnable {
         }
 
         for (Box o : boxes) {
+            o.SendInitialToClient(client);
+        }
+
+        for (Base o : other) {
             o.SendInitialToClient(client);
         }
     }
@@ -152,10 +218,12 @@ public class Game implements Runnable {
 
 
     public void AddJsonToReplay(JSONObject json) {
-        JSONObject r = new JSONObject();
-        r.put("t", new Date());
-        r.put("j", json);
-        replayJson.put(r);
+        if (tickEndTime - gameCreatedTime < settings.maxReplayTime) {
+            JSONObject r = new JSONObject();
+            r.put("t", new Date().getTime());
+            r.put("j", json);
+            replayJson.put(r);
+        }
     }
 
     public void AddJsonToReplay(JSONArray json) {
@@ -166,6 +234,9 @@ public class Game implements Runnable {
     }
 
 
+    double totalTickTime = 0;
+    int numTicks = 0;
+    double serverTickTime = 0;
     public void run() {
         while (isRunning) {
             tickStartTime = Calendar.getInstance().getTimeInMillis();
@@ -180,6 +251,9 @@ public class Game implements Runnable {
 
             map.Tick();
 
+            for (Base o : other) {
+                o.Tick();
+            }
             for (Player p : players) {
                 p.Tick();
             }
@@ -189,6 +263,7 @@ public class Game implements Runnable {
             for (Box b : boxes) {
                 b.Tick();
             }
+
 
             PlayerPhysics();
             ObstaclePhysics();
@@ -200,8 +275,18 @@ public class Game implements Runnable {
             }
 
             tickEndTime = Calendar.getInstance().getTimeInMillis();
-            long timeTilNext = settings.updateIntervalMs - (tickStartTime - tickEndTime);
+            long timeTilNext = settings.tickIntervalMs - (tickStartTime - tickEndTime);
             
+            if (numTicks > 60 * 10) {
+                serverTickTime = totalTickTime / numTicks;
+                numTicks = 0;
+                totalTickTime = 0;
+                SendServerInfo();
+            }
+
+            totalTickTime += (double)(tickEndTime - tickStartTime);
+            numTicks++;
+
             if (timeTilNext > 0) {
                 try {
                     Thread.sleep(timeTilNext);
@@ -212,6 +297,14 @@ public class Game implements Runnable {
                 System.out.println("Game is taking longer than updateIntervalMs");
             }
         }
+    }
+
+
+    void SendServerInfo() {
+        JSONObject json = new JSONObject();
+        json.put("t", "serverTickStats");
+        json.put("serverTickTime", serverTickTime);
+        SendJsonToClients(json);
     }
 
 

@@ -8,8 +8,8 @@ public class Teleport extends Ability {
     double distance = 400;
     double searchRadius = 80;
     
-    public Teleport(Player player, int abilityNum) {
-        super(player, abilityNum);
+    public Teleport(Player player, int abilityNum, String abilityType) {
+        super(player, abilityNum, abilityType);
         interval = 5000L;
     }
 
@@ -24,7 +24,7 @@ public class Teleport extends Ability {
 
         // Vector2 teleportPos = player.forces.getNormalized().scale(distance);
 
-        Vector2 emptyPos = player.game.map.GetEmptyPos(player.radius * 2, teleportPos.x-searchRadius, teleportPos.y-searchRadius, teleportPos.x+searchRadius, teleportPos.y+searchRadius, 20);
+        Vector2 emptyPos = player.game.map.GetEmptyPos(player.radius * 2, teleportPos.x-searchRadius, teleportPos.y-searchRadius, teleportPos.x+searchRadius, teleportPos.y+searchRadius, 4);
         if (emptyPos != null) {
             // make sure it's not outside map
             if (

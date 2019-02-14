@@ -7,17 +7,18 @@ import arenaworker.Obstacle;
 import arenaworker.Player;
 import arenaworker.abilities.Ability;
 import arenaworker.lib.Physics;
+import arenaworker.other.Explosion;
 
 public class BlasterBullet extends Projectile {
     
-    public BlasterBullet(Ability ability, double rotation) {
-        super(ability, ability.player.position.x, ability.player.position.y, 6, rotation, false);
+    public BlasterBullet(Ability ability, double x, double y, double rotation, double radius, double damage) {
+        super(ability, x, y, radius, rotation, false);
         initialUpdateName = "blasterBulletInitial";
         updateName = "blasterBulletUpdate";
         destroyUpdateName = "blasterBulletDestroy";
         speed = 1;
         mass = 0.4;
-        damage = 10;
+        this.damage = damage;
         shieldDamageMultiplier = 1;
         SendInitialToAll();
     }
@@ -44,6 +45,6 @@ public class BlasterBullet extends Projectile {
     @Override
     public void Destroy() {
         super.Destroy();
-        new Explosion(ability, position.x, position.y, radius * 2, 0);
+        new Explosion(ability.player.game, position.x, position.y, radius * 2, 0);
     }
 }

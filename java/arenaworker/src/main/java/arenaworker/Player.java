@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import arenaworker.abilities.Ability;
 import arenaworker.abilities.Blasters;
 import arenaworker.abilityobjects.Projectile;
+import arenaworker.lib.Collision;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 
@@ -22,6 +23,9 @@ public class Player extends Obj {
     double health = 100;
     long lastTakenDamage = 0;
     boolean isHealing = true;
+    public PlayerInfo playerInfo;
+    public boolean isCharging = false;
+    public boolean isStunned = false;
     
     public Player(
             Client client,
@@ -50,10 +54,10 @@ public class Player extends Obj {
 
             Ability ability;
             try {
-                ability = (Ability) cls.getDeclaredConstructor(new Class[] {Player.class, int.class}).newInstance(this, i+1);
+                ability = (Ability) cls.getDeclaredConstructor(new Class[] {Player.class, int.class, String.class}).newInstance(this, i+1, abilityTypes[i]);
             } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException ex) {
                 ex.printStackTrace();
-                ability = new Blasters(this, i+1);
+                ability = new Blasters(this, i+1, "Blasters");
             }
 
             abilities[i] = ability;
@@ -73,7 +77,9 @@ public class Player extends Obj {
 
 
     public void AbilityKeyDown(int num) {
-        abilities[num].Start();
+        if (!isCharging && !isStunned) {
+            abilities[num].Start();
+        }
     }
 
 
@@ -120,20 +126,22 @@ public class Player extends Obj {
 
     @Override
     public void Tick() {
-        Vector2 engineForce = new Vector2();
+        if (!isCharging && !isStunned) {
+            Vector2 engineForce = new Vector2();
 
-        if (isEngineOnDown) engineForce.y += 1;
-        if (isEngineOnLeft) engineForce.x -= 1;
-        if (isEngineOnRight) engineForce.x += 1;
-        if (isEngineOnUp) engineForce.y -= 1;
+            if (isEngineOnDown) engineForce.y += 1;
+            if (isEngineOnLeft) engineForce.x -= 1;
+            if (isEngineOnRight) engineForce.x += 1;
+            if (isEngineOnUp) engineForce.y -= 1;
 
-        engineForce.normalize();
-        
-        forces = engineForce.scale(game.settings.shipEngineSpeed);
+            engineForce.normalize();
+            
+            forces = forces.add(engineForce.scale(game.settings.shipEngineSpeed));
 
-        //this.rotation = Physics.slowlyRotateToward(this.position, this.rotation, this.mousePosition, 20);
-        Vector2 mouse = mousePosition.subtract(position);
-        this.rotation = Math.atan2(mouse.y, mouse.x);
+            //this.rotation = Physics.slowlyRotateToward(this.position, this.rotation, this.mousePosition, 20);
+            Vector2 mouse = mousePosition.subtract(position);
+            this.rotation = Math.atan2(mouse.y, mouse.x);
+        }
 
         super.Tick();
 
@@ -162,6 +170,10 @@ public class Player extends Obj {
         super.Destroy();
         for (int i = 0; i < 4; i++) {
             abilities[i].Destroy();
+        }
+
+        if (game.players.size() == 1) {
+            game.DeclareWinner(game.players.iterator().next());
         }
     }
 
@@ -195,7 +207,6 @@ public class Player extends Obj {
 
         for (Ability a : abilities) {
             for (Base obj : a.abilityObjects) {
-                System.out.println(obj.getClass().toString());
                 obj.SendInitialToClient(client);
             }
         }
@@ -263,7 +274,12 @@ public class Player extends Obj {
         if (otherObject instanceof Obstacle) {
             Physics.resolveCollision(this, (Obj)otherObject);
         } else if (otherObject instanceof Player) {
-            Physics.resolveCollision(this, (Obj)otherObject);
+            Collision response = Physics.resolveCollision(this, (Obj)otherObject);
+            if (response != null) {
+                for (int i = 0; i < abilities.length; i++) {
+                    abilities[i].PlayerCollision(response);
+                }
+            }
         } else if (otherObject instanceof Box) {
             Physics.resolveCollision(this, (ObjRectangle)otherObject);
         }

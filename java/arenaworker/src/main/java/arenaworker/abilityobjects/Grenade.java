@@ -9,6 +9,7 @@ import arenaworker.abilities.Ability;
 import arenaworker.abilities.GrenadeLauncher;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
+import arenaworker.other.Explosion;
 
 public class Grenade extends AbilityObjectPhysics {
 
@@ -54,7 +55,7 @@ public class Grenade extends AbilityObjectPhysics {
         launcher.interval = launcher.defaultInterval; 
         launcher.SendCooldownMessage();
         launcher.grenade = null;
-        new Explosion(ability, position.x, position.y, 100, damage);
+        new Explosion(ability.player.game, position.x, position.y, 100, damage);
         Destroy();
     }
 }

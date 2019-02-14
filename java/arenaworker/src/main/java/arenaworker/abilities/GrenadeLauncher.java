@@ -6,11 +6,11 @@ import arenaworker.abilityobjects.Grenade;
 public class GrenadeLauncher extends Ability {
 
     public Grenade grenade;
-    double amountOfForce = 4;
+    double amountOfForce = 5;
     public long defaultInterval = 5000L;
     
-    public GrenadeLauncher(Player player, int abilityNum) {
-        super(player, abilityNum);
+    public GrenadeLauncher(Player player, int abilityNum, String abilityType) {
+        super(player, abilityNum, abilityType);
         interval = defaultInterval;
     }
 
@@ -19,7 +19,7 @@ public class GrenadeLauncher extends Ability {
         lastFired = player.game.tickStartTime;
 
         if (grenade == null) {
-            grenade = new Grenade(this, player.rotation, 10, amountOfForce, 150);
+            grenade = new Grenade(this, player.rotation, 12, amountOfForce, 150);
             interval = 300L;
             SendCooldownMessage();
         } else {

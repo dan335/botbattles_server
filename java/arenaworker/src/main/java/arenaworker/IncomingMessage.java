@@ -57,6 +57,7 @@ public class IncomingMessage {
             game.JoinGame(
                 session,
                 json.getString("name"),
+                json.optString("userId"),
                 abilityType1,
                 abilityType2,
                 abilityType3,
