@@ -1,6 +1,5 @@
 package arenaworker;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -16,7 +15,7 @@ public class IncomingMessage {
         try {
             Method method = IncomingMessage.class.getDeclaredMethod(type, JSONObject.class, Session.class);
             method.invoke(null, json, session);
-        } catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
+        } catch (Throwable ex) {
             System.out.println("json: " + json.toString());
             ex.printStackTrace();
         }

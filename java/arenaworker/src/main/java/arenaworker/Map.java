@@ -75,19 +75,18 @@ public class Map {
                 if (size > game.settings.mapMinSize) {
                     size -= game.settings.mapShrinkPerInterval * game.deltaTime;
                     UpdateWalls();
-                    //UpdateClients();
+                    UpdateClients();
                 }
             }
         }
     }
 
 
-    // not needed?
-    // void UpdateClients() {
-    //     JSONObject json = UpdateData();
-    //     json.put("t", "mapUpdate");
-    //     game.SendJsonToClients(json);
-    // }
+    void UpdateClients() {
+        JSONObject json = UpdateData();
+        json.put("t", "mapUpdate");
+        game.SendJsonToClients(json);
+    }
 
 
     // sent to client when they join game

@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mongodb.client.MongoCollection;
@@ -18,6 +17,7 @@ import org.json.JSONObject;
 
 import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
+import arenaworker.lib.Vector2;
 
 public class Game implements Runnable {
     public final String id = new ObjectId().toHexString();
@@ -88,7 +88,7 @@ public class Game implements Runnable {
         // add replay to db
         MongoCollection<Document> collection = App.database.getCollection("replays");
 
-        Document document = new Document("createdAt", new Date().getTime())
+        Document document = new Document("createdAt", (double)new Date().getTime())
             .append("json", replayJson.toString())
             .append("gameId", id);
 
@@ -136,6 +136,8 @@ public class Game implements Runnable {
 
         // if game hasn't started create a player for them
         if (!isStarted) {
+            Vector2 pos = map.GetEmptyPos(200, -map.size/2, -map.size/2, map.size/2, map.size/2, 500);
+
             Player player = new Player(
                 client,
                 this,
@@ -144,7 +146,8 @@ public class Game implements Runnable {
                     abilityType2,
                     abilityType3,
                     abilityType4
-                }
+                },
+                pos
                 );
             players.add(player);
             client.AddPlayer(player);

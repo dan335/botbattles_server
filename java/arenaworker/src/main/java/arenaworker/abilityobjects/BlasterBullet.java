@@ -38,6 +38,10 @@ public class BlasterBullet extends Projectile {
             }
         } else if (otherObject instanceof Box) {
             Destroy();
+        } else if (otherObject instanceof ShieldBubble) {
+            if (((ShieldBubble)otherObject).ability.player != ability.player) {
+                Destroy();
+            }
         }
     }
 
@@ -45,6 +49,6 @@ public class BlasterBullet extends Projectile {
     @Override
     public void Destroy() {
         super.Destroy();
-        new Explosion(ability.player.game, position.x, position.y, radius * 2, 0);
+        new Explosion(ability.player.game, position.x, position.y, radius * 4, 0, 0);
     }
 }

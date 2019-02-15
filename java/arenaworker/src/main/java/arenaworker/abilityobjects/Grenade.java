@@ -38,6 +38,10 @@ public class Grenade extends AbilityObjectPhysics {
     public void Contact(Base otherObject) {
         if (otherObject instanceof Obstacle) {
             Physics.resolveCollision(this, (Obj)otherObject);
+        } else if (otherObject instanceof ShieldBubble) {
+            if (((ShieldBubble)otherObject).ability.player != ability.player) {
+                Destroy();
+            }
         } else if (otherObject instanceof Player) {
             if (ability.player != otherObject) {
                 Physics.resolveCollision(this, (Obj)otherObject);
@@ -51,11 +55,18 @@ public class Grenade extends AbilityObjectPhysics {
 
 
     public void Explode() {
-        GrenadeLauncher launcher = (GrenadeLauncher) ability;
-        launcher.interval = launcher.defaultInterval; 
-        launcher.SendCooldownMessage();
-        launcher.grenade = null;
-        new Explosion(ability.player.game, position.x, position.y, 100, damage);
+        new Explosion(ability.player.game, position.x, position.y, 200, damage, 1);
         Destroy();
+    }
+
+    @Override
+    public void Destroy() {
+        if (ability instanceof GrenadeLauncher) {
+            GrenadeLauncher launcher = (GrenadeLauncher) ability;
+            launcher.interval = launcher.defaultInterval; 
+            launcher.SendCooldownMessage();
+            launcher.grenade = null;
+        }
+        super.Destroy();
     }
 }

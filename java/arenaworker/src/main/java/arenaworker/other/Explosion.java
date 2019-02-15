@@ -15,8 +15,9 @@ public class Explosion extends Obj {
     public double speed = 0.1;
     public double damage = 10;
     public double shieldDamageMultiplier = 1;
+    double forceToApplyToObjects;
     
-    public Explosion(Game game, double x, double y, double radius, double damage) {
+    public Explosion(Game game, double x, double y, double radius, double damage, double forceToApplyToObjects) {
         super(game, x, y, radius, 0, false);
         initialUpdateName = "explosionInitial";
         updateName = "explosionUpdate";
@@ -24,16 +25,21 @@ public class Explosion extends Obj {
         this.damage = damage;
         shieldDamageMultiplier = 1;
         game.other.add(this);
+        this.forceToApplyToObjects = forceToApplyToObjects;
         
         SendInitialToAll();
 
         Set<Base> objs = game.grid.retrieve(new Vector2(x, y), radius);
         for (Base o : objs) {
-            if (o instanceof Player) {
-                ApplyDamage((Player)o);
-                ApplyForce((Obj)o);
-            } else if (o instanceof Obstacle) {
-                ApplyForce((Obj)o);
+            if (o instanceof Player || o instanceof Obstacle) {
+                if (Physics.circleInCircle(position.x, position.y, radius, o.position.x, o.position.y, o.radius)) {
+                    if (o instanceof Player) {
+                        ApplyDamage((Player)o);
+                        ApplyForce((Obj)o);
+                    } else if (o instanceof Obstacle) {
+                        ApplyForce((Obj)o);
+                    }
+                }
             }
         }
 
@@ -49,7 +55,10 @@ public class Explosion extends Obj {
     }
 
     void ApplyForce(Obj obj) {
-        Physics.PositionalCorrection(this, obj);
+        if (forceToApplyToObjects == 0) return;
+        double distance = position.subtract(obj.position).length() - obj.radius;
+        double percent = 1 - distance / radius;
+        obj.forces = obj.forces.add(obj.position.subtract(position).getNormalized().scale(percent).scale(forceToApplyToObjects));
     }
 
     @Override

@@ -3,14 +3,12 @@ package arenaworker.abilityobjects;
 import org.json.JSONObject;
 
 import arenaworker.Base;
-import arenaworker.Obstacle;
-import arenaworker.Player;
 import arenaworker.abilities.Ability;
 
 public class ShieldBubble extends AbilityObject {
     
     public ShieldBubble(Ability ability) {
-        super(ability, ability.player.position.x, ability.player.position.y, ability.player.radius + 20, 0, false);
+        super(ability, ability.player.position.x, ability.player.position.y, ability.player.radius + 25, 0, true);
         initialUpdateName = "shieldBubbleInitial";
         updateName = "shieldBubbleUpdate";
         destroyUpdateName = "shieldBubbleDestroy";
@@ -35,11 +33,16 @@ public class ShieldBubble extends AbilityObject {
 
     @Override
     public void Contact(Base otherObject) {
-        if (otherObject instanceof Projectile) {
-            Projectile projectile = (Projectile)otherObject;
-            if (projectile.ability.player != ability.player) {
-                otherObject.Destroy();
-            }
-        }
+        // if (otherObject instanceof Projectile) {
+        //     Projectile projectile = (Projectile)otherObject;
+        //     if (projectile.ability.player != ability.player) {
+        //         otherObject.Destroy();
+        //     }
+        // } else if (otherObject instanceof Grenade) {
+        //     Grenade projectile = (Grenade)otherObject;
+        //     if (projectile.ability.player != ability.player) {
+        //         otherObject.Destroy();
+        //     }
+        // }
     }
 }

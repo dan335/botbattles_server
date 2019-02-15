@@ -19,25 +19,25 @@ public class Player extends Obj {
     boolean isEngineOnDown = false;
     Vector2 mousePosition = new Vector2();
     Ability[] abilities = new Ability[4];
-    double shield = 100;
+    public double shield = 100;
     double health = 100;
     long lastTakenDamage = 0;
     boolean isHealing = true;
     public PlayerInfo playerInfo;
     public boolean isCharging = false;
     public boolean isStunned = false;
+    public double shipSpeedMultiplier = 1;
     
     public Player(
             Client client,
             Game game,
-            String[] abilityTypes
+            String[] abilityTypes,
+            Vector2 pos
         ) {
-        super(game, 0, 0, 25, 0, true);
+        super(game, pos.x, pos.y, 25, 0, true);
 
         this.client = client;
         
-        position = game.map.GetEmptyPos(200, -game.map.size/2, -game.map.size/2, game.map.size/2, game.map.size/2, 500);
-        game.grid.update(this);
         mass = 1;
         initialUpdateName = "shipInitial";
         updateName = "shipUpdate";
@@ -79,6 +79,10 @@ public class Player extends Obj {
     public void AbilityKeyDown(int num) {
         if (!isCharging && !isStunned) {
             abilities[num].Start();
+
+            for (int i = 0; i < 4; i++) {
+                abilities[i].PlayerStartedAnAbility(abilities[num]);
+            }
         }
     }
 
@@ -136,7 +140,7 @@ public class Player extends Obj {
 
             engineForce.normalize();
             
-            forces = forces.add(engineForce.scale(game.settings.shipEngineSpeed));
+            forces = forces.add(engineForce.scale(game.settings.shipEngineSpeed).scale(shipSpeedMultiplier));
 
             //this.rotation = Physics.slowlyRotateToward(this.position, this.rotation, this.mousePosition, 20);
             Vector2 mouse = mousePosition.subtract(position);
@@ -244,6 +248,11 @@ public class Player extends Obj {
         needsUpdate = true;
         lastTakenDamage = game.tickStartTime;
         isHealing = false;
+
+        for (int i = 0; i < 4; i++) {
+            abilities[i].PlayerTookDamage();
+        }
+
         if (health <= 0) {
             Destroy();
         }

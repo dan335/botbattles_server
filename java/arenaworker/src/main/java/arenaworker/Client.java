@@ -29,7 +29,6 @@ public class Client {
         this.game = game;
         this.name = name;
         this.userId = userId;
-        System.out.println(this.userId);
     }
 
 

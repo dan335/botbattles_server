@@ -22,7 +22,7 @@ public class Obstacle extends Obj {
     public void Destroy() {
         game.obstacles.remove(this);
         super.Destroy();
-        new Explosion(game, position.x, position.y, radius, 50);
+        new Explosion(game, position.x, position.y, radius * 3, 50, 1);
     }
 
 

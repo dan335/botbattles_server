@@ -77,6 +77,16 @@ public class Ability {
     }
 
 
+    public void PlayerTookDamage() {
+
+    }
+
+
+    public void PlayerStartedAnAbility(Ability a) {
+
+    }
+
+
     public void SendCooldownMessage() {
         JSONObject json = new JSONObject();
         json.put("t", "abilityCooldown");
