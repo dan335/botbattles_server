@@ -14,7 +14,7 @@ public class Emp extends Ability {
     
     public Emp(Player player, int abilityNum, String abilityType) {
         super(player, abilityNum, abilityType);
-        interval = 7000L;
+        interval = 8000L;
     }
 
     @Override

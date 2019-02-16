@@ -10,7 +10,7 @@ public class Smasher extends Ability {
     double duration = 1000L;
     double lastCreated;
     boolean isOn = false;
-    double damage = 20;
+    double damage = 60;
     double shieldDamageMultiplier = 1;
     double radius;
     
@@ -69,5 +69,13 @@ public class Smasher extends Ability {
                 }
             }
         }
+    }
+
+    @Override
+    public void Destroy() {
+        if (isOn) {
+            Off();
+        }
+        super.Destroy();
     }
 }

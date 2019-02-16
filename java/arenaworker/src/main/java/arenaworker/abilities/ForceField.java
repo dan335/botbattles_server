@@ -3,13 +3,13 @@ package arenaworker.abilities;
 import arenaworker.Player;
 import arenaworker.abilityobjects.ShieldBubble;
 
-public class Shield extends Ability {
+public class ForceField extends Ability {
 
     ShieldBubble shieldBubble;
     double duration = 1000L;
     double lastCreated;
     
-    public Shield(Player player, int abilityNum, String abilityType) {
+    public ForceField(Player player, int abilityNum, String abilityType) {
         super(player, abilityNum, abilityType);
         interval = 5000L;
     }

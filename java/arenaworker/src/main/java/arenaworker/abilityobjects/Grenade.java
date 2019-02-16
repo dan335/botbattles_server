@@ -55,7 +55,7 @@ public class Grenade extends AbilityObjectPhysics {
 
 
     public void Explode() {
-        new Explosion(ability.player.game, position.x, position.y, 200, damage, 1);
+        new Explosion(ability.player.game, position.x, position.y, 200, damage, 1, "0xff4444");
         Destroy();
     }
 

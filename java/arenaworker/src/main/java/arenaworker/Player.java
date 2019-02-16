@@ -18,7 +18,7 @@ public class Player extends Obj {
     boolean isEngineOnUp = false;
     boolean isEngineOnDown = false;
     Vector2 mousePosition = new Vector2();
-    Ability[] abilities = new Ability[4];
+    public Ability[] abilities = new Ability[4];
     public double shield = 100;
     double health = 100;
     long lastTakenDamage = 0;
@@ -142,7 +142,6 @@ public class Player extends Obj {
             
             forces = forces.add(engineForce.scale(game.settings.shipEngineSpeed).scale(shipSpeedMultiplier));
 
-            //this.rotation = Physics.slowlyRotateToward(this.position, this.rotation, this.mousePosition, 20);
             Vector2 mouse = mousePosition.subtract(position);
             this.rotation = Math.atan2(mouse.y, mouse.x);
         }
@@ -170,11 +169,12 @@ public class Player extends Obj {
 
 
     public void Destroy() {
-        game.players.remove(this);
-        super.Destroy();
         for (int i = 0; i < 4; i++) {
             abilities[i].Destroy();
         }
+
+        game.players.remove(this);
+        super.Destroy();
 
         if (game.players.size() == 1) {
             game.DeclareWinner(game.players.iterator().next());
@@ -238,12 +238,12 @@ public class Player extends Obj {
     public void TakeDamage(double damage, double shieldDamageMultiplier) {
         if (!game.isStarted) return;
         if (damage <= 0) return;
-
-        double shieldToRemove = Math.min(shield, damage * shieldDamageMultiplier);
-        shield -= shieldToRemove;
-        damage -= Math.min(shieldToRemove, damage);
-
-        health = Math.max(0, health - damage);
+        
+        if (shield > 0) {
+            shield -= Math.min(shield, damage * shieldDamageMultiplier);
+        } else {
+            health -= Math.min(health, damage);
+        }
 
         needsUpdate = true;
         lastTakenDamage = game.tickStartTime;

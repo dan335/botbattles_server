@@ -15,6 +15,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import arenaworker.abilities.BombDropper;
 import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
@@ -37,6 +38,9 @@ public class Game implements Runnable {
     long secondPlayerJoinTime;
     public boolean isStarted = false;
     public double deltaTime = 0;
+    public boolean isInBulletTime = false;
+    public long bulletTimeStart;
+    public long bulletTimeDuration = 1000L;
     public Grid grid;
     public JSONArray replayJson = new JSONArray();
     public Set<PlayerInfo> playerInfo = ConcurrentHashMap.newKeySet();  // info on all players who join game even if they leave
@@ -84,8 +88,10 @@ public class Game implements Runnable {
         doc.append("players", playerInfoDocs);
 
         games.insertOne(doc);
+    }
 
-        // add replay to db
+
+    void SaveReplay() {
         MongoCollection<Document> collection = App.database.getCollection("replays");
 
         Document document = new Document("createdAt", (double)new Date().getTime())
@@ -136,7 +142,9 @@ public class Game implements Runnable {
 
         // if game hasn't started create a player for them
         if (!isStarted) {
-            Vector2 pos = map.GetEmptyPos(200, -map.size/2, -map.size/2, map.size/2, map.size/2, 500);
+            Vector2 pos = map.GetEmptyPos(30, -map.size/2, -map.size/2, map.size/2, map.size/2, 100);
+
+            if (pos == null) return;
 
             Player player = new Player(
                 client,
@@ -198,6 +206,16 @@ public class Game implements Runnable {
         isStarted = true;
         gameStartTime = tickStartTime;
 
+        for (Player p : players) {
+            for (int i = 0; i < p.abilities.length; i++) {
+                if (p.abilities[i] instanceof BombDropper) {
+                    for (Base b : p.abilities[i].abilityObjects) {
+                        b.Destroy();
+                    }
+                }
+            }
+        }
+
         JSONObject msg = new JSONObject();
         msg.put("t", "gameStarted");
         SendJsonToClients(msg);
@@ -237,6 +255,12 @@ public class Game implements Runnable {
     }
 
 
+    public void StartBulletTime() {
+        isInBulletTime = true;
+        bulletTimeStart = tickStartTime;
+    }
+
+
     double totalTickTime = 0;
     int numTicks = 0;
     double serverTickTime = 0;
@@ -245,6 +269,14 @@ public class Game implements Runnable {
             tickStartTime = Calendar.getInstance().getTimeInMillis();
 
             deltaTime = tickStartTime - tickEndTime;// / settings.updateIntervalMs;
+
+            if (isInBulletTime) {
+                deltaTime = deltaTime * 0.5;
+
+                if (bulletTimeStart + bulletTimeDuration < tickStartTime) {
+                    isInBulletTime = false;
+                }
+            }
 
             if (!isStarted && players.size() >= 2) {
                 if (tickStartTime - secondPlayerJoinTime > settings.gameWaitToStartTimeMs) {
@@ -358,7 +390,7 @@ public class Game implements Runnable {
                 if (other.id != box.id) {
                     if (other instanceof ObjRectangle) {
                         // don't react
-                    } else {
+                    } else if (other instanceof Obj) {
                         if (Physics.circleInRectangle(other, (ObjRectangle)box)) {
                             box.Contact(other);
                             Physics.PositionalCorrection((Obj)other, (ObjRectangle)box);

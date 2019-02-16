@@ -30,10 +30,17 @@ public class Slam extends Ability {
         for (Base o : objs) {
             if (o instanceof Player) {
                 if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
-                    Player p = (Player) o;
-                    stunnedPlayers.add(p);
-                    p.isStunned = true;
+                    if (o != player) {
+                        Player p = (Player) o;
+                        stunnedPlayers.add(p);
+                        p.isStunned = true;
 
+                        for (int i = 0; i < p.abilities.length; i++) {
+                            if (p.abilities[i].isOn) {
+                                p.abilities[i].Stop();
+                            }
+                        }
+                    }
                 }
             }
         }

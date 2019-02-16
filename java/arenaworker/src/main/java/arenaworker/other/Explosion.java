@@ -2,6 +2,8 @@ package arenaworker.other;
 
 import java.util.Set;
 
+import org.json.JSONObject;
+
 import arenaworker.Base;
 import arenaworker.Game;
 import arenaworker.Obj;
@@ -16,8 +18,9 @@ public class Explosion extends Obj {
     public double damage = 10;
     public double shieldDamageMultiplier = 1;
     double forceToApplyToObjects;
+    String color;
     
-    public Explosion(Game game, double x, double y, double radius, double damage, double forceToApplyToObjects) {
+    public Explosion(Game game, double x, double y, double radius, double damage, double forceToApplyToObjects, String color) {
         super(game, x, y, radius, 0, false);
         initialUpdateName = "explosionInitial";
         updateName = "explosionUpdate";
@@ -26,6 +29,7 @@ public class Explosion extends Obj {
         shieldDamageMultiplier = 1;
         game.other.add(this);
         this.forceToApplyToObjects = forceToApplyToObjects;
+        this.color = color;
         
         SendInitialToAll();
 
@@ -80,5 +84,12 @@ public class Explosion extends Obj {
 
     @Override
     public void SendUpdate() {
+    }
+
+    @Override
+    public JSONObject InitialData() {
+        JSONObject json = super.InitialData();
+        json.put("color", color);
+        return json;
     }
 }

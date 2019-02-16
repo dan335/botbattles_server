@@ -8,6 +8,9 @@ public class Blasters extends Ability {
 
     boolean left = true;
     double fireOffset = 10;
+    String color = "0xff4444";
+    double damage = 10;
+    double shieldDamageMultiplier = 1;
     
     public Blasters(Player player, int abilityNum, String abilityType) {
         super(player, abilityNum, abilityType);
@@ -33,6 +36,6 @@ public class Blasters extends Ability {
             left = true;
         }
 
-        new BlasterBullet(this, pos.x, pos.y, player.rotation, 6, 10);
+        new BlasterBullet(this, pos.x, pos.y, player.rotation, 6, damage, shieldDamageMultiplier, color);
     }
 }

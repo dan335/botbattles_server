@@ -5,8 +5,8 @@ import arenaworker.lib.Vector2;
 
 public class Teleport extends Ability {
 
-    double distance = 400;
-    double searchRadius = 80;
+    double distance = 600;
+    double searchRadius = 100;
     
     public Teleport(Player player, int abilityNum, String abilityType) {
         super(player, abilityNum, abilityType);

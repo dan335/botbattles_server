@@ -5,7 +5,7 @@ import arenaworker.abilityobjects.Grenade;
 
 public class BombDropper extends Ability {
 
-    public long defaultInterval = 4000L;
+    public long defaultInterval = 3000L;
     
     public BombDropper(Player player, int abilityNum, String abilityType) {
         super(player, abilityNum, abilityType);

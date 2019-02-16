@@ -1,5 +1,7 @@
 package arenaworker.abilityobjects;
 
+import org.json.JSONObject;
+
 import arenaworker.Base;
 import arenaworker.Box;
 import arenaworker.Obj;
@@ -10,15 +12,19 @@ import arenaworker.lib.Physics;
 import arenaworker.other.Explosion;
 
 public class BlasterBullet extends Projectile {
+
+    String color;
     
-    public BlasterBullet(Ability ability, double x, double y, double rotation, double radius, double damage) {
+    public BlasterBullet(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color) {
         super(ability, x, y, radius, rotation, false);
         initialUpdateName = "blasterBulletInitial";
         updateName = "blasterBulletUpdate";
         destroyUpdateName = "blasterBulletDestroy";
+        this.color = color;
         speed = 1;
         mass = 0.4;
         this.damage = damage;
+        this.shieldDamageMultiplier = shieldDamageMultiplier;
         shieldDamageMultiplier = 1;
         SendInitialToAll();
     }
@@ -49,6 +55,14 @@ public class BlasterBullet extends Projectile {
     @Override
     public void Destroy() {
         super.Destroy();
-        new Explosion(ability.player.game, position.x, position.y, radius * 4, 0, 0);
+        new Explosion(ability.player.game, position.x, position.y, radius * 4, 0, 0, color);
+    }
+
+
+    @Override
+    public JSONObject InitialData() {
+        JSONObject json = super.InitialData();
+        json.put("color", color);
+        return json;
     }
 }
