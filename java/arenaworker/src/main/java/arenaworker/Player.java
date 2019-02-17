@@ -18,7 +18,7 @@ public class Player extends Obj {
     boolean isEngineOnUp = false;
     boolean isEngineOnDown = false;
     Vector2 mousePosition = new Vector2();
-    public Ability[] abilities = new Ability[4];
+    public Ability[] abilities;
     public double shield = 100;
     double health = 100;
     long lastTakenDamage = 0;
@@ -38,6 +38,8 @@ public class Player extends Obj {
             Vector2 pos
         ) {
         super(game, pos.x, pos.y, 25, 0, true);
+        
+        this.abilities = new Ability[game.settings.numAbilities];
 
         this.client = client;
         game.players.add(this);
