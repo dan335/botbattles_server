@@ -42,11 +42,10 @@ public class Physics {
 
 
     // axis aligned rectangle
+    static Vector2 circleDistance = new Vector2();
     public static boolean circleInRectangle(Vector2 posA, double radiusA, Vector2 posB, Vector2 scaleB) {
-        Vector2 circleDistance = new Vector2(
-            Math.abs(posA.x - posB.x),
-            Math.abs(posA.y - posB.y)
-        );
+        circleDistance.x = Math.abs(posA.x - posB.x);
+        circleDistance.y = Math.abs(posA.y - posB.y);
         
         if (circleDistance.x > (scaleB.x/2 + radiusA)) { return false; }
         if (circleDistance.y > (scaleB.y/2 + radiusA)) { return false; }
@@ -112,7 +111,7 @@ public class Physics {
         Vector2 collisionNormal = closest.subtract(a.position);
 
         if (isInside) {
-            collisionNormal = collisionNormal.scale(-1);
+            collisionNormal.scale(-1);
         }
         
         collisionNormal.normalize();
@@ -231,12 +230,12 @@ public class Physics {
         ratio = aInverseMass / massSum;
         a.Collision(b, magnitude, new Vector2(ratio * impulse.x * -1, ratio * impulse.y * -1));
         
-        a.velocity = a.velocity.subtract(impulse.scale(ratio));
+        a.velocity = a.velocity.subtract(impulse.copy().scale(ratio));
 
         ratio = bInverseMass / massSum;
         b.Collision(a, magnitude, new Vector2(ratio * impulse.x, ratio * impulse.y));
 
-        b.velocity = b.velocity.add(impulse.scale(ratio));
+        b.velocity.add(impulse.copy().scale(ratio));
 
         // a.needsUpdate = true;
         // b.needsUpdate = true;
@@ -285,7 +284,7 @@ public class Physics {
         Vector2 collisionNormal = closest.subtract(a.position);
 
         if (isInside) {
-            collisionNormal = collisionNormal.scale(-1);
+            collisionNormal.scale(-1);
         }
         
         collisionNormal.normalize();
@@ -350,8 +349,8 @@ public class Physics {
             amount * collisionNormal.y
         );
 
-        a.SetPosition(a.position.subtract(correction.scale(aInverseMass)));
-        b.SetPosition(b.position.add(correction.scale(bInverseMass)));
+        a.SetPosition(a.position.copy().subtract(correction.copy().scale(aInverseMass)));
+        b.SetPosition(b.position.copy().add(correction.copy().scale(bInverseMass)));
     }
     
     

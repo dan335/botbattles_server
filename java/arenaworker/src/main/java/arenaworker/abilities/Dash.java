@@ -16,7 +16,7 @@ public class Dash extends Ability {
     public void Fire() {
         super.Fire();
 
-        player.forces = player.forces.add(new Vector2(
+        player.forces.add(new Vector2(
             Math.cos(player.rotation) * extraForce,
             Math.sin(player.rotation) * extraForce
         ));

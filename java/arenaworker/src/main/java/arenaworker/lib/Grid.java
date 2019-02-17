@@ -64,19 +64,15 @@ public class Grid {
     }
     
     
-    
+    Set<Base> retrievedObjects = Collections.newSetFromMap(new ConcurrentHashMap<Base, Boolean>());
     public Set<Base> retrieve(Vector2 pos, double radius) {
-        Set<Base> retrievedObjects = Collections.newSetFromMap(new ConcurrentHashMap<Base, Boolean>());
-        
+        retrievedObjects.clear();
+
         String[] grids = getGridsObjCircleIsIn(pos, radius);
         
-        for (String grid : grids) {
-            if (objects.containsKey(grid)) {
-                
-                Set<Base> gridObjects = Collections.newSetFromMap(new ConcurrentHashMap<Base, Boolean>());
-                gridObjects = objects.get(grid);
-                
-                retrievedObjects.addAll(gridObjects);
+        for (int i = 0; i < grids.length; i++) {
+            if (objects.containsKey(grids[i])) {
+                retrievedObjects.addAll(objects.get(grids[i]));
             }
         }
         
@@ -85,17 +81,13 @@ public class Grid {
 
 
     public Set<Base> retrieve(Vector2 pos, Vector2 scale) {
-        Set<Base> retrievedObjects = Collections.newSetFromMap(new ConcurrentHashMap<Base, Boolean>());
+        retrievedObjects.clear();
 
         String[] grids = getGridsObjRectangleIsIn(pos, scale);
 
-        for (String grid : grids) {
-            if (objects.containsKey(grid)) {
-                
-                Set<Base> gridObjects = Collections.newSetFromMap(new ConcurrentHashMap<Base, Boolean>());
-                gridObjects = objects.get(grid);
-                
-                retrievedObjects.addAll(gridObjects);
+        for (int i = 0; i < grids.length; i++) {
+            if (objects.containsKey(grids[i])) {
+                retrievedObjects.addAll(objects.get(grids[i]));
             }
         }
         
@@ -103,25 +95,25 @@ public class Grid {
     }
     
     
-    public Set<Base> retrievePlayers(Vector2 pos, double radius) {
-        Set<Base> retrievedObjects = new HashSet<>();
-        Set<Base> tempObjects = new HashSet<>();
+    // public Set<Base> retrievePlayers(Vector2 pos, double radius) {
+    //     Set<Base> retrievedObjects = new HashSet<>();
+    //     Set<Base> tempObjects = new HashSet<>();
         
-        String[] grids = getGridsObjCircleIsIn(pos, radius);
+    //     String[] grids = getGridsObjCircleIsIn(pos, radius);
         
-        for (String grid : grids) {
-            if (objects.containsKey(grid)) {
-                for (Base o : objects.get(grid)) {
-                    if (Player.class.isAssignableFrom(o.getClass())) {
-                       tempObjects.add(o); 
-                    }
-                }
-                retrievedObjects.addAll(tempObjects);
-            }
-        }
+    //     for (String grid : grids) {
+    //         if (objects.containsKey(grid)) {
+    //             for (Base o : objects.get(grid)) {
+    //                 if (Player.class.isAssignableFrom(o.getClass())) {
+    //                    tempObjects.add(o); 
+    //                 }
+    //             }
+    //             retrievedObjects.addAll(tempObjects);
+    //         }
+    //     }
 
-        return retrievedObjects;
-    }
+    //     return retrievedObjects;
+    // }
     
     
     private String[] getGridsObjCircleIsIn(Vector2 pos, double radius) {

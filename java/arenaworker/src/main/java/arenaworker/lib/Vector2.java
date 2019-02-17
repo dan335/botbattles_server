@@ -20,6 +20,10 @@ public class Vector2 {
         return x + "," + y;
     }
 
+    public Vector2 copy() {
+        return new Vector2(x, y);
+    }
+
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("x", x);
@@ -28,7 +32,9 @@ public class Vector2 {
     }
 
     public Vector2 add(Vector2 other) {
-        return new Vector2(x + other.x, y + other.y);
+        x += other.x;
+        y += other.y;
+        return (this);
     }
 
     public Vector2 subtract(Vector2 other) {
@@ -37,7 +43,9 @@ public class Vector2 {
 
 
     public Vector2 scale(double num) {
-        return new Vector2(x * num, y * num);
+        x *= num;
+        y *= num;
+        return this;
     }
     
     
@@ -57,7 +65,7 @@ public class Vector2 {
         return Math.sqrt(v0 * v0 + v1 * v1);
     }
     
-    public void normalize() {
+    public Vector2 normalize() {
         double length = length();
         
         if (length != 0.0) {
@@ -65,6 +73,8 @@ public class Vector2 {
             x = x * s;
             y = y * s;
         }
+
+        return this;
     }
 
     // same as normalize() but return result instead

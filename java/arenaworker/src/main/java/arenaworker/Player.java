@@ -130,10 +130,12 @@ public class Player extends Obj {
     }
 
 
+    Vector2 engineForce = new Vector2();
     @Override
     public void Tick() {
         if (!isCharging && !isStunned) {
-            Vector2 engineForce = new Vector2();
+            engineForce.x = 0;
+            engineForce.y = 0;
 
             if (isEngineOnDown) engineForce.y += 1;
             if (isEngineOnLeft) engineForce.x -= 1;
@@ -141,11 +143,15 @@ public class Player extends Obj {
             if (isEngineOnUp) engineForce.y -= 1;
 
             engineForce.normalize();
+            engineForce.scale(game.settings.shipEngineSpeed);
+            engineForce.scale(shipSpeedMultiplier);
             
-            forces = forces.add(engineForce.scale(game.settings.shipEngineSpeed).scale(shipSpeedMultiplier));
+            forces.add(engineForce);
 
-            Vector2 mouse = mousePosition.subtract(position);
-            this.rotation = Math.atan2(mouse.y, mouse.x);
+            this.rotation = Math.atan2(
+                mousePosition.y - position.y,
+                mousePosition.x - position.x    
+            );
         }
 
         if (isStunned) {
@@ -156,7 +162,7 @@ public class Player extends Obj {
 
         super.Tick();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < abilities.length; i++) {
             abilities[i].Tick();
         }
 

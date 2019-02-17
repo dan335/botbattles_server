@@ -18,8 +18,10 @@ public class Projectile extends AbilityObjectPhysics {
 
 
     public void Tick() {
-        velocity = new Vector2( Math.cos(rotation), Math.sin(rotation) ).scale(speed);
-        SetPosition(position.add(velocity.scale(game.deltaTime)));
+        velocity.x = Math.cos(rotation) * speed;
+        velocity.y = Math.sin(rotation) * speed;
+        
+        SetPosition(position.copy().add(velocity.copy().scale(game.deltaTime)));
         SendUpdate();
     }
 }

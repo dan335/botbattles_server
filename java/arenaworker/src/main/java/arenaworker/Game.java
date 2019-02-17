@@ -427,7 +427,7 @@ public class Game implements Runnable {
 
     private void AbilityObjectPhysics() {
         for (Player p : players) {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < p.abilities.length; i++) { 
                 for (Base ao : p.abilities[i].abilityObjects) {
                     Set<Base> objs = grid.retrieve(ao.position, ao.radius);
                     for (Base other : objs) {

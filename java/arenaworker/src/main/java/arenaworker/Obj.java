@@ -18,10 +18,15 @@ public class Obj extends Base {
 
     public void Collision(Obj obj, double magnitude, Vector2 force) {}
 
-
+    Vector2 priorForces = new Vector2();
+    Vector2 acceleration = new Vector2();
     public void Tick() {
-        final Vector2 priorForces = new Vector2(game.settings.drag * velocity.x, game.settings.drag * velocity.y);
-        final Vector2 acceleration = new Vector2(priorForces.x + forces.x, priorForces.y + forces.y);
+        priorForces.x = game.settings.drag * velocity.x;
+        priorForces.y = game.settings.drag * velocity.y;
+
+        acceleration.x = priorForces.x + forces.x;
+        acceleration.y = priorForces.y + forces.y;
+
         forces.x = 0;
         forces.y = 0;
 
@@ -29,7 +34,10 @@ public class Obj extends Base {
             velocity.x = velocity.x + acceleration.x;
             velocity.y = velocity.y + acceleration.y;
 
-            SetPosition(position.add(velocity.scale(game.deltaTime)));
+            SetPosition(
+                position.x + velocity.x * game.deltaTime,
+                position.y + velocity.y * game.deltaTime
+            );
         }
 
         super.Tick();
