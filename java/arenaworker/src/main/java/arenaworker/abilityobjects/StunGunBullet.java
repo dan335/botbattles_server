@@ -11,16 +11,16 @@ import arenaworker.abilities.Ability;
 import arenaworker.lib.Physics;
 import arenaworker.other.Explosion;
 
-public class TaserBullet extends Projectile {
+public class StunGunBullet extends Projectile {
 
     String color;
     long stunDuration;
     
-    public TaserBullet(Ability ability, double x, double y, double rotation, double radius, long stunDuration, String color) {
+    public StunGunBullet(Ability ability, double x, double y, double rotation, double radius, long stunDuration, String color) {
         super(ability, x, y, radius, rotation, false);
-        initialUpdateName = "taserBulletInitial";
-        updateName = "taserBulletUpdate";
-        destroyUpdateName = "taserBulletDestroy";
+        initialUpdateName = "stunGunBulletInitial";
+        updateName = "stunGunBulletUpdate";
+        destroyUpdateName = "stunGunBulletDestroy";
         speed = 1;
         mass = 0.4;
         this.stunDuration = stunDuration;

@@ -9,12 +9,12 @@ public class Blasters extends Ability {
     boolean left = true;
     double fireOffset = 10;
     String color = "0xff4444";
-    double damage = 10;
+    double damage = 20;
     double shieldDamageMultiplier = 1;
     
     public Blasters(Player player, int abilityNum, String abilityType) {
         super(player, abilityNum, abilityType);
-        interval = 100L;
+        interval = 300L;
     }
 
     @Override

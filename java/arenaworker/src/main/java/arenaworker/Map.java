@@ -70,7 +70,7 @@ public class Map {
 
 
     public void Tick() {
-        if (game.isStarted) {
+        if (game.isStarted && !game.isEnded) {
             if (game.tickStartTime - lastUpdate >= game.settings.mapUpdateInterval) {
                 if (size > game.settings.mapMinSize) {
                     size -= game.settings.mapShrinkPerInterval * game.deltaTime;

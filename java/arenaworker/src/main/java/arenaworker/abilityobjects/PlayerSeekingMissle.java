@@ -17,7 +17,7 @@ import arenaworker.other.Explosion;
 public class PlayerSeekingMissle extends AbilityObjectPhysics {
 
     String color;
-    public double damage = 10;
+    public double damage = 30;
     public double shieldDamageMultiplier = 1;
     double searchRadius = 600;
     double speed = 0.15;
@@ -88,7 +88,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
             if (ability.player != otherObject) {
                 Physics.resolveCollision(this, (Obj)otherObject);
                 Player player = (Player) otherObject;
-                player.ProjectileHit(this);
+                player.TakeDamage(damage, shieldDamageMultiplier);
                 Destroy();
             }
         } else if (otherObject instanceof Box) {

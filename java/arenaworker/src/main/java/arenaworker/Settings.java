@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 public class Settings {
     // how long after the 2nd player joins should we wait to start the game
+    public int numAbilities = 3;
+    public String[] defaultAbilityTypes = new String[]{"Blasters", "Shotgun", "GrenadeLauncher", "ForceField"};
     public long gameWaitToStartTimeMs = 1000L * 5L;
     public long tickIntervalMs = 17L;
     public long updateIntervalMs = 40L;
@@ -13,7 +15,7 @@ public class Settings {
     public double mapShrinkPerInterval = 0.005;
     public double mapMinSize = 400;
     public int gridDivisions = 10;
-    public double shipEngineSpeed = 0.08;
+    public double shipEngineSpeed = 0.075;
     public double drag = -0.2;
     public double wallWidth = 80;
     public long playerHealDelay = 1000L * 2L;

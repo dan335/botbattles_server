@@ -3,6 +3,7 @@ package arenaworker;
 import java.lang.reflect.Method;
 
 import org.eclipse.jetty.websocket.api.Session;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
@@ -42,15 +43,15 @@ public class IncomingMessage {
     static void joinGame(JSONObject json, Session session) {
         Game game = GameManager.GetGameById(json.getString("gameId"));
 
-        String abilityType1 = json.optString("abilityType1");
-        String abilityType2 = json.optString("abilityType2");
-        String abilityType3 = json.optString("abilityType3");
-        String abilityType4 = json.optString("abilityType4");
+        if (game == null) return;
 
-        if (abilityType1.length() == 0) abilityType1 = "Blasters";
-        if (abilityType2.length() == 0) abilityType2 = "Shotgun";
-        if (abilityType3.length() == 0) abilityType3 = "GrenadeLauncher";
-        if (abilityType4.length() == 0) abilityType4 = "ForceField";
+        String[] abilityTypes = new String[game.settings.numAbilities];
+
+        JSONArray types = json.getJSONArray("abilityTypes");
+        
+        for (int i = 0; i < game.settings.numAbilities; i++) {
+            abilityTypes[i] = (String)types.get(i);
+        }
 
         String name = json.optString("name");
         String userId = json.optString("userId");
@@ -63,10 +64,7 @@ public class IncomingMessage {
                 session,
                 name,
                 userId,
-                abilityType1,
-                abilityType2,
-                abilityType3,
-                abilityType4
+                abilityTypes
                 );
         }
     }

@@ -39,6 +39,7 @@ public class Game implements Runnable {
     public Set<Base> other = ConcurrentHashMap.newKeySet();
     long countdownStarted;
     public boolean isStarted = false;
+    public boolean isEnded = false;
     public double deltaTime = 0;
     public boolean isInBulletTime = false;
     public long bulletTimeStart;
@@ -77,7 +78,7 @@ public class Game implements Runnable {
 
             List<Document> playerInfoAbilities = new ArrayList<Document>();
             
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < settings.numAbilities; i++) {
                 Document abilityDoc = new Document("id", info.abilities[i].toString());
                 playerInfoAbilities.add(abilityDoc);
             }
@@ -117,6 +118,9 @@ public class Game implements Runnable {
 
 
     public void DeclareWinner(Player player) {
+        if (isEnded) return;
+
+        isEnded = true;
         gameEndTime = tickStartTime;
 
         player.playerInfo.isWinner = true;
@@ -134,10 +138,7 @@ public class Game implements Runnable {
         Session session,
         String name,
         String userId,
-        String abilityType1,
-        String abilityType2,
-        String abilityType3,
-        String abilityType4
+        String[] abilityTypes
     ) {
         Client c = Clients.GetClient(session);
         if (c != null) {
@@ -162,12 +163,7 @@ public class Game implements Runnable {
             Player player = new Player(
                 client,
                 this,
-                new String[]{
-                    abilityType1,
-                    abilityType2,
-                    abilityType3,
-                    abilityType4
-                },
+                abilityTypes,
                 pos
                 );
             client.AddPlayer(player);
@@ -176,12 +172,7 @@ public class Game implements Runnable {
                 StartCountdown();
             }
 
-            PlayerInfo info = new PlayerInfo(player.id, name, null, new String[]{
-                abilityType1,
-                abilityType2,
-                abilityType3,
-                abilityType4
-            });
+            PlayerInfo info = new PlayerInfo(player.id, name, null, abilityTypes);
             playerInfo.add(info);
             player.playerInfo = info;
         } else {
@@ -229,7 +220,7 @@ public class Game implements Runnable {
 
         // destroy all bomb dropper bombs when game starts
         for (Player p : players) {
-            for (int i = 0; i < p.abilities.length; i++) {
+            for (int i = 0; i < p.game.settings.numAbilities; i++) {
                 if (p.abilities[i] instanceof BombDropper) {
                     for (Base b : p.abilities[i].abilityObjects) {
                         b.Destroy();
@@ -427,7 +418,7 @@ public class Game implements Runnable {
 
     private void AbilityObjectPhysics() {
         for (Player p : players) {
-            for (int i = 0; i < p.abilities.length; i++) { 
+            for (int i = 0; i < settings.numAbilities; i++) { 
                 for (Base ao : p.abilities[i].abilityObjects) {
                     Set<Base> objs = grid.retrieve(ao.position, ao.radius);
                     for (Base other : objs) {

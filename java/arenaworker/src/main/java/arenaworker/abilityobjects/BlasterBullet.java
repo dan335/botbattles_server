@@ -38,7 +38,7 @@ public class BlasterBullet extends Projectile {
             if (ability.player != otherObject) {
                 Physics.resolveCollision(this, (Obj)otherObject);
                 Player player = (Player) otherObject;
-                player.ProjectileHit(this);
+                player.TakeDamage(damage, shieldDamageMultiplier);
                 Destroy();
             }
         } else if (otherObject instanceof Box) {

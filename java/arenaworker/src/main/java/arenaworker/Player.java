@@ -27,6 +27,8 @@ public class Player extends Obj {
     public boolean isCharging = false;
     public boolean isStunned = false;
     public long stunEnd;
+    public boolean isInvis = false;
+    public long invisEnd;
     public double shipSpeedMultiplier = 1;
     
     public Player(
@@ -45,7 +47,7 @@ public class Player extends Obj {
         updateName = "shipUpdate";
         destroyUpdateName = "shipDestroy";
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < game.settings.numAbilities; i++) {
             Class<?> cls;
             try {
                 cls = Class.forName("arenaworker.abilities." + abilityTypes[i]);
@@ -56,10 +58,10 @@ public class Player extends Obj {
 
             Ability ability;
             try {
-                ability = (Ability) cls.getDeclaredConstructor(new Class[] {Player.class, int.class, String.class}).newInstance(this, i+1, abilityTypes[i]);
+                ability = (Ability) cls.getDeclaredConstructor(new Class[] {Player.class, int.class, String.class}).newInstance(this, i, abilityTypes[i]);
             } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException ex) {
                 ex.printStackTrace();
-                ability = new Blasters(this, i+1, "Blasters");
+                ability = new Blasters(this, i, "Blasters");
             }
 
             abilities[i] = ability;
@@ -82,8 +84,12 @@ public class Player extends Obj {
         if (!isCharging && !isStunned) {
             abilities[num].Start();
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < game.settings.numAbilities; i++) {
                 abilities[i].PlayerStartedAnAbility(abilities[num]);
+            }
+
+            if (isInvis) {
+                LoseInvis();
             }
         }
     }
@@ -160,9 +166,15 @@ public class Player extends Obj {
             }
         }
 
+        if (isInvis) {
+            if (game.tickStartTime >= invisEnd) {
+                LoseInvis();
+            }
+        }
+
         super.Tick();
 
-        for (int i = 0; i < abilities.length; i++) {
+        for (int i = 0; i < game.settings.numAbilities; i++) {
             abilities[i].Tick();
         }
 
@@ -186,7 +198,7 @@ public class Player extends Obj {
         isStunned = true;
         stunEnd = game.tickStartTime + duration;
 
-        for (int i = 0; i < abilities.length; i++) {
+        for (int i = 0; i < game.settings.numAbilities; i++) {
             if (abilities[i].isOn) {
                 abilities[i].Stop();
             }
@@ -194,8 +206,33 @@ public class Player extends Obj {
     }
 
 
+    public void GoInvis(long duration) {
+        isInvis = true;
+        invisEnd = game.tickStartTime + duration;
+
+        for (int i = 0; i < game.settings.numAbilities; i++) {
+            if (abilities[i].isOn) {
+                abilities[i].Stop();
+            }
+        }
+
+        JSONObject json = new JSONObject();
+        json.put("t", "goInvisible");
+        json.put("shipId", id);
+        game.SendJsonToClients(json);
+    }
+
+
+    public void LoseInvis() {
+        JSONObject json = new JSONObject();
+        json.put("t", "goVisible");
+        json.put("shipId", id);
+        game.SendJsonToClients(json);
+    }
+
+
     public void Destroy() {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < game.settings.numAbilities; i++) {
             abilities[i].Destroy();
         }
 
@@ -273,8 +310,12 @@ public class Player extends Obj {
         lastTakenDamage = game.tickStartTime;
         isHealing = false;
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < game.settings.numAbilities; i++) {
             abilities[i].PlayerTookDamage();
+        }
+
+        if (isInvis) {
+            LoseInvis();
         }
 
         if (health <= 0) {
@@ -283,18 +324,11 @@ public class Player extends Obj {
     }
 
 
-    public void ProjectileHit(Base projectile) {
-        if (projectile instanceof Projectile) {
-            Projectile p = (Projectile)projectile;
-            TakeDamage(p.damage, p.shieldDamageMultiplier);
-        }
-    }
-
 
     @Override
     public void SetPosition(double x, double y) {
         if (position.x != x || position.y != y) {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < game.settings.numAbilities; i++) {
                 abilities[i].PlayerPositionChanged();
             }
         }
@@ -309,7 +343,7 @@ public class Player extends Obj {
         } else if (otherObject instanceof Player) {
             Collision response = Physics.resolveCollision(this, (Obj)otherObject);
             if (response != null) {
-                for (int i = 0; i < abilities.length; i++) {
+                for (int i = 0; i < game.settings.numAbilities; i++) {
                     abilities[i].PlayerCollision(response);
                 }
             }
