@@ -48,15 +48,21 @@ public class IncomingMessage {
         String abilityType4 = json.optString("abilityType4");
 
         if (abilityType1.length() == 0) abilityType1 = "Blasters";
-        if (abilityType2.length() == 0) abilityType2 = "Blasters";
-        if (abilityType3.length() == 0) abilityType3 = "Blasters";
-        if (abilityType4.length() == 0) abilityType4 = "Blasters";
+        if (abilityType2.length() == 0) abilityType2 = "Shotgun";
+        if (abilityType3.length() == 0) abilityType3 = "GrenadeLauncher";
+        if (abilityType4.length() == 0) abilityType4 = "ForceField";
+
+        String name = json.optString("name");
+        String userId = json.optString("userId");
+
+        if (name.length() == 0) name = "Noname";
+        if (userId.length() == 0) userId = null;
 
         if (game != null) {
             game.JoinGame(
                 session,
-                json.getString("name"),
-                json.optString("userId"),
+                name,
+                userId,
                 abilityType1,
                 abilityType2,
                 abilityType3,

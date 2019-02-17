@@ -18,7 +18,7 @@ public class Ability {
     public Player player;
     long lastFired = 0L;
     public long interval = 1000L;
-    boolean isOn = false;
+    public boolean isOn = false;
     public Set<Base> abilityObjects = ConcurrentHashMap.newKeySet();
     public int abilityNum;
     public String abilityType;

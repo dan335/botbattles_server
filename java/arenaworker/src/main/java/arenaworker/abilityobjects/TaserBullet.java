@@ -11,20 +11,20 @@ import arenaworker.abilities.Ability;
 import arenaworker.lib.Physics;
 import arenaworker.other.Explosion;
 
-public class BlasterBullet extends Projectile {
+public class TaserBullet extends Projectile {
 
     String color;
+    long stunDuration;
     
-    public BlasterBullet(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color) {
+    public TaserBullet(Ability ability, double x, double y, double rotation, double radius, long stunDuration, String color) {
         super(ability, x, y, radius, rotation, false);
-        initialUpdateName = "blasterBulletInitial";
-        updateName = "blasterBulletUpdate";
-        destroyUpdateName = "blasterBulletDestroy";
-        this.color = color;
+        initialUpdateName = "taserBulletInitial";
+        updateName = "taserBulletUpdate";
+        destroyUpdateName = "taserBulletDestroy";
         speed = 1;
         mass = 0.4;
-        this.damage = damage;
-        this.shieldDamageMultiplier = shieldDamageMultiplier;
+        this.stunDuration = stunDuration;
+        this.color = color;
         SendInitialToAll();
     }
 
@@ -38,7 +38,7 @@ public class BlasterBullet extends Projectile {
             if (ability.player != otherObject) {
                 Physics.resolveCollision(this, (Obj)otherObject);
                 Player player = (Player) otherObject;
-                player.ProjectileHit(this);
+                player.Stun(stunDuration);
                 Destroy();
             }
         } else if (otherObject instanceof Box) {

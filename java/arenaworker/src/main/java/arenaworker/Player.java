@@ -26,6 +26,7 @@ public class Player extends Obj {
     public PlayerInfo playerInfo;
     public boolean isCharging = false;
     public boolean isStunned = false;
+    public long stunEnd;
     public double shipSpeedMultiplier = 1;
     
     public Player(
@@ -37,6 +38,7 @@ public class Player extends Obj {
         super(game, pos.x, pos.y, 25, 0, true);
 
         this.client = client;
+        game.players.add(this);
         
         mass = 1;
         initialUpdateName = "shipInitial";
@@ -146,6 +148,12 @@ public class Player extends Obj {
             this.rotation = Math.atan2(mouse.y, mouse.x);
         }
 
+        if (isStunned) {
+            if (game.tickStartTime >= stunEnd) {
+                isStunned = false;
+            }
+        }
+
         super.Tick();
 
         for (int i = 0; i < 4; i++) {
@@ -163,6 +171,18 @@ public class Player extends Obj {
                     shield = newValue;
                     needsUpdate = true;
                 }
+            }
+        }
+    }
+
+
+    public void Stun(long duration) {
+        isStunned = true;
+        stunEnd = game.tickStartTime + duration;
+
+        for (int i = 0; i < abilities.length; i++) {
+            if (abilities[i].isOn) {
+                abilities[i].Stop();
             }
         }
     }
@@ -188,15 +208,13 @@ public class Player extends Obj {
     @Override
     public void SendInitialToAll() {
         for (Client c : game.clients) {
+            JSONObject json = InitialData();
             if (c.id == this.client.id) {
-                JSONObject json = InitialData();
                 json.put("t", "playerInitial");
-                c.SendJson(json);
             } else {
-                JSONObject json = InitialData();
                 json.put("t", "shipInitial");
-                c.SendJson(json);
             }
+            c.SendJson(json);
         }
 
         JSONObject replaly = InitialData();

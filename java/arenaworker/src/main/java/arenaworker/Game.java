@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 
 import org.bson.Document;
@@ -29,13 +30,14 @@ public class Game implements Runnable {
     private long tickEndTime;     // time in ms at end of loop
     public long gameCreatedTime;     // time in ms that the game was created
     public long gameStartTime;
+    public long gameEndTime;
     public Map map;
     public Set<Player> players = ConcurrentHashMap.newKeySet();     // people who are playing game
     public Set<Client> clients = ConcurrentHashMap.newKeySet();   // everyone, players + spectators
     public Set<Obstacle> obstacles = ConcurrentHashMap.newKeySet();
     public Set<Box> boxes = ConcurrentHashMap.newKeySet();
     public Set<Base> other = ConcurrentHashMap.newKeySet();
-    long secondPlayerJoinTime;
+    long countdownStarted;
     public boolean isStarted = false;
     public double deltaTime = 0;
     public boolean isInBulletTime = false;
@@ -56,7 +58,7 @@ public class Game implements Runnable {
     }
 
 
-    void SaveToDb() {
+    void SaveGameToDb() {
         // add game to db
         MongoCollection<Document> games = App.database.getCollection("games");
 
@@ -87,7 +89,12 @@ public class Game implements Runnable {
 
         doc.append("players", playerInfoDocs);
 
-        games.insertOne(doc);
+        try {
+            games.insertOne(doc);
+        } catch (MongoWriteException ex) {
+            ex.printStackTrace();
+        }
+        
     }
 
 
@@ -105,10 +112,13 @@ public class Game implements Runnable {
     // called from GameManager
     public void Destroy() {
         isRunning = false;
+        SaveReplay();
     }
 
 
     public void DeclareWinner(Player player) {
+        gameEndTime = tickStartTime;
+
         player.playerInfo.isWinner = true;
 
         JSONObject msg = new JSONObject();
@@ -116,7 +126,7 @@ public class Game implements Runnable {
         msg.put("name", player.client.name);
         SendJsonToClients(msg);
 
-        SaveToDb();
+        SaveGameToDb();
     }
 
 
@@ -129,12 +139,15 @@ public class Game implements Runnable {
         String abilityType3,
         String abilityType4
     ) {
-        // json.optString returns empty string if json userId is not a string
-        if (userId == "") userId = null;
+        Client c = Clients.GetClient(session);
+        if (c != null) {
+            // not sure why this would happen
+            System.out.println("Error: Session trying to join game twice.");
+            return;
+        }
 
         Client client = new Client(session, this, name, userId);
         clients.add(client);
-        Clients.AddClient(client);
 
         // call before creating player
         map.SendInitial(client);
@@ -157,11 +170,10 @@ public class Game implements Runnable {
                 },
                 pos
                 );
-            players.add(player);
             client.AddPlayer(player);
             
             if (players.size() == 2) {
-                secondPlayerJoinTime = tickStartTime;
+                StartCountdown();
             }
 
             PlayerInfo info = new PlayerInfo(player.id, name, null, new String[]{
@@ -178,6 +190,15 @@ public class Game implements Runnable {
             msg.put("name", client.name);
             SendJsonToClients(msg);
         }
+    }
+
+
+    void StartCountdown() {
+        countdownStarted = tickStartTime;
+        JSONObject json = new JSONObject();
+        json.put("t", "countdownStarted");
+        json.put("startTime", (double)tickStartTime + settings.gameWaitToStartTimeMs);
+        SendJsonToClients(json);
     }
 
 
@@ -206,6 +227,7 @@ public class Game implements Runnable {
         isStarted = true;
         gameStartTime = tickStartTime;
 
+        // destroy all bomb dropper bombs when game starts
         for (Player p : players) {
             for (int i = 0; i < p.abilities.length; i++) {
                 if (p.abilities[i] instanceof BombDropper) {
@@ -218,6 +240,7 @@ public class Game implements Runnable {
 
         JSONObject msg = new JSONObject();
         msg.put("t", "gameStarted");
+        msg.put("time", (double)tickStartTime);
         SendJsonToClients(msg);
     }
 
@@ -279,7 +302,7 @@ public class Game implements Runnable {
             }
 
             if (!isStarted && players.size() >= 2) {
-                if (tickStartTime - secondPlayerJoinTime > settings.gameWaitToStartTimeMs) {
+                if (tickStartTime - countdownStarted > settings.gameWaitToStartTimeMs) {
                     StartGame();
                 }
             }

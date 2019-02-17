@@ -29,6 +29,7 @@ public class Client {
         this.game = game;
         this.name = name;
         this.userId = userId;
+        Clients.AddClient(this);
     }
 
 
@@ -38,7 +39,10 @@ public class Client {
 
 
     public void Destroy() {
-        player.Destroy();
+        if (player != null) {
+            player.Destroy();
+        }
+        
         game.clients.remove(this);
         Clients.clients.remove(session);
 
