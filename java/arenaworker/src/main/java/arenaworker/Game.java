@@ -102,7 +102,7 @@ public class Game implements Runnable {
     void SaveReplay() {
         MongoCollection<Document> collection = App.database.getCollection("replays");
 
-        Document document = new Document("createdAt", (double)new Date().getTime())
+        Document document = new Document("createdAt", new Date())
             .append("json", replayJson.toString())
             .append("gameId", id);
 
