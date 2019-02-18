@@ -64,7 +64,7 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
     public void Destroy() {
         if (ability instanceof GrenadeLauncher) {
             GrenadeLauncher launcher = (GrenadeLauncher) ability;
-            launcher.interval = launcher.defaultInterval; 
+            launcher.cooldown = launcher.defaultInterval; 
             launcher.SendCooldownMessage();
             launcher.grenade = null;
         }

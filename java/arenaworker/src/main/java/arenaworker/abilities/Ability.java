@@ -17,22 +17,20 @@ public class Ability {
     final int hashcode = id.hashCode();
     public Player player;
     long lastFired = 0L;
-    public long interval = 1000L;
+    public long cooldown = 1000L;
     public boolean isOn = false;
     public Set<Base> abilityObjects = ConcurrentHashMap.newKeySet();
     public int abilityNum;
-    public String abilityType;
 
-    public Ability(Player player, int abilityNum, String abilityType) {
+    public Ability(Player player, int abilityNum) {
         this.player = player;
         this.abilityNum = abilityNum;
-        this.abilityType = abilityType;
     }
 
 
     public void Tick() {
         if (isOn) {
-            if (player.game.tickStartTime >= lastFired + interval) {
+            if (player.game.tickStartTime >= lastFired + cooldown) {
                 Fire();
             }
         }
@@ -43,11 +41,21 @@ public class Ability {
     }
 
 
+    // called when player is created
+    public void Init() {
+        
+    }
+
+
     public void Start() {
         isOn = true;
-        if (player.game.tickStartTime >= lastFired + interval) {
+        if (player.game.tickStartTime >= lastFired + cooldown) {
             Fire();
         }
+    }
+
+    public boolean IsReady() {
+        return player.game.tickStartTime >= lastFired + cooldown;
     }
 
     public void Stop() {
@@ -92,7 +100,7 @@ public class Ability {
         json.put("t", "abilityCooldown");
         json.put("num", abilityNum);
         json.put("lastFired", lastFired);
-        json.put("interval", (double)interval);
+        json.put("cooldown", (double)cooldown);
         player.client.SendJson(json);
     }
 }

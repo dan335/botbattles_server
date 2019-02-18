@@ -10,9 +10,9 @@ public class GrenadeLauncher extends Ability {
     public long defaultInterval = 5000L;
     double damage = 100;
     
-    public GrenadeLauncher(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = defaultInterval;
+    public GrenadeLauncher(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = defaultInterval;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class GrenadeLauncher extends Ability {
 
         if (grenade == null) {
             grenade = new Grenade(this, player.rotation, 12, amountOfForce, damage);
-            interval = 300L;
+            cooldown = 300L;
             SendCooldownMessage();
         } else {
             grenade.Explode();  

@@ -9,9 +9,9 @@ public class Boost extends Ability {
     long duration = 2000L;
     long start;
     
-    public Boost(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 7000L;
+    public Boost(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 7000L;
     }
 
     @Override

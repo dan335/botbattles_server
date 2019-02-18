@@ -56,14 +56,14 @@ public class Explosion extends Obj {
 
     void ApplyDamage(Player player) {
         if (damage == 0) return;
-        double distance = position.subtract(player.position).length();
+        double distance = position.copy().subtract(player.position).length();
         double percent = 1 - distance / radius * 0.5;
         player.TakeDamage(damage * percent, shieldDamageMultiplier);
     }
 
     void ApplyForce(Obj obj) {
         if (forceToApplyToObjects == 0) return;
-        double distance = position.subtract(obj.position).length() - obj.radius;
+        double distance = position.copy().subtract(obj.position).length() - obj.radius;
         double percent = 1 - distance / radius;
         obj.forces.add(obj.position.copy().subtract(position).normalize().scale(percent).scale(forceToApplyToObjects));
     }

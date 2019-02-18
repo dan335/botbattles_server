@@ -9,9 +9,9 @@ public class PlayerSeeker extends Ability {
     double angleInDegrees = 30;
     String color = "0xff4444";
     
-    public PlayerSeeker(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 1000L;
+    public PlayerSeeker(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 1000L;
     }
 
     @Override

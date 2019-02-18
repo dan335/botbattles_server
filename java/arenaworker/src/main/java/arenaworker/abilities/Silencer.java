@@ -8,33 +8,33 @@ import arenaworker.Base;
 import arenaworker.Player;
 import arenaworker.lib.Physics;
 
-public class Emp extends Ability {
+public class Silencer extends Ability {
 
-    double radius = 250;
+    double radius = 150;
+    long duration = 1500L;
     
-    public Emp(Player player, int abilityNum) {
+    public Silencer(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 9000L;
+        cooldown = 5000L;
     }
 
     @Override
     public void Fire() {
         super.Fire();
 
-        Set<Base> objs = player.game.grid.retrieve(player.position, radius);
+        Set<Base> objs = player.game.grid.retrieve(player.position, player.radius);
         for (Base o : objs) {
             if (o instanceof Player) {
-                if (o != player) {
-                    if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
-                        Player p = (Player) o;
-                        p.TakeDamage(p.shield, 1);
+                if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
+                    if (o != player) {
+                        ((Player)o).Silence(duration);
                     }
                 }
             }
         }
 
         JSONObject json = new JSONObject();
-        json.put("t", "empInitial");
+        json.put("t", "slamInitial");
         json.put("shipId", player.id);
         json.put("radius", radius);
         player.game.SendJsonToClients(json);

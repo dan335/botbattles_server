@@ -9,9 +9,9 @@ public class ForceField extends Ability {
     double duration = 1000L;
     double lastCreated;
     
-    public ForceField(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 5000L;
+    public ForceField(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 5000L;
     }
 
     @Override

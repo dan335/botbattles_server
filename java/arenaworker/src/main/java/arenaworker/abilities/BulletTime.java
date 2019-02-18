@@ -4,9 +4,9 @@ import arenaworker.Player;
 
 public class BulletTime extends Ability {
     
-    public BulletTime(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 5000L;
+    public BulletTime(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 5000L;
     }
 
     @Override

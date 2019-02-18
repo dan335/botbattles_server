@@ -10,9 +10,9 @@ public class Invisibility extends Ability {
     long duration = 1500L;
     long start;
     
-    public Invisibility(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 5000L;
+    public Invisibility(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 5000L;
     }
 
     @Override

@@ -8,9 +8,9 @@ public class Shotgun extends Ability {
     int numBullets = 10;
     double angleInDegrees = 30;
     
-    public Shotgun(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 1000L;
+    public Shotgun(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 1500L;
     }
 
     @Override

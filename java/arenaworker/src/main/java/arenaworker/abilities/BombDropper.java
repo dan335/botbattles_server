@@ -11,9 +11,9 @@ public class BombDropper extends Ability {
     public ConcurrentSkipListSet<Grenade> grenades = new ConcurrentSkipListSet<Grenade>();
     int maxGrenades = 15;
     
-    public BombDropper(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = defaultInterval;
+    public BombDropper(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = defaultInterval;
     }
 
     @Override

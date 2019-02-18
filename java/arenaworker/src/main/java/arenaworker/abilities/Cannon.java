@@ -13,9 +13,9 @@ public class Cannon extends Ability {
     double damage = 40;
     
 
-    public Cannon(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 3500L;
+    public Cannon(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 3500L;
     }
 
 

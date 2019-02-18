@@ -9,9 +9,9 @@ public class StunGun extends Ability {
     String color = "0x888888";
     double size = 15;
     
-    public StunGun(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 2000L;
+    public StunGun(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 2000L;
     }
 
     @Override

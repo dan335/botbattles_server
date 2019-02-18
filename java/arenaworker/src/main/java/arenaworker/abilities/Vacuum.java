@@ -2,19 +2,19 @@ package arenaworker.abilities;
 
 import java.util.Set;
 
-import org.json.JSONObject;
-
 import arenaworker.Base;
 import arenaworker.Player;
 import arenaworker.lib.Physics;
+import arenaworker.lib.Vector2;
 
-public class Emp extends Ability {
+public class Vacuum extends Ability {
 
-    double radius = 250;
+    double extraForce = 5;
+    double radius = 300;
     
-    public Emp(Player player, int abilityNum) {
+    public Vacuum(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 9000L;
+        cooldown = 5000L;
     }
 
     @Override
@@ -26,17 +26,10 @@ public class Emp extends Ability {
             if (o instanceof Player) {
                 if (o != player) {
                     if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
-                        Player p = (Player) o;
-                        p.TakeDamage(p.shield, 1);
+                        ((Player)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(1.5));
                     }
                 }
             }
         }
-
-        JSONObject json = new JSONObject();
-        json.put("t", "empInitial");
-        json.put("shipId", player.id);
-        json.put("radius", radius);
-        player.game.SendJsonToClients(json);
     }
 }

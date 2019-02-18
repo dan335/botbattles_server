@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import arenaworker.abilities.Ability;
 import arenaworker.abilities.Blasters;
+import arenaworker.abilities.Resurrection;
 import arenaworker.lib.Collision;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
@@ -25,7 +26,11 @@ public class Player extends Obj {
     public PlayerInfo playerInfo;
     public boolean isCharging = false;
     public boolean isStunned = false;
+    public boolean isFrozen = false;
+    public boolean isSilenced = false;
     public long stunEnd;
+    public long frozenEnd;
+    public long silencedEnd;
     public boolean isInvis = false;
     public long invisEnd;
     public double shipSpeedMultiplier = 1;
@@ -62,16 +67,20 @@ public class Player extends Obj {
 
             Ability ability;
             try {
-                ability = (Ability) cls.getDeclaredConstructor(new Class[] {Player.class, int.class, String.class}).newInstance(this, i, abilityTypes[i]);
+                ability = (Ability) cls.getDeclaredConstructor(new Class[] {Player.class, int.class}).newInstance(this, i);
             } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException ex) {
                 ex.printStackTrace();
-                ability = new Blasters(this, i, "Blasters");
+                ability = new Blasters(this, i);
             }
 
             abilities[i] = ability;
         }
 
         SendInitialToAll();
+
+        for (int i = 0; i < game.settings.numAbilities; i++) {
+            abilities[i].Init();
+        }
     }
 
 
@@ -85,7 +94,7 @@ public class Player extends Obj {
 
 
     public void AbilityKeyDown(int num) {
-        if (!isCharging && !isStunned) {
+        if (!isCharging && !isStunned && !isSilenced) {
             abilities[num].Start();
 
             for (int i = 0; i < game.settings.numAbilities; i++) {
@@ -143,7 +152,7 @@ public class Player extends Obj {
     Vector2 engineForce = new Vector2();
     @Override
     public void Tick() {
-        if (!isCharging && !isStunned) {
+        if (!isCharging && !isStunned && !isFrozen) {
             engineForce.x = 0;
             engineForce.y = 0;
 
@@ -176,10 +185,24 @@ public class Player extends Obj {
             }
         }
 
+        if (isFrozen) {
+            if (game.tickStartTime >= frozenEnd) {
+                isFrozen = false;
+            }
+        }
+
+        if (isSilenced) {
+            if (game.tickStartTime >= silencedEnd) {
+                isSilenced = false;
+            }
+        }
+
         super.Tick();
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
-            abilities[i].Tick();
+            if (abilities[i] != null) { // not sure why it would be null but it keeps complaining
+                abilities[i].Tick();
+            }
         }
 
         if (lastTakenDamage + game.settings.playerHealDelay < game.tickStartTime) {
@@ -207,6 +230,24 @@ public class Player extends Obj {
                 abilities[i].Stop();
             }
         }
+    }
+
+
+    public void Silence(long duration) {
+        isSilenced = true;
+        silencedEnd = game.tickStartTime + duration;
+
+        for (int i = 0; i < game.settings.numAbilities; i++) {
+            if (abilities[i].isOn) {
+                abilities[i].Stop();
+            }
+        }
+    }
+
+
+    public void Freeze(long duration) {
+        isFrozen = true;
+        frozenEnd = game.tickStartTime + duration;
     }
 
 
@@ -323,7 +364,23 @@ public class Player extends Obj {
         }
 
         if (health <= 0) {
-            Destroy();
+            Ability resurrection = null;
+
+            for (int i = 0; i < game.settings.numAbilities; i++) {
+                if (abilities[i] instanceof Resurrection) {
+                    if (abilities[i].IsReady()) {
+                        resurrection = abilities[i];
+                    }
+                }
+            }
+
+            if (resurrection != null) {
+                health = game.settings.maxHealth;
+                needsUpdate = true;
+                resurrection.Fire();
+            } else {
+                Destroy();
+            }
         }
     }
 

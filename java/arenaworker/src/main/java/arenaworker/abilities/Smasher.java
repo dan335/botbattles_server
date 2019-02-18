@@ -7,16 +7,16 @@ import arenaworker.lib.Collision;
 
 public class Smasher extends Ability {
 
-    double duration = 2000L;
+    double duration = 1500L;
     double lastCreated;
     boolean isOn = false;
     double damage = 60;
     double shieldDamageMultiplier = 1;
     double radius;
     
-    public Smasher(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 5000L;
+    public Smasher(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 5000L;
         radius = player.radius + 13;
     }
 

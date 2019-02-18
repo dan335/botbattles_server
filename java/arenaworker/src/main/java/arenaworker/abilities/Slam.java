@@ -1,7 +1,6 @@
 package arenaworker.abilities;
 
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONObject;
 
@@ -11,12 +10,12 @@ import arenaworker.lib.Physics;
 
 public class Slam extends Ability {
 
-    double radius = 120;
+    double radius = 100;
     long stunDuration = 1500L;
     
-    public Slam(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 5000L;
+    public Slam(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 5000L;
     }
 
     @Override

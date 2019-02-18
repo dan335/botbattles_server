@@ -8,9 +8,9 @@ public class Teleport extends Ability {
     double distance = 600;
     double searchRadius = 100;
     
-    public Teleport(Player player, int abilityNum, String abilityType) {
-        super(player, abilityNum, abilityType);
-        interval = 5000L;
+    public Teleport(Player player, int abilityNum) {
+        super(player, abilityNum);
+        cooldown = 5000L;
     }
 
     @Override
@@ -21,8 +21,6 @@ public class Teleport extends Ability {
             player.position.x + Math.cos(player.rotation) * distance,
             player.position.y + Math.sin(player.rotation) * distance
         );
-
-        // Vector2 teleportPos = player.forces.getNormalized().scale(distance);
 
         Vector2 emptyPos = player.game.map.GetEmptyPos(player.radius * 2, teleportPos.x-searchRadius, teleportPos.y-searchRadius, teleportPos.x+searchRadius, teleportPos.y+searchRadius, 4);
         if (emptyPos != null) {
