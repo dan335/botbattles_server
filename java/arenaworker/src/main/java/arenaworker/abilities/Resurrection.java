@@ -18,4 +18,10 @@ public class Resurrection extends Ability {
     public void Init() {
         Fire();
     }
+
+
+    @Override
+    public void Start() {
+        isOn = true;
+    }
 }
