@@ -5,7 +5,7 @@ import arenaworker.lib.Vector2;
 
 public class Dash extends Ability {
 
-    double extraForce = 5;
+    double extraForce = 4;
     
     public Dash(Player player, int abilityNum) {
         super(player, abilityNum);

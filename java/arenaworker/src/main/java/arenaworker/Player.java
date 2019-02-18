@@ -152,21 +152,23 @@ public class Player extends Obj {
     Vector2 engineForce = new Vector2();
     @Override
     public void Tick() {
-        if (!isCharging && !isStunned && !isFrozen) {
-            engineForce.x = 0;
-            engineForce.y = 0;
+        if (!isCharging && !isStunned) {
+            if (!isFrozen) {
+                engineForce.x = 0;
+                engineForce.y = 0;
 
-            if (isEngineOnDown) engineForce.y += 1;
-            if (isEngineOnLeft) engineForce.x -= 1;
-            if (isEngineOnRight) engineForce.x += 1;
-            if (isEngineOnUp) engineForce.y -= 1;
+                if (isEngineOnDown) engineForce.y += 1;
+                if (isEngineOnLeft) engineForce.x -= 1;
+                if (isEngineOnRight) engineForce.x += 1;
+                if (isEngineOnUp) engineForce.y -= 1;
 
-            engineForce.normalize();
-            engineForce.scale(game.settings.shipEngineSpeed);
-            engineForce.scale(shipSpeedMultiplier);
+                engineForce.normalize();
+                engineForce.scale(game.settings.shipEngineSpeed);
+                engineForce.scale(shipSpeedMultiplier);
+                
+                forces.add(engineForce);
+            }
             
-            forces.add(engineForce);
-
             this.rotation = Math.atan2(
                 mousePosition.y - position.y,
                 mousePosition.x - position.x    

@@ -5,17 +5,16 @@ import org.json.JSONObject;
 import arenaworker.Player;
 import arenaworker.lib.Collision;
 
-public class Smasher extends Ability {
+public class Slicer extends Ability {
 
     double duration = 1500L;
     double lastCreated;
     boolean isOn = false;
-    double damage = 100;
+    double damage = 3;
     double shieldDamageMultiplier = 1;
     double radius;
-    boolean hasDoneDamange = false;
     
-    public Smasher(Player player, int abilityNum) {
+    public Slicer(Player player, int abilityNum) {
         super(player, abilityNum);
         cooldown = 5000L;
         radius = player.radius + 13;
@@ -24,7 +23,6 @@ public class Smasher extends Ability {
     @Override
     public void Fire() {
         super.Fire();
-        hasDoneDamange = false;
         On();
     }
 
@@ -66,11 +64,7 @@ public class Smasher extends Ability {
         if (isOn) {
             if (collision.b instanceof Player) {
                 if (collision.b != player) {
-                    if (!hasDoneDamange) {
-                        System.out.println(collision.magnitude);
-                        ((Player) collision.b).TakeDamage(damage * collision.magnitude, shieldDamageMultiplier);
-                        hasDoneDamange = true;
-                    }
+                    ((Player)collision.b).TakeDamage(damage, shieldDamageMultiplier);
                 }
             }
         }

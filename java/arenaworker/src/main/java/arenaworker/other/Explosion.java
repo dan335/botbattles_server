@@ -36,15 +36,13 @@ public class Explosion extends Obj {
 
         Set<Base> objs = game.grid.retrieve(new Vector2(x, y), radius);
         for (Base o : objs) {
-            if (o instanceof Player || o instanceof Obstacle || o instanceof Grenade) {
+            if (o instanceof Player || o instanceof Obstacle) {
                 if (Physics.circleInCircle(position.x, position.y, radius, o.position.x, o.position.y, o.radius)) {
                     if (o instanceof Player) {
                         ApplyDamage((Player)o);
                         ApplyForce((Obj)o);
                     } else if (o instanceof Obstacle) {
                         ApplyForce((Obj)o);
-                    } else if (o instanceof Grenade) {
-                        ((Grenade)o).Explode();
                     }
                 }
             }

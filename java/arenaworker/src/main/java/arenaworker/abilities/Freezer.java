@@ -11,7 +11,7 @@ import arenaworker.lib.Physics;
 public class Freezer extends Ability {
 
     double radius = 150;
-    long duration = 1500L;
+    long duration = 2500L;
     
     public Freezer(Player player, int abilityNum) {
         super(player, abilityNum);

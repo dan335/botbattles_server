@@ -8,7 +8,7 @@ public class Settings {
     public int numAbilities = 3;
     public String[] defaultAbilityTypes = new String[]{"Blasters", "Shotgun", "GrenadeLauncher", "ForceField"};
     public long gameWaitToStartTimeMs = 1000L * 5L;
-    public long tickIntervalMs = 17L;
+    public long tickIntervalMs = 16L;
     public long updateIntervalMs = 40L;
     public JSONObject defaultMap = new JSONObject();
     public long mapUpdateInterval = 1000L * 2L;
@@ -18,7 +18,7 @@ public class Settings {
     public double shipEngineSpeed = 0.075;
     public double drag = -0.2;
     public double wallWidth = 80;
-    public long playerHealDelay = 1000L * 2L;
+    public long playerHealDelay = 1000L * 3L;
     public double playerHealPerInterval = 0.03;
     public long maxReplayTime = 1000L * 60L * 5L;
     public double maxHealth = 400;

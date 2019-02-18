@@ -11,7 +11,7 @@ import arenaworker.lib.Physics;
 public class Slam extends Ability {
 
     double radius = 100;
-    long stunDuration = 1500L;
+    long stunDuration = 1250L;
     
     public Slam(Player player, int abilityNum) {
         super(player, abilityNum);

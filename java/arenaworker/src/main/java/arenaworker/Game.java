@@ -418,18 +418,20 @@ public class Game implements Runnable {
 
     private void AbilityObjectPhysics() {
         for (Player p : players) {
-            for (int i = 0; i < settings.numAbilities; i++) { 
-                for (Base ao : p.abilities[i].abilityObjects) {
-                    Set<Base> objs = grid.retrieve(ao.position, ao.radius);
-                    for (Base other : objs) {
-                        if (other.id != ao.id) {
-                            if (other instanceof ObjRectangle) {
-                                if (Physics.circleInRectangle(ao, (ObjRectangle)other)) {
-                                    ao.Contact(other);
-                                }
-                            } else {
-                                if (Physics.circleInCircle(ao, other)) {
-                                    ao.Contact(other);
+            for (int i = 0; i < settings.numAbilities; i++) {
+                if (p.abilities[i] != null) {   // it is sometimes null for some reason
+                    for (Base ao : p.abilities[i].abilityObjects) {
+                        Set<Base> objs = grid.retrieve(ao.position, ao.radius);
+                        for (Base other : objs) {
+                            if (other.id != ao.id) {
+                                if (other instanceof ObjRectangle) {
+                                    if (Physics.circleInRectangle(ao, (ObjRectangle)other)) {
+                                        ao.Contact(other);
+                                    }
+                                } else {
+                                    if (Physics.circleInCircle(ao, other)) {
+                                        ao.Contact(other);
+                                    }
                                 }
                             }
                         }
