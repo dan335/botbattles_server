@@ -10,11 +10,11 @@ import arenaworker.lib.Physics;
 
 public class Emp extends Ability {
 
-    double radius = 300;
+    double radius = 250;
     
     public Emp(Player player, int abilityNum, String abilityType) {
         super(player, abilityNum, abilityType);
-        interval = 8000L;
+        interval = 9000L;
     }
 
     @Override

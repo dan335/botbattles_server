@@ -6,19 +6,20 @@ import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
 import arenaworker.abilities.Ability;
+import arenaworker.abilities.BombDropper;
 import arenaworker.abilities.GrenadeLauncher;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 import arenaworker.other.Explosion;
 
-public class Grenade extends AbilityObjectPhysics {
+public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade> {
 
     public double speed = 0.1;
     public double damage = 10;
     public double shieldDamageMultiplier = 1;
     
     public Grenade(Ability ability, double rotation, double radius, double amountOfForce, double damage) {
-        super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, false);
+        super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, true);
         initialUpdateName = "grenadeInitial";
         updateName = "grenadeUpdate";
         destroyUpdateName = "grenadeDestroy";
@@ -55,8 +56,8 @@ public class Grenade extends AbilityObjectPhysics {
 
 
     public void Explode() {
-        new Explosion(ability.player.game, position.x, position.y, 200, damage, 1, "0xff4444");
         Destroy();
+        new Explosion(ability.player.game, position.x, position.y, 200, damage, 1, "0xff4444");
     }
 
     @Override
@@ -67,6 +68,16 @@ public class Grenade extends AbilityObjectPhysics {
             launcher.SendCooldownMessage();
             launcher.grenade = null;
         }
+
+        if (ability instanceof BombDropper) {
+            BombDropper dropper = (BombDropper)ability;
+            dropper.grenades.remove(this);
+        }
         super.Destroy();
+    }
+
+
+    public int compareTo(Grenade o) {
+        return id.compareTo(o.id);
     }
 }

@@ -9,6 +9,7 @@ import arenaworker.Game;
 import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
+import arenaworker.abilityobjects.Grenade;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 
@@ -35,13 +36,15 @@ public class Explosion extends Obj {
 
         Set<Base> objs = game.grid.retrieve(new Vector2(x, y), radius);
         for (Base o : objs) {
-            if (o instanceof Player || o instanceof Obstacle) {
+            if (o instanceof Player || o instanceof Obstacle || o instanceof Grenade) {
                 if (Physics.circleInCircle(position.x, position.y, radius, o.position.x, o.position.y, o.radius)) {
                     if (o instanceof Player) {
                         ApplyDamage((Player)o);
                         ApplyForce((Obj)o);
                     } else if (o instanceof Obstacle) {
                         ApplyForce((Obj)o);
+                    } else if (o instanceof Grenade) {
+                        ((Grenade)o).Explode();
                     }
                 }
             }

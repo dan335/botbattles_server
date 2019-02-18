@@ -6,7 +6,6 @@ import org.json.JSONObject;
 
 import arenaworker.abilities.Ability;
 import arenaworker.abilities.Blasters;
-import arenaworker.abilityobjects.Projectile;
 import arenaworker.lib.Collision;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
@@ -19,8 +18,8 @@ public class Player extends Obj {
     boolean isEngineOnDown = false;
     Vector2 mousePosition = new Vector2();
     public Ability[] abilities;
-    public double shield = 100;
-    double health = 100;
+    public double shield;
+    double health;
     long lastTakenDamage = 0;
     boolean isHealing = true;
     public PlayerInfo playerInfo;
@@ -38,6 +37,9 @@ public class Player extends Obj {
             Vector2 pos
         ) {
         super(game, pos.x, pos.y, 25, 0, true);
+
+        health = game.settings.maxHealth;
+        shield = game.settings.maxShield;
         
         this.abilities = new Ability[game.settings.numAbilities];
 
@@ -185,9 +187,9 @@ public class Player extends Obj {
         }
 
         if (isHealing) {
-            if (shield < 100) {
-                double newValue = shield + Math.min(game.settings.playerHealPerInterval * game.deltaTime, 100 - shield);
-                if (newValue <= 100) {
+            if (shield < game.settings.maxShield) {
+                double newValue = shield + Math.min(game.settings.playerHealPerInterval * game.deltaTime, game.settings.maxShield - shield);
+                if (newValue <= game.settings.maxShield) {
                     shield = newValue;
                     needsUpdate = true;
                 }

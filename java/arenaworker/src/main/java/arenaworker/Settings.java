@@ -21,6 +21,8 @@ public class Settings {
     public long playerHealDelay = 1000L * 2L;
     public double playerHealPerInterval = 0.03;
     public long maxReplayTime = 1000L * 60L * 5L;
+    public double maxHealth = 400;
+    public double maxShield = 100;
 
     public Settings() {
         defaultMap.put("startSize", 1800);
