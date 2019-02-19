@@ -8,11 +8,11 @@ import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
 import arenaworker.abilities.Ability;
-import arenaworker.abilities.VortexTrap;
+import arenaworker.abilities.FreezeTrap;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 
-public class VortexTrapGrenade extends AbilityObjectPhysics implements Comparable<VortexTrapGrenade> {
+public class FreezeTrapGrenade extends AbilityObjectPhysics implements Comparable<FreezeTrapGrenade> {
 
     public double speed = 0.1;
     public double damage = 10;
@@ -20,7 +20,7 @@ public class VortexTrapGrenade extends AbilityObjectPhysics implements Comparabl
     long stunDuration = 1500L;
     double vortexRadius = 250;
     
-    public VortexTrapGrenade(Ability ability, double rotation, double radius) {
+    public FreezeTrapGrenade(Ability ability, double rotation, double radius) {
         super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, false);
         initialUpdateName = "grenadeInitial";
         updateName = "grenadeUpdate";
@@ -40,41 +40,24 @@ public class VortexTrapGrenade extends AbilityObjectPhysics implements Comparabl
             }
         } else if (otherObject instanceof Player) {
             if (ability.player != otherObject) {
-                Physics.resolveCollision(this, (Obj)otherObject);
-                Explode();
+                ((Player)otherObject).Freeze(stunDuration);
+                Destroy();
             }
         } else if (otherObject instanceof Box) {
-            Explode();
-        }
-    }
-
-
-    public void Explode() {
-        Destroy();
-
-        Set<Base> objs = ability.player.game.grid.retrieve(position, vortexRadius);
-        for (Base o : objs) {
-            if (o instanceof Player) {
-                if (Physics.circleInCircle(position.x, position.y, vortexRadius, o.position.x, o.position.y, o.radius)) {
-                    Player p = (Player)o;
-                    Vector2 diff = position.copy().subtract(o.position);
-                    p.forces.add(diff.getNormalized().scale(diff.length() * 0.01));
-                    p.Freeze(stunDuration);
-                }
-            }
+            Destroy();
         }
     }
 
     @Override
     public void Destroy() {
-        if (ability instanceof VortexTrap) {
-            ((VortexTrap)ability).traps.remove(this);
+        if (ability instanceof FreezeTrap) {
+            ((FreezeTrap)ability).traps.remove(this);
         }
         super.Destroy();
     }
 
 
-    public int compareTo(VortexTrapGrenade o) {
+    public int compareTo(FreezeTrapGrenade o) {
         return id.compareTo(o.id);
     }
 }
