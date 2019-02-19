@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import arenaworker.abilities.BombDropper;
+import arenaworker.abilities.FreezeTrap;
 import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
@@ -222,6 +223,10 @@ public class Game implements Runnable {
         for (Player p : players) {
             for (int i = 0; i < p.game.settings.numAbilities; i++) {
                 if (p.abilities[i] instanceof BombDropper) {
+                    for (Base b : p.abilities[i].abilityObjects) {
+                        b.Destroy();
+                    }
+                } else if (p.abilities[i] instanceof FreezeTrap) {
                     for (Base b : p.abilities[i].abilityObjects) {
                         b.Destroy();
                     }
