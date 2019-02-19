@@ -18,7 +18,7 @@ public class VortexGrenade extends AbilityObjectPhysics {
     public double damage = 10;
     public double shieldDamageMultiplier = 1;
     double vortexRadius = 250;
-    double stunDuration = 1000L;
+    long stunDuration = 1000L;
     
     public VortexGrenade(Ability ability, double rotation, double radius, double amountOfForce) {
         super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, false);
@@ -65,7 +65,7 @@ public class VortexGrenade extends AbilityObjectPhysics {
                     Player p = (Player)o;
                     Vector2 diff = position.copy().subtract(o.position);
                     p.forces.add(diff.getNormalized().scale(diff.length() * 0.01));
-                    p.Freeze(stunDuration);
+                    p.Stun(stunDuration);
                 }
             }
         }
