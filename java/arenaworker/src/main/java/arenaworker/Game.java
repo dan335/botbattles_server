@@ -1,5 +1,7 @@
 package arenaworker;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,6 +49,7 @@ public class Game implements Runnable {
     public long bulletTimeDuration = 1000L;
     public Grid grid;
     public JSONArray replayJson = new JSONArray();
+    boolean hasReplayBeenSaved = false;
     public Set<PlayerInfo> playerInfo = ConcurrentHashMap.newKeySet();  // info on all players who join game even if they leave
 
 
@@ -63,6 +66,7 @@ public class Game implements Runnable {
     void SaveGameToDb() {
         // add game to db
         MongoCollection<Document> games = App.database.getCollection("games");
+        MongoCollection<Document> users = App.database.getCollection("users");
 
         Document doc = new Document("createdAt", (double)gameCreatedTime)
             .append("_id", new ObjectId(id))
@@ -75,7 +79,9 @@ public class Game implements Runnable {
         for (PlayerInfo info : playerInfo) {
             Document playerDoc = new Document("name", info.name)
                 .append("userId", info.userId)
-                .append("isWinner", info.isWinner);
+                .append("isWinner", info.isWinner)
+                .append("kills", info.kills)
+                .append("damage", info.damageDealt);
 
             List<Document> playerInfoAbilities = new ArrayList<Document>();
             
@@ -87,6 +93,19 @@ public class Game implements Runnable {
             playerDoc.append("abilities", playerInfoAbilities);
 
             playerInfoDocs.add(playerDoc);
+
+            // save kills and damage
+            if (info.userId != null) {
+                Document updateDoc = new Document("kills", info.kills)
+                    .append("damage", info.damageDealt)
+                    .append("plays", 1);
+
+                if (info.isWinner) {
+                    updateDoc.append("wins", 1);
+                }
+
+                users.updateOne(eq("_id", new ObjectId(info.userId)), new Document("$inc", updateDoc));
+            }
         }
 
         doc.append("players", playerInfoDocs);
@@ -101,6 +120,8 @@ public class Game implements Runnable {
 
 
     void SaveReplay() {
+        if (hasReplayBeenSaved) return;
+
         MongoCollection<Document> collection = App.database.getCollection("replays");
 
         Document document = new Document("createdAt", new Date())
@@ -108,6 +129,8 @@ public class Game implements Runnable {
             .append("gameId", id);
 
         collection.insertOne(document);
+
+        hasReplayBeenSaved = true;
     }
 
 
@@ -173,7 +196,7 @@ public class Game implements Runnable {
                 StartCountdown();
             }
 
-            PlayerInfo info = new PlayerInfo(player.id, name, null, abilityTypes);
+            PlayerInfo info = new PlayerInfo(player.id, name, userId, abilityTypes);
             playerInfo.add(info);
             player.playerInfo = info;
         } else {
@@ -340,6 +363,12 @@ public class Game implements Runnable {
 
             totalTickTime += (double)(tickEndTime - tickStartTime);
             numTicks++;
+
+            if (isEnded) {
+                if (tickStartTime > gameEndTime + 1000L * 60L * 5L) {
+                    SaveReplay();
+                }
+            }
 
             if (timeTilNext > 0) {
                 try {

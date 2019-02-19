@@ -20,8 +20,9 @@ public class Explosion extends Obj {
     public double shieldDamageMultiplier = 1;
     double forceToApplyToObjects;
     String color;
+    Player owner;
     
-    public Explosion(Game game, double x, double y, double radius, double damage, double forceToApplyToObjects, String color) {
+    public Explosion(Game game, double x, double y, double radius, double damage, double forceToApplyToObjects, String color, Player owner) {
         super(game, x, y, radius, 0, false);
         initialUpdateName = "explosionInitial";
         updateName = "explosionUpdate";
@@ -31,6 +32,7 @@ public class Explosion extends Obj {
         game.other.add(this);
         this.forceToApplyToObjects = forceToApplyToObjects;
         this.color = color;
+        this.owner = owner;
         
         SendInitialToAll();
 
@@ -56,7 +58,7 @@ public class Explosion extends Obj {
         if (damage == 0) return;
         double distance = position.copy().subtract(player.position).length();
         double percent = 1 - distance / radius * 0.5;
-        player.TakeDamage(damage * percent, shieldDamageMultiplier);
+        player.TakeDamage(damage * percent, shieldDamageMultiplier, owner);
     }
 
     void ApplyForce(Obj obj) {

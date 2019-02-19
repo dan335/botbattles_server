@@ -68,7 +68,7 @@ public class Smasher extends Ability {
                 if (collision.b != player) {
                     if (!hasDoneDamange) {
                         System.out.println(collision.magnitude);
-                        ((Player) collision.b).TakeDamage(damage * collision.magnitude, shieldDamageMultiplier);
+                        ((Player) collision.b).TakeDamage(damage * collision.magnitude, shieldDamageMultiplier, player);
                         hasDoneDamange = true;
                     }
                 }

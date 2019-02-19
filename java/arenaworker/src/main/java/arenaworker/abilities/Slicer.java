@@ -64,7 +64,7 @@ public class Slicer extends Ability {
         if (isOn) {
             if (collision.b instanceof Player) {
                 if (collision.b != player) {
-                    ((Player)collision.b).TakeDamage(damage, shieldDamageMultiplier);
+                    ((Player)collision.b).TakeDamage(damage, shieldDamageMultiplier, player);
                 }
             }
         }

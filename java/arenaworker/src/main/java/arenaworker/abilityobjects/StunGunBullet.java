@@ -54,7 +54,7 @@ public class StunGunBullet extends Projectile {
     @Override
     public void Destroy() {
         super.Destroy();
-        new Explosion(ability.player.game, position.x, position.y, radius * 4, 0, 0, color);
+        new Explosion(ability.player.game, position.x, position.y, radius * 4, 0, 0, color, ability.player);
     }
 
 

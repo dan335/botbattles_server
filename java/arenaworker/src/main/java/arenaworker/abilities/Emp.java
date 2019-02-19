@@ -27,7 +27,7 @@ public class Emp extends Ability {
                 if (o != player) {
                     if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
                         Player p = (Player) o;
-                        p.TakeDamage(p.shield, 1);
+                        p.TakeDamage(p.shield, 1, player);
                     }
                 }
             }

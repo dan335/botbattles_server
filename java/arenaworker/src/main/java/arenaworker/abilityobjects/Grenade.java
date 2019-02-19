@@ -57,7 +57,7 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
 
     public void Explode() {
         Destroy();
-        new Explosion(ability.player.game, position.x, position.y, 200, damage, 1, "0xff4444");
+        new Explosion(ability.player.game, position.x, position.y, 200, damage, 1, "0xff4444", ability.player);
     }
 
     @Override

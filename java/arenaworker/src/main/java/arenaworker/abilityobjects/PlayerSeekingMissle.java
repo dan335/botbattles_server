@@ -88,7 +88,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
             if (ability.player != otherObject) {
                 Physics.resolveCollision(this, (Obj)otherObject);
                 Player player = (Player) otherObject;
-                player.TakeDamage(damage, shieldDamageMultiplier);
+                player.TakeDamage(damage, shieldDamageMultiplier, ability.player);
                 Destroy();
             }
         } else if (otherObject instanceof Box) {
@@ -104,7 +104,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
     @Override
     public void Destroy() {
         super.Destroy();
-        new Explosion(ability.player.game, position.x, position.y, radius * 4, 0, 0, color);
+        new Explosion(ability.player.game, position.x, position.y, radius * 4, 0, 0, color, ability.player);
     }
 
 
