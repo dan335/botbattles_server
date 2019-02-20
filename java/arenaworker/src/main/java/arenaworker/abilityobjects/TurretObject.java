@@ -2,6 +2,8 @@ package arenaworker.abilityobjects;
 
 import java.util.Set;
 
+import org.json.JSONObject;
+
 import arenaworker.Base;
 import arenaworker.Box;
 import arenaworker.Obj;
@@ -9,8 +11,8 @@ import arenaworker.Obstacle;
 import arenaworker.Player;
 import arenaworker.abilities.Ability;
 import arenaworker.lib.Physics;
-import arenaworker.lib.Vector2;
 import arenaworker.other.Explosion;
+import arenaworker.abilities.Turret;
 
 public class TurretObject extends AbilityObjectPhysics {
 
@@ -127,5 +129,22 @@ public class TurretObject extends AbilityObjectPhysics {
     public void Destroy() {
         super.Destroy();
         new Explosion(ability.player.game, position.x, position.y, radius*3, 50, 1, "0xff4444", ability.player);
+        ((Turret)ability).turrets.remove(this);
+    }
+
+
+    @Override
+    public JSONObject InitialData() {
+        JSONObject json = super.InitialData();
+        json.put("health", health);
+        return json;
+    }
+
+
+    @Override
+    public JSONObject UpdateData() {
+        JSONObject json = super.UpdateData();
+        json.put("health", health);
+        return json;
     }
 }

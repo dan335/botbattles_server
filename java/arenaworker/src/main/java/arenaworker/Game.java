@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 import arenaworker.abilities.BombDropper;
 import arenaworker.abilities.FreezeTrap;
+import arenaworker.abilities.Turret;
+import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
@@ -239,8 +241,7 @@ public class Game implements Runnable {
 
     // called after all players have joined
     void StartGame() {
-        isStarted = true;
-        gameStartTime = tickStartTime;
+        
 
         // destroy all bomb dropper bombs when game starts
         for (Player p : players) {
@@ -253,9 +254,16 @@ public class Game implements Runnable {
                     for (Base b : p.abilities[i].abilityObjects) {
                         b.Destroy();
                     }
+                } else if (p.abilities[i] instanceof Turret) {
+                    for (TurretObject t : ((Turret)p.abilities[i]).turrets) {
+                        t.Destroy();
+                    }
                 }
             }
         }
+
+        isStarted = true;
+        gameStartTime = tickStartTime;
 
         JSONObject msg = new JSONObject();
         msg.put("t", "gameStarted");
