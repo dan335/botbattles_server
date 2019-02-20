@@ -51,6 +51,8 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
             }
         } else if (otherObject instanceof Box) {
             Explode();
+        } else if (otherObject instanceof TurretObject) {
+            Physics.resolveCollision(this, (Obj)otherObject);
         }
     }
 

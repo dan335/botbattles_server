@@ -359,7 +359,7 @@ public class Physics {
     
     // slowly rotate towards target
     public static double slowlyRotateToward(Vector2 pos, double rotation, Vector2 targetPos, double maxRotation) {
-        double angle = Math.atan2(pos.x - targetPos.x, pos.y - targetPos.y) * -1;
+        double angle = Math.atan2(targetPos.y - pos.y, targetPos.x - pos.x);
         
         // flipp angle if difference > 3 or < -2
         if (angle - rotation < Math.PI / 2 * -1) {

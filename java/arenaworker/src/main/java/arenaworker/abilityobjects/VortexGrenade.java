@@ -51,6 +51,8 @@ public class VortexGrenade extends AbilityObjectPhysics {
             }
         } else if (otherObject instanceof Box) {
             Explode();
+        } else if (otherObject instanceof TurretObject) {
+            Physics.resolveCollision(this, (Obj)otherObject);
         }
     }
 

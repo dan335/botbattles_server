@@ -344,6 +344,11 @@ public class Player extends Obj {
 
 
     public void TakeDamage(double damage, double shieldDamageMultiplier, Player otherPlayer) {
+        //temp
+        if (otherPlayer == null) {
+            System.out.println(new Throwable().getStackTrace().toString());
+        }
+
         if (!game.isStarted) return;
         if (damage <= 0) return;
         

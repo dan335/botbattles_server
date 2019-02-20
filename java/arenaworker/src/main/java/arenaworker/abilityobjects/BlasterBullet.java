@@ -47,6 +47,12 @@ public class BlasterBullet extends Projectile {
             if (((ShieldBubble)otherObject).ability.player != ability.player) {
                 Destroy();
             }
+        } else if (otherObject instanceof TurretObject) {
+            TurretObject turret = (TurretObject)otherObject;
+            if (turret.ability.player != ability.player) {
+                turret.TakeDamage(damage, shieldDamageMultiplier, ability.player);
+                Destroy();
+            }
         }
     }
 
