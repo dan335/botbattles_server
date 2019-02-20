@@ -344,20 +344,19 @@ public class Player extends Obj {
 
 
     public void TakeDamage(double damage, double shieldDamageMultiplier, Player otherPlayer) {
-        //temp
-        if (otherPlayer == null) {
-            System.out.println(new Throwable().getStackTrace().toString());
-        }
-
         if (!game.isStarted) return;
         if (damage <= 0) return;
         
         if (shield > 0) {
             shield -= Math.min(shield, damage * shieldDamageMultiplier);
-            otherPlayer.AddDamageDealt(Math.min(shield, damage * shieldDamageMultiplier));
+            if (otherPlayer != null) {
+                otherPlayer.AddDamageDealt(Math.min(shield, damage * shieldDamageMultiplier));
+            }
         } else {
             health -= Math.min(health, damage);
-            otherPlayer.AddDamageDealt(Math.min(health, damage));
+            if (otherPlayer != null) {
+                otherPlayer.AddDamageDealt(Math.min(health, damage));
+            }
         }
 
         needsUpdate = true;
@@ -388,7 +387,9 @@ public class Player extends Obj {
                 needsUpdate = true;
                 resurrection.Fire();
             } else {
-                otherPlayer.AddKill();
+                if (otherPlayer != null) {
+                    otherPlayer.AddKill();
+                }
                 Destroy();
             }
         }
