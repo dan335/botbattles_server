@@ -21,6 +21,7 @@ public class Ability {
     public boolean isOn = false;
     public Set<Base> abilityObjects = ConcurrentHashMap.newKeySet();
     public int abilityNum;
+    double rageMultiplier = 0.5;
 
     public Ability(Player player, int abilityNum) {
         this.player = player;
@@ -30,8 +31,14 @@ public class Ability {
 
     public void Tick() {
         if (isOn) {
-            if (player.game.tickStartTime >= lastFired + cooldown) {
-                Fire();
+            if (player.isRaging) {
+                if (player.game.tickStartTime >= lastFired + cooldown * rageMultiplier) {
+                    Fire();
+                }
+            } else {
+                if (player.game.tickStartTime >= lastFired + cooldown) {
+                    Fire();
+                }
             }
         }
 
@@ -49,13 +56,23 @@ public class Ability {
 
     public void Start() {
         isOn = true;
-        if (player.game.tickStartTime >= lastFired + cooldown) {
-            Fire();
+        if (player.isRaging) {
+            if (player.game.tickStartTime >= lastFired + cooldown * rageMultiplier) {
+                Fire();
+            }
+        } else {
+            if (player.game.tickStartTime >= lastFired + cooldown) {
+                Fire();
+            }
         }
     }
 
     public boolean IsReady() {
-        return player.game.tickStartTime >= lastFired + cooldown;
+        if (player.isRaging) {
+            return player.game.tickStartTime >= lastFired + cooldown * rageMultiplier;
+        } else {
+            return player.game.tickStartTime >= lastFired + cooldown;
+        }
     }
 
     public void Stop() {
@@ -99,8 +116,12 @@ public class Ability {
         JSONObject json = new JSONObject();
         json.put("t", "abilityCooldown");
         json.put("num", abilityNum);
-        json.put("lastFired", lastFired);
-        json.put("cooldown", (double)cooldown);
+        //json.put("lastFired", lastFired); // using time message was received
+        if (player.isRaging) {
+            json.put("cooldown", (double)cooldown * rageMultiplier);
+        } else {
+            json.put("cooldown", (double)cooldown);
+        }
         player.client.SendJson(json);
     }
 }

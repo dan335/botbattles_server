@@ -10,6 +10,7 @@ import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
 import arenaworker.abilityobjects.Grenade;
+import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 
@@ -38,13 +39,15 @@ public class Explosion extends Obj {
 
         Set<Base> objs = game.grid.retrieve(new Vector2(x, y), radius);
         for (Base o : objs) {
-            if (o instanceof Player || o instanceof Obstacle) {
+            if (o instanceof Player || o instanceof Obstacle || o instanceof TurretObject) {
                 if (Physics.circleInCircle(position.x, position.y, radius, o.position.x, o.position.y, o.radius)) {
                     if (o instanceof Player) {
                         ApplyDamage((Player)o);
                         ApplyForce((Obj)o);
                     } else if (o instanceof Obstacle) {
                         ApplyForce((Obj)o);
+                    } else if (o instanceof TurretObject) {
+                        ApplyDamage((TurretObject)o);
                     }
                 }
             }
@@ -59,6 +62,13 @@ public class Explosion extends Obj {
         double distance = position.copy().subtract(player.position).length();
         double percent = 1 - distance / radius * 0.5;
         player.TakeDamage(damage * percent, shieldDamageMultiplier, owner);
+    }
+
+    void ApplyDamage(TurretObject turret) {
+        if (damage == 0) return;
+        double distance = position.copy().subtract(turret.position).length();
+        double percent = 1 - distance / radius * 0.5;
+        turret.TakeDamage(damage * percent, owner);
     }
 
     void ApplyForce(Obj obj) {

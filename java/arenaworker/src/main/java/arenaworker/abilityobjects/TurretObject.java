@@ -10,9 +10,10 @@ import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
 import arenaworker.abilities.Ability;
-import arenaworker.lib.Physics;
-import arenaworker.other.Explosion;
 import arenaworker.abilities.Turret;
+import arenaworker.lib.Physics;
+import arenaworker.lib.Vector2;
+import arenaworker.other.Explosion;
 
 public class TurretObject extends AbilityObjectPhysics {
 
@@ -21,9 +22,12 @@ public class TurretObject extends AbilityObjectPhysics {
     long fireCooldown = 500L;
     double health = 100;
     double aquireRadius = 700;
-    double bulletDamage = 6;
+    double bulletDamage = 5;
     double shieldDamageMultiplier = 1;
     String bulletColor = "0xff4444";
+    Vector2 interceptPos = new Vector2();
+    double bulletSpeed = 1; // should be the same as blaster bullet
+
 
     public TurretObject(Ability ability, double rotation, double x, double y) {
         super(ability, x, y, 20, rotation, true);
@@ -56,6 +60,7 @@ public class TurretObject extends AbilityObjectPhysics {
         }
 
         if (target != null) {
+            FindInterceptPos();
             RotateTowardsTarget();
         }
 
@@ -78,9 +83,46 @@ public class TurretObject extends AbilityObjectPhysics {
         }
     }
 
+    // http://danikgames.com/blog/how-to-intersect-a-moving-target-in-2d/
+    void FindInterceptPos() {
+        // find the vector AB
+        double ABx = target.position.x - position.x;
+        double ABy = target.position.y - position.y;
+        
+        // Normalize it
+        final double ABmag = Math.sqrt(ABx * ABx + ABy * ABy);
+        ABx /= ABmag;
+        ABy /= ABmag;
+        
+        // Project u onto AB
+        final double uDotAB = ABx * target.velocity.x + ABy * target.velocity.y;
+        final double ujx = uDotAB * ABx;
+        final double ujy = uDotAB * ABy;
+        
+        // subtract uj from u to get ui
+        final double uix = target.velocity.x - ujx;
+        final double uiy = target.velocity.y - ujy;
+        
+        // set vi to ui (for clarity)
+        final double vix = uix;
+        final double viy = uiy;
+        
+        // calculate the magnitude of vj
+        final double viMag = Math.sqrt(vix * vix + viy * viy);
+        final double vjMag = Math.sqrt(bulletSpeed * bulletSpeed - viMag * viMag);
+        
+        // get vj by multiplying it's magnitude with the unit vector AB
+        final double vjx = ABx * vjMag;
+        final double vjy = ABy * vjMag;
+        
+        // add vj and vi to get v
+        interceptPos.x = position.x + vjx + vix;
+        interceptPos.y = position.y + vjy + viy;
+    }
+
 
     void RotateTowardsTarget() {
-        rotation = Physics.slowlyRotateToward(position, rotation, target.position, 5);
+        rotation = Physics.slowlyRotateToward(position, rotation, interceptPos, 5);
         needsUpdate = true;
     }
 
@@ -110,7 +152,7 @@ public class TurretObject extends AbilityObjectPhysics {
     }
 
 
-    public void TakeDamage(double damage, double shieldDamageMultiplier, Player otherPlayer) {
+    public void TakeDamage(double damage, Player otherPlayer) {
         if (!game.isStarted) return;
         if (damage <= 0) return;
         

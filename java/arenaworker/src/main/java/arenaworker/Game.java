@@ -25,6 +25,7 @@ import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
+import arenaworker.PlayerInfo;
 
 public class Game implements Runnable {
     public final String id = new ObjectId().toHexString();
@@ -83,7 +84,8 @@ public class Game implements Runnable {
                 .append("userId", info.userId)
                 .append("isWinner", info.isWinner)
                 .append("kills", info.kills)
-                .append("damage", info.damageDealt);
+                .append("damage", info.damageDealt)
+                .append("ratingChange", info.ratingChange);
 
             List<Document> playerInfoAbilities = new ArrayList<Document>();
             
@@ -136,6 +138,60 @@ public class Game implements Runnable {
     }
 
 
+    double kFactor = 32;
+    void SaveRating() {
+        MongoCollection<Document> collection = App.database.getCollection("users");
+
+        PlayerInfo winner = null;
+        
+        for (PlayerInfo player : playerInfo) {
+            if (player.isWinner) {
+                winner = player;
+            }
+        }
+
+        if (winner == null) return;
+        if (winner.userId == null) return;
+
+        winner.ratingChange = 0;
+
+        Double winnerRating = winner.userData.getDouble("rating");
+        if (winnerRating == null) {
+            winnerRating = settings.defaultRating;
+        }
+
+        for (PlayerInfo player : playerInfo) {
+            if (player.userData != null) {
+                if (player.userId != winner.userId) {
+                    Double loserRating = player.userData.getDouble("rating");
+
+                    if (loserRating == null) {
+                        loserRating = settings.defaultRating;
+                    }
+
+                    // get expected
+                    double expectedW = 1 / (1 + Math.pow(10, (loserRating - winnerRating) / 400));
+                    double expectedL = 1 / (1 + Math.pow(10, (winnerRating - loserRating) / 400));
+
+                    // score = 0=loss 0.5=draw 1=win
+                    winner.ratingChange += kFactor * (1 - expectedW);
+                    player.ratingChange = kFactor * (0 - expectedL);
+
+                    // update db
+                    Document document = new Document("rating", loserRating + player.ratingChange);
+                    collection.updateOne(eq("_id", new ObjectId(player.userId)), new Document("$set", document));
+                }
+            }
+        }
+
+        // update db
+        if (winner.ratingChange != 0) {
+            Document document = new Document("rating", winnerRating + winner.ratingChange);
+            collection.updateOne(eq("_id", new ObjectId(winner.userId)), new Document("$set", document));
+        }
+    }
+
+
     // called from GameManager
     public void Destroy() {
         isRunning = false;
@@ -156,6 +212,7 @@ public class Game implements Runnable {
         msg.put("name", player.client.name);
         SendJsonToClients(msg);
 
+        SaveRating();
         SaveGameToDb();
     }
 
@@ -198,7 +255,12 @@ public class Game implements Runnable {
                 StartCountdown();
             }
 
-            PlayerInfo info = new PlayerInfo(player.id, name, userId, abilityTypes);
+            String[] abilities = new String[settings.numAbilities];
+            for (int i = 0; i < settings.numAbilities; i++) {
+                abilities[i] = player.abilities[i].getClass().getSimpleName().toString();
+            }
+
+            PlayerInfo info = new PlayerInfo(player.id, name, userId, abilities);
             playerInfo.add(info);
             player.playerInfo = info;
         } else {

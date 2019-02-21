@@ -23,6 +23,7 @@ public class Settings {
     public long maxReplayTime = 1000L * 60L * 5L;
     public double maxHealth = 300;
     public double maxShield = 100;
+    public double defaultRating = 1000;
 
     public Settings() {
         defaultMap.put("startSize", 1800);

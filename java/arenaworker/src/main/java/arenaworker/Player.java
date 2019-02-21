@@ -17,10 +17,10 @@ public class Player extends Obj {
     boolean isEngineOnRight = false;
     boolean isEngineOnUp = false;
     boolean isEngineOnDown = false;
-    Vector2 mousePosition = new Vector2();
+    public Vector2 mousePosition = new Vector2();
     public Ability[] abilities;
     public double shield;
-    double health;
+    public double health;
     long lastTakenDamage = 0;
     boolean isHealing = true;
     public PlayerInfo playerInfo;
@@ -28,9 +28,11 @@ public class Player extends Obj {
     public boolean isStunned = false;
     public boolean isFrozen = false;
     public boolean isSilenced = false;
+    public boolean isRaging = false;
     public long stunEnd;
     public long frozenEnd;
     public long silencedEnd;
+    public long rageEnd;
     public boolean isInvis = false;
     public long invisEnd;
     public double shipSpeedMultiplier = 1;
@@ -199,6 +201,13 @@ public class Player extends Obj {
             }
         }
 
+        if (isRaging) {
+            if (game.tickStartTime >= rageEnd) {
+                isRaging = false;
+                Stun(2000L);
+            }
+        }
+
         super.Tick();
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
@@ -220,6 +229,12 @@ public class Player extends Obj {
                 }
             }
         }
+    }
+
+
+    public void Rage(long duration) {
+        isRaging = true;
+        rageEnd = game.tickStartTime + duration;
     }
 
 

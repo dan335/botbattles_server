@@ -14,7 +14,7 @@ import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 import arenaworker.other.Explosion;
 
-public class PlayerSeekingMissle extends AbilityObjectPhysics {
+public class MouseSeekingMissle extends AbilityObjectPhysics {
 
     String color;
     public double damage = 30;
@@ -22,7 +22,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
     double searchRadius = 600;
     double speed = 0.15;
     
-    public PlayerSeekingMissle(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color) {
+    public MouseSeekingMissle(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color) {
         super(ability, x, y, radius, rotation, false);
         initialUpdateName = "playerSeekingMissleInitial";
         updateName = "playerSeekingMissleUpdate";
@@ -55,7 +55,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
             }
         }
 
-        if (closestPlayer == null) {
+        if (ability.player.mousePosition == null) {
             forces = new Vector2(
                 Math.cos(rotation) * speed,
                 Math.sin(rotation) * speed
@@ -66,11 +66,11 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
                 Math.sin(rotation)
             );
 
-            Vector2 towardsPlayer = closestPlayer.position.subtract(position).getNormalized();
+            Vector2 towardsMouse = ability.player.mousePosition.subtract(position).getNormalized();
 
-            towardsPlayer.scale(0.08);
+            towardsMouse.scale(0.08);
 
-            forces = straight.add(towardsPlayer).normalize().scale(speed);
+            forces = straight.add(towardsMouse).normalize().scale(speed);
 
             this.rotation = Math.atan2(forces.y, forces.x);
         }
