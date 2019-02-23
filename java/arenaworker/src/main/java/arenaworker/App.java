@@ -60,7 +60,7 @@ public class App
                 e.printStackTrace();
             }
 
-            System.out.println("Arena worker started.");
+            System.out.println("Bot Battles worker started.");
         } catch (Throwable ex) {
             System.err.println("Uncaught exception - " + ex.getMessage());
             ex.printStackTrace(System.err);

@@ -119,15 +119,19 @@ public class Player extends Obj {
         switch (key) {
             case "up":
                 isEngineOnUp = false;
+                needsUpdate = true;
                 break;
             case "down":
                 isEngineOnDown = false;
+                needsUpdate = true;
                 break;
             case "left":
                 isEngineOnLeft = false;
+                needsUpdate = true;
                 break;
             case "right":
                 isEngineOnRight = false;
+                needsUpdate = true;
                 break;
         }
     }
@@ -137,15 +141,19 @@ public class Player extends Obj {
         switch (key) {
             case "up":
                 isEngineOnUp = true;
+                needsUpdate = true;
                 break;
             case "down":
                 isEngineOnDown = true;
+                needsUpdate = true;
                 break;
             case "left":
                 isEngineOnLeft = true;
+                needsUpdate = true;
                 break;
             case "right":
                 isEngineOnRight = true;
+                needsUpdate = true;
                 break;
         }
     }
@@ -354,6 +362,10 @@ public class Player extends Obj {
         JSONObject json = super.UpdateData();
         json.put("health", health);
         json.put("shield", shield);
+        json.put("engineDown", isEngineOnDown);
+        json.put("engineUp", isEngineOnUp);
+        json.put("engineLeft", isEngineOnLeft);
+        json.put("engineRight", isEngineOnRight);
         return json;
     }
 

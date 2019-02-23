@@ -378,9 +378,9 @@ public class Game implements Runnable {
     double serverTickTime = 0;
     public void run() {
         while (isRunning) {
-            tickStartTime = Calendar.getInstance().getTimeInMillis();
+            deltaTime = Calendar.getInstance().getTimeInMillis() - tickStartTime;// / settings.updateIntervalMs;
 
-            deltaTime = tickStartTime - tickEndTime;// / settings.updateIntervalMs;
+            tickStartTime = Calendar.getInstance().getTimeInMillis();
 
             if (isInBulletTime) {
                 deltaTime = deltaTime * 0.5;
