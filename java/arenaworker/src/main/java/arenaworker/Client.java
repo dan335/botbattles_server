@@ -42,6 +42,11 @@ public class Client {
         if (player != null) {
             player.Destroy();
         }
+
+        JSONObject json = new JSONObject();
+        json.put("t", "clientDisconnected");
+        json.put("name", name);
+        game.SendJsonToClients(json);
         
         game.clients.remove(this);
         Clients.clients.remove(session);
