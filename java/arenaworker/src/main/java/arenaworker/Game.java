@@ -252,7 +252,7 @@ public class Game implements Runnable {
             client.AddPlayer(player);
             
             if (players.size() == 2) {
-                StartCountdown();
+                countdownStarted = tickStartTime;
             }
 
             String[] abilities = new String[settings.numAbilities];
@@ -269,15 +269,6 @@ public class Game implements Runnable {
             msg.put("name", client.name);
             SendJsonToClients(msg);
         }
-    }
-
-
-    void StartCountdown() {
-        countdownStarted = tickStartTime;
-        JSONObject json = new JSONObject();
-        json.put("t", "countdownStarted");
-        json.put("startTime", (double)tickStartTime + settings.gameWaitToStartTimeMs);
-        SendJsonToClients(json);
     }
 
 
@@ -376,6 +367,7 @@ public class Game implements Runnable {
     double totalTickTime = 0;
     int numTicks = 0;
     double serverTickTime = 0;
+    Double lastSentCountdown = null;
     public void run() {
         while (isRunning) {
             tickStartTime = Calendar.getInstance().getTimeInMillis();
@@ -393,6 +385,23 @@ public class Game implements Runnable {
             if (!isStarted && players.size() >= 2) {
                 if (tickStartTime - countdownStarted > settings.gameWaitToStartTimeMs) {
                     StartGame();
+                } else {
+                    double secLeft = Math.round((countdownStarted + settings.gameWaitToStartTimeMs - tickStartTime) / 1000);
+                    if (lastSentCountdown == null) {
+                        lastSentCountdown = secLeft;
+                        JSONObject json = new JSONObject();
+                        json.put("t", "text");
+                        json.put("m", secLeft+1);
+                        SendJsonToClients(json);
+                    } else {
+                        if (secLeft != lastSentCountdown) {
+                            JSONObject json = new JSONObject();
+                            json.put("t", "text");
+                            json.put("m", secLeft+1);
+                            SendJsonToClients(json);
+                            lastSentCountdown = secLeft;
+                        }
+                    }
                 }
             }
 

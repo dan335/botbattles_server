@@ -34,7 +34,7 @@ public class SocketListener implements WebSocketListener {
     public void onWebSocketConnect(Session session)
     {
         this.session = session;
-        this.session.setIdleTimeout(3600000);   // 1 hour
+        this.session.setIdleTimeout(3600000L);   // 1 hour
 
         // start rate limit info
         allowance = rate;

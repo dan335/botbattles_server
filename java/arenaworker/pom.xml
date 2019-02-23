@@ -28,27 +28,27 @@
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-api</artifactId>
-      <version>9.4.8.v20171121</version>
+      <version>9.4.15.v20190215</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-servlet</artifactId>
-      <version>9.4.8.v20171121</version>
+      <version>9.4.15.v20190215</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.4.8.v20171121</version>
+      <version>9.4.15.v20190215</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
-      <version>9.4.8.v20171121</version>
+      <version>9.4.15.v20190215</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-server</artifactId>
-      <version>9.4.8.v20171121</version>
+      <version>9.4.15.v20190215</version>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
