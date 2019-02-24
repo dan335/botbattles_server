@@ -44,7 +44,7 @@ public class SocketListener implements WebSocketListener {
     @Override
     public void onWebSocketError(Throwable cause)
     {
-        DisconnectSession();
+        //DisconnectSession();
         cause.printStackTrace();
     }
 

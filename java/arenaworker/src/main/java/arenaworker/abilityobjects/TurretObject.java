@@ -17,7 +17,7 @@ import arenaworker.other.Explosion;
 
 public class TurretObject extends AbilityObjectPhysics {
 
-    Player target;
+    Obj target;
     long lastFired = 0L;
     long fireCooldown = 500L;
     double health = 100;
@@ -76,7 +76,19 @@ public class TurretObject extends AbilityObjectPhysics {
             if (o instanceof Player) {
                 if (o != ability.player) {
                     if (Physics.circleInCircle(position.x, position.y, aquireRadius, o.position.x, o.position.y, o.radius)) {
-                        target = (Player)o;
+                        target = (Obj)o;
+                    }
+                }
+            }
+        }
+
+        if (target == null) {
+            for (Base o : objs) {
+                if (o instanceof TurretObject) {
+                    if (((TurretObject)o).ability.player != ability.player) {
+                        if (Physics.circleInCircle(position.x, position.y, aquireRadius, o.position.x, o.position.y, o.radius)) {
+                            target = (Obj)o;
+                        }
                     }
                 }
             }

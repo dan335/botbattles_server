@@ -10,6 +10,7 @@ import arenaworker.abilities.Resurrection;
 import arenaworker.lib.Collision;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
+import arenaworker.other.Explosion;
 
 public class Player extends Obj {
     public Client client;
@@ -312,6 +313,10 @@ public class Player extends Obj {
         if (game.players.size() == 1) {
             game.DeclareWinner(game.players.iterator().next());
         }
+
+        client.player = null;
+
+        new Explosion(game, position.x, position.y, radius * 4, 20, 1, "0xff4444", null);
     }
 
 
