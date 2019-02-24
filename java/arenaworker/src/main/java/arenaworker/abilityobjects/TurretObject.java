@@ -169,7 +169,9 @@ public class TurretObject extends AbilityObjectPhysics {
         if (damage <= 0) return;
         
         health -= Math.min(health, damage);
-        otherPlayer.AddDamageDealt(Math.min(health, damage));
+        if (otherPlayer != null) {
+            otherPlayer.AddDamageDealt(Math.min(health, damage));
+        }
 
         needsUpdate = true;
 
