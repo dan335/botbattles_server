@@ -49,7 +49,9 @@ public class Grid {
             if (objects.containsKey(grid)) {
                 objects.get(grid).add(obj);
             } else {
-                objects.put(grid, new HashSet<Base>(Arrays.asList(obj)));
+                Set<Base> temp = ConcurrentHashMap.newKeySet();
+                temp.add(obj);
+                objects.put(grid, temp);
             }
         }
     }
@@ -93,26 +95,7 @@ public class Grid {
         return retrievedObjects;
     }
     
-    
-    // public Set<Base> retrievePlayers(Vector2 pos, double radius) {
-    //     Set<Base> retrievedObjects = new HashSet<>();
-    //     Set<Base> tempObjects = new HashSet<>();
-        
-    //     String[] grids = getGridsObjCircleIsIn(pos, radius);
-        
-    //     for (String grid : grids) {
-    //         if (objects.containsKey(grid)) {
-    //             for (Base o : objects.get(grid)) {
-    //                 if (Player.class.isAssignableFrom(o.getClass())) {
-    //                    tempObjects.add(o); 
-    //                 }
-    //             }
-    //             retrievedObjects.addAll(tempObjects);
-    //         }
-    //     }
 
-    //     return retrievedObjects;
-    // }
     
     
     private String[] getGridsObjCircleIsIn(Vector2 pos, double radius) {
@@ -135,6 +118,7 @@ public class Grid {
         List<String> grids = new ArrayList<>();
 
         // https://stackoverflow.com/questions/622140/calculate-bounding-box-coordinates-from-a-rotated-rectangle
+        // TODO: remove rotation part to make faster - boxes are never rotated
         double x1 = -scale.x / 2;
         double x2 = scale.x / 2;
         double x3 = scale.x / 2;

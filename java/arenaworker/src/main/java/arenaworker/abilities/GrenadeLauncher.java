@@ -1,5 +1,7 @@
 package arenaworker.abilities;
 
+import org.json.JSONObject;
+
 import arenaworker.Player;
 import arenaworker.abilityobjects.Grenade;
 
@@ -23,6 +25,13 @@ public class GrenadeLauncher extends Ability {
             grenade = new Grenade(this, player.rotation, 12, amountOfForce, damage);
             cooldown = 300L;
             SendCooldownMessage();
+            JSONObject json = new JSONObject();
+            json.put("t", "blast");
+            json.put("x", player.position.x);
+            json.put("y", player.position.y);
+            json.put("rotation", player.rotation);
+            json.put("color", "0xff4444");
+            player.game.SendJsonToClients(json);
         } else {
             grenade.Explode();  
         }
