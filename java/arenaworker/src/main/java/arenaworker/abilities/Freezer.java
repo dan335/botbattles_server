@@ -36,7 +36,7 @@ public class Freezer extends Ability {
         }
 
         JSONObject json = new JSONObject();
-        json.put("t", "slamInitial");
+        json.put("t", "freezeInitial");
         json.put("shipId", player.id);
         json.put("radius", radius);
         player.game.SendJsonToClients(json);
