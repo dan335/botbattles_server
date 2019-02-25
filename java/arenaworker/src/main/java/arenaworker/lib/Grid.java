@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import arenaworker.Base;
 import arenaworker.ObjRectangle;
-import arenaworker.Player;
 
 public class Grid {
     

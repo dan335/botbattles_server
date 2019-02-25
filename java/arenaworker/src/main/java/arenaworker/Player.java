@@ -91,7 +91,7 @@ public class Player extends Obj {
         if (mousePosition.x != x || mousePosition.y != y) {
             mousePosition.x = x;
             mousePosition.y = y;
-            needsUpdate = true;
+            //needsUpdate = true;
         }
     }
 
@@ -184,6 +184,7 @@ public class Player extends Obj {
                 mousePosition.y - position.y,
                 mousePosition.x - position.x    
             );
+            needsUpdate = true;
         }
 
         if (isStunned) {

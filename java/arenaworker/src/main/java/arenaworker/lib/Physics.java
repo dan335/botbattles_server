@@ -340,7 +340,7 @@ public class Physics {
         
         collisionNormal.normalize();
 
-        double percent = 0.5; // usually 20% to 80%
+        double percent = 0.8; // usually 20% to 80%
         double slop = 0.01;
         double amount = Math.max( penetrationDepth - slop, 0) / (aInverseMass + bInverseMass) * percent;
 

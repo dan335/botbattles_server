@@ -126,13 +126,20 @@ public class Game implements Runnable {
     void SaveReplay() {
         if (hasReplayBeenSaved) return;
 
-        MongoCollection<Document> collection = App.database.getCollection("replays");
+        MongoCollection<Document> replays = App.database.getCollection("replays");
+        MongoCollection<Document> replaydata = App.database.getCollection("replaydatas");
 
-        Document document = new Document("createdAt", new Date())
-            .append("json", replayJson.toString())
-            .append("gameId", id);
+        ObjectId replayId = new ObjectId();
 
-        collection.insertOne(document);
+        Document replayDoc = new Document("createdAt", new Date())
+            .append("gameId", id)
+            .append("_id", replayId);
+        
+        Document replayDataDoc = new Document("_id", replayId)
+        .append("json", replayJson.toString());
+
+        replays.insertOne(replayDoc);
+        replaydata.insertOne(replayDataDoc);
 
         hasReplayBeenSaved = true;
     }

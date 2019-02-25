@@ -39,8 +39,10 @@ public class App
             database = mongoClient.getDatabase("arena");
 
             // erase old replays
-            MongoCollection<Document> collection = database.getCollection("replays");
-            collection.drop();
+            MongoCollection<Document> replays = database.getCollection("replays");
+            replays.drop();
+            MongoCollection<Document> replaydata = database.getCollection("replaydatas");
+            replaydata.drop();
 
             Server server = new Server(3020);
             

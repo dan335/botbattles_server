@@ -75,6 +75,9 @@ public class Base {
 
     public void SetRadius(double radius) {
         this.radius = radius;
+        if (isInGrid) {
+            game.grid.update(this);
+        }
     }
 
 
@@ -83,7 +86,6 @@ public class Base {
         json.put("t", destroyUpdateName);
         json.put("id", id);
         game.SendJsonToClients(json);
-        
         if (isInGrid) {
             game.grid.remove(this);
         }

@@ -72,35 +72,35 @@ public class IncomingMessage {
 
     static void keyDown(JSONObject json, Session session) {
         Client client = Clients.GetClient(session);
-        if (client != null) {
+        if (client != null && client.player != null) {
             client.player.KeyDown(json.getString("key"));
         }
     }
 
     static void keyUp(JSONObject json, Session session) {
         Client client = Clients.GetClient(session);
-        if (client != null) {
+        if (client != null && client.player != null) {
             client.player.KeyUp(json.getString("key"));
         }
     }
 
     static void abilityKeyDown(JSONObject json, Session session) {
         Client client = Clients.GetClient(session);
-        if (client != null) {
+        if (client != null && client.player != null) {
             client.player.AbilityKeyDown(json.getInt("num"));
         }
     }
 
     static void abilityKeyUp(JSONObject json, Session session) {
         Client client = Clients.GetClient(session);
-        if (client != null) {
+        if (client != null && client.player != null) {
             client.player.AbilityKeyUp(json.getInt("num"));
         }
     }
 
     static void mousemove(JSONObject json, Session session) {
         Client client = Clients.GetClient(session);
-        if (client != null) {
+        if (client != null && client.player != null) {
             client.player.SetMousePosition(json.getDouble("x"), json.getDouble("y"));
         }
     }
