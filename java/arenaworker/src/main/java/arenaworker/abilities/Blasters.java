@@ -7,7 +7,7 @@ import arenaworker.lib.Vector2;
 public class Blasters extends Ability {
 
     boolean left = true;
-    double fireOffset = 10;
+    double fireOffset = 8;
     String color = "0xff4444";
     double damage = 15;
     double shieldDamageMultiplier = 1;

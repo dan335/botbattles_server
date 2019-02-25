@@ -12,7 +12,7 @@ public class Freezer extends Ability {
 
     double radius = 150;
     long duration = 2500L;
-    double damage = 20;
+    double damage = 40;
     
     public Freezer(Player player, int abilityNum) {
         super(player, abilityNum);

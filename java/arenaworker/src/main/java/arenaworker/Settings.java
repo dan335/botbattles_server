@@ -30,7 +30,7 @@ public class Settings {
 
         JSONArray obstacles = new JSONArray();
 
-        int num = 10;
+        int num = 8;
         double radius = 600;
         for (int i = 0; i < num; i++) {
             double angle = 2 * i * Math.PI / num ;
@@ -45,7 +45,7 @@ public class Settings {
             obstacles.put(obstacle);
         }
 
-        num = 5;
+        num = 6;
         radius = 300;
         for (int i = 0; i < num; i++) {
             double angle = 2 * i * Math.PI / num ;
@@ -59,6 +59,14 @@ public class Settings {
             obstacle.put("shape", "circle");    // not used?
             obstacles.put(obstacle);
         }
+
+        JSONObject obstacle = new JSONObject();
+        obstacle.put("x", 0);
+        obstacle.put("y", 0);
+        obstacle.put("radius", 80);
+        obstacle.put("mass", 10);
+        obstacle.put("shape", "circle");    // not used?
+        obstacles.put(obstacle);
 
         defaultMap.put("obstacles", obstacles);
     }
