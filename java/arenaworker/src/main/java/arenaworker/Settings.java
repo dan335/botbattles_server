@@ -12,7 +12,7 @@ public class Settings {
     public long updateIntervalMs = 40L;
     public JSONObject defaultMap = new JSONObject();
     public long mapUpdateInterval = 1000L * 2L;
-    public double mapShrinkPerInterval = 0.005;
+    public double mapShrinkPerInterval = 0.008;
     public double mapMinSize = 400;
     public int gridDivisions = 10;
     public double shipEngineSpeed = 0.075;
@@ -22,7 +22,7 @@ public class Settings {
     public double playerHealPerInterval = 0.03;
     public long maxReplayTime = 1000L * 60L * 5L;
     public double maxHealth = 300;
-    public double maxShield = 100;
+    public double maxShield = 120;
     public double defaultRating = 1000;
 
     public Settings() {

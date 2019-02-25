@@ -12,6 +12,7 @@ public class Freezer extends Ability {
 
     double radius = 150;
     long duration = 2500L;
+    double damage = 20;
     
     public Freezer(Player player, int abilityNum) {
         super(player, abilityNum);
@@ -28,6 +29,7 @@ public class Freezer extends Ability {
                 if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
                     if (o != player) {
                         ((Player)o).Freeze(duration);
+                        ((Player)o).TakeDamage(damage, 1, player);
                     }
                 }
             }

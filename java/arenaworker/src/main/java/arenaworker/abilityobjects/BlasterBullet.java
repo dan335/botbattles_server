@@ -21,7 +21,7 @@ public class BlasterBullet extends Projectile {
         updateName = "blasterBulletUpdate";
         destroyUpdateName = "blasterBulletDestroy";
         this.color = color;
-        speed = 1;
+        speed = 1.1;
         mass = 0.4;
         this.damage = damage;
         this.shieldDamageMultiplier = shieldDamageMultiplier;
