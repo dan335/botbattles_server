@@ -31,7 +31,11 @@ public class Vacuum extends Ability {
                 if (o instanceof Player || o instanceof Obstacle) {
                     if (o != player) {
                         if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
-                            ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.1));
+                            if (o instanceof Player) {
+                                ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.1));
+                            } else {
+                                ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.01));
+                            }
                         }
                     }
                 }
