@@ -1,5 +1,7 @@
 package arenaworker;
 
+import java.io.EOFException;
+
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
@@ -56,13 +58,10 @@ public class App
 
             server.start();
             server.join();
-            try {
-                
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             System.out.println("Bot Battles worker started.");
+        } catch (EOFException ex) {
+            // do nothing
         } catch (Throwable ex) {
             System.err.println("Uncaught exception - " + ex.getMessage());
             ex.printStackTrace(System.err);

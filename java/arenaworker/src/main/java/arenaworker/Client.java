@@ -1,6 +1,5 @@
 package arenaworker;
 
-import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 

@@ -54,7 +54,7 @@ public class Player extends Obj {
         this.client = client;
         game.players.add(this);
         
-        mass = 1;
+        mass = game.settings.playerDefaultMass;
         initialUpdateName = "shipInitial";
         updateName = "shipUpdate";
         destroyUpdateName = "shipDestroy";

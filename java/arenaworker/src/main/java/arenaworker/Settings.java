@@ -24,6 +24,7 @@ public class Settings {
     public double maxHealth = 300;
     public double maxShield = 120;
     public double defaultRating = 1000;
+    public double playerDefaultMass = 1;
 
     public Settings() {
         defaultMap.put("startSize", 1800);
