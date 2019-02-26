@@ -20,6 +20,7 @@ public class Player extends Obj {
     boolean isEngineOnDown = false;
     public Vector2 mousePosition = new Vector2();
     public Ability[] abilities;
+    public boolean[] abilityKeysDown;
     public double shield;
     public double health;
     long lastTakenDamage = 0;
@@ -53,6 +54,7 @@ public class Player extends Obj {
         shield = game.settings.maxShield;
         
         this.abilities = new Ability[game.settings.numAbilities];
+        this.abilityKeysDown = new boolean[game.settings.numAbilities];
 
         this.client = client;
         game.players.add(this);
@@ -86,6 +88,7 @@ public class Player extends Obj {
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
             abilities[i].Init();
+            abilityKeysDown[i] = false;
         }
     }
 
@@ -100,6 +103,8 @@ public class Player extends Obj {
 
 
     public void AbilityKeyDown(int num) {
+        abilityKeysDown[num] = true;
+
         if (!isCharging && !isStunned && !isSilenced) {
             abilities[num].Start();
 
@@ -116,6 +121,17 @@ public class Player extends Obj {
 
     public void AbilityKeyUp(int num) {
         abilities[num].Stop();
+        abilityKeysDown[num] = false;
+    }
+
+
+    // called after being stunned.  restart abilities if keys are still down
+    public void RestartAbilities() {
+        for (int i = 0; i < game.settings.numAbilities; i++) {
+            if (abilityKeysDown[i]) {
+                abilities[i].Start();
+            }
+        }
     }
 
 
@@ -192,7 +208,7 @@ public class Player extends Obj {
 
         if (isStunned) {
             if (game.tickStartTime >= stunEnd) {
-                isStunned = false;
+                StunEnd();
             }
         }
 
@@ -204,20 +220,19 @@ public class Player extends Obj {
 
         if (isFrozen) {
             if (game.tickStartTime >= frozenEnd) {
-                isFrozen = false;
+                FreezeEnd();
             }
         }
 
         if (isSilenced) {
             if (game.tickStartTime >= silencedEnd) {
-                isSilenced = false;
+                SilenceEnd();
             }
         }
 
         if (isRaging) {
             if (game.tickStartTime >= rageEnd) {
-                isRaging = false;
-                Stun(2000L);
+                RageEnd();
             }
         }
 
@@ -250,6 +265,11 @@ public class Player extends Obj {
         rageEnd = game.tickStartTime + duration;
     }
 
+    public void RageEnd() {
+        isRaging = false;
+        Stun(2000L);
+    }
+
 
     public void Stun(long duration) {
         isStunned = true;
@@ -260,6 +280,11 @@ public class Player extends Obj {
                 abilities[i].Stop();
             }
         }
+    }
+
+    public void StunEnd() {
+        isStunned = false;
+        RestartAbilities();
     }
 
 
@@ -274,10 +299,19 @@ public class Player extends Obj {
         }
     }
 
+    public void SilenceEnd() {
+        isSilenced = false;
+        RestartAbilities();
+    }
+
 
     public void Freeze(long duration) {
         isFrozen = true;
         frozenEnd = game.tickStartTime + duration;
+    }
+
+    public void FreezeEnd() {
+        isFrozen = false;
     }
 
 

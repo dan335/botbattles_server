@@ -15,13 +15,13 @@ public class BlasterBullet extends Projectile {
 
     String color;
     
-    public BlasterBullet(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color) {
+    public BlasterBullet(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color, double speed) {
         super(ability, x, y, radius, rotation, false);
         initialUpdateName = "blasterBulletInitial";
         updateName = "blasterBulletUpdate";
         destroyUpdateName = "blasterBulletDestroy";
         this.color = color;
-        speed = 1.1;
+        this.speed = speed;
         mass = 0.4;
         this.damage = damage;
         this.shieldDamageMultiplier = shieldDamageMultiplier;

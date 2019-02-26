@@ -29,7 +29,7 @@ public class Cannon extends Ability {
                 double intervalAngle = Math.toRadians(angleInDegrees / numBullets);
                 for (int i = 0; i < numBullets; i++) {
                     double angle = player.rotation + intervalAngle * i - intervalAngle * numBullets / 2;
-                    new BlasterBullet(this, player.position.x, player.position.y, angle, 16, damage, 1, "0xff4444");
+                    new BlasterBullet(this, player.position.x, player.position.y, angle, 16, damage, 1, "0xff4444", 1.1);
                 }
 
                 isCharging = false;

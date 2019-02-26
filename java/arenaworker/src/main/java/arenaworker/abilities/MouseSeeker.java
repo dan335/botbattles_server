@@ -18,6 +18,6 @@ public class MouseSeeker extends Ability {
     public void Fire() {
         super.Fire();
 
-        new MouseSeekingMissle(this, player.position.x, player.position.y, player.rotation, 8, 30, 1, color);
+        new MouseSeekingMissle(this, player.position.x, player.position.y, player.rotation, 8, 50, 1, color);
     }
 }
