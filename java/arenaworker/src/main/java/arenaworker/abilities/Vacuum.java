@@ -48,6 +48,6 @@ public class Vacuum extends Ability {
 
         isVacuuming = true;
         vacuumStart = player.game.tickStartTime;
-        player.mass = 0;
+        player.mass = 999;
     }
 }
