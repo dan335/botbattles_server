@@ -13,7 +13,7 @@ public class Turret extends Ability {
     
     public Turret(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 9000L;
+        cooldown = 13000L;
     }
 
     @Override
