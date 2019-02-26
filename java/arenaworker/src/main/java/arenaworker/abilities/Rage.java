@@ -8,7 +8,7 @@ public class Rage extends Ability {
     
     public Rage(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 15000L;
+        cooldown = 12000L;
     }
 
     @Override
