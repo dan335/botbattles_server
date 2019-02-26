@@ -10,7 +10,7 @@ import arenaworker.lib.Physics;
 
 public class Silencer extends Ability {
 
-    double radius = 150;
+    double radius = 250;
     long duration = 2500L;
     
     public Silencer(Player player, int abilityNum) {

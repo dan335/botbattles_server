@@ -6,7 +6,13 @@ public class BulletTime extends Ability {
     
     public BulletTime(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 5000L;
+        cooldown = 8000L;
+    }
+
+    @Override
+    public void BulletTimeEnded() {
+        super.BulletTimeEnded();
+        player.shipEngineSpeed = player.game.settings.shipEngineSpeed;
     }
 
     @Override
@@ -14,5 +20,6 @@ public class BulletTime extends Ability {
         super.Fire();
 
         player.game.StartBulletTime();
+        player.shipEngineSpeed = player.game.settings.shipEngineSpeed * 2;
     }
 }

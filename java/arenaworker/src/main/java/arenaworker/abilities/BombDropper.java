@@ -7,7 +7,7 @@ import arenaworker.abilityobjects.Grenade;
 
 public class BombDropper extends Ability {
 
-    public long defaultInterval = 3000L;
+    public long defaultInterval = 2500L;
     public ConcurrentSkipListSet<Grenade> grenades = new ConcurrentSkipListSet<Grenade>();
     int maxGrenades = 15;
     

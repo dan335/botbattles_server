@@ -112,6 +112,11 @@ public class Ability {
     }
 
 
+    public void BulletTimeEnded() {
+        
+    }
+
+
     public void SendCooldownMessage() {
         JSONObject json = new JSONObject();
         json.put("t", "abilityCooldown");

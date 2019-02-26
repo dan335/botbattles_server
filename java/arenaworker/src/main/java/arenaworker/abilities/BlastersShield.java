@@ -8,6 +8,6 @@ public class BlastersShield extends Blasters {
         super(player, abilityNum);
         color = "0x3ea1de";
         damage = damage * 0.25;
-        shieldDamageMultiplier = 8;
+        shieldDamageMultiplier = 6;
     }
 }

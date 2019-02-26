@@ -37,6 +37,7 @@ public class Player extends Obj {
     public boolean isInvis = false;
     public long invisEnd;
     public double shipSpeedMultiplier = 1;
+    public double shipEngineSpeed = 1;
     
     public Player(
             Client client,
@@ -45,6 +46,8 @@ public class Player extends Obj {
             Vector2 pos
         ) {
         super(game, pos.x, pos.y, 25, 0, true);
+
+        shipEngineSpeed = game.settings.shipEngineSpeed;
 
         health = game.settings.maxHealth;
         shield = game.settings.maxShield;
@@ -174,7 +177,7 @@ public class Player extends Obj {
                 if (isEngineOnUp) engineForce.y -= 1;
 
                 engineForce.normalize();
-                engineForce.scale(game.settings.shipEngineSpeed);
+                engineForce.scale(shipEngineSpeed);
                 engineForce.scale(shipSpeedMultiplier);
                 
                 forces.add(engineForce);

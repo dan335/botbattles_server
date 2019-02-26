@@ -68,7 +68,7 @@ public class MouseSeekingMissle extends AbilityObjectPhysics {
 
             Vector2 towardsMouse = ability.player.mousePosition.subtract(position).getNormalized();
 
-            towardsMouse.scale(0.08);
+            towardsMouse.scale(0.1);
 
             forces = straight.add(towardsMouse).normalize().scale(speed);
 

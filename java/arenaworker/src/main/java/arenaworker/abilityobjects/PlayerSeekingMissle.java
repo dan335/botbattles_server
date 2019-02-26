@@ -68,7 +68,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
 
             Vector2 towardsPlayer = closestPlayer.position.subtract(position).getNormalized();
 
-            towardsPlayer.scale(0.08);
+            towardsPlayer.scale(0.1);
 
             forces = straight.add(towardsPlayer).normalize().scale(speed);
 

@@ -10,7 +10,7 @@ public class Teleport extends Ability {
     
     public Teleport(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 5000L;
+        cooldown = 4000L;
     }
 
     @Override

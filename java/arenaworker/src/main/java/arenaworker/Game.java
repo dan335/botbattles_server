@@ -49,7 +49,7 @@ public class Game implements Runnable {
     public double deltaTime = 0;
     public boolean isInBulletTime = false;
     public long bulletTimeStart;
-    public long bulletTimeDuration = 1000L;
+    public long bulletTimeDuration = 2000L;
     public Grid grid;
     public JSONArray replayJson = new JSONArray();
     boolean hasReplayBeenSaved = false;
@@ -370,6 +370,15 @@ public class Game implements Runnable {
         bulletTimeStart = tickStartTime;
     }
 
+    public void EndBulletTime() {
+        isInBulletTime = false;
+        for (Player p : players) {
+            for (int i = 0; i < settings.numAbilities; i++) {
+                p.abilities[i].BulletTimeEnded();
+            }
+        }
+    }
+
 
     double totalTickTime = 0;
     int numTicks = 0;
@@ -385,7 +394,7 @@ public class Game implements Runnable {
                 deltaTime = deltaTime * 0.5;
 
                 if (bulletTimeStart + bulletTimeDuration < tickStartTime) {
-                    isInBulletTime = false;
+                    EndBulletTime();
                 }
             }
 
