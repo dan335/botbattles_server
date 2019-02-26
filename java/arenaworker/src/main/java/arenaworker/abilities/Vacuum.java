@@ -3,6 +3,8 @@ package arenaworker.abilities;
 import java.util.Set;
 
 import arenaworker.Base;
+import arenaworker.Obj;
+import arenaworker.Obstacle;
 import arenaworker.Player;
 import arenaworker.lib.Physics;
 
@@ -26,10 +28,10 @@ public class Vacuum extends Ability {
         if (isVacuuming) {
             Set<Base> objs = player.game.grid.retrieve(player.position, radius);
             for (Base o : objs) {
-                if (o instanceof Player) {
+                if (o instanceof Player || o instanceof Obstacle) {
                     if (o != player) {
                         if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
-                            ((Player)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.1));
+                            ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.1));
                         }
                     }
                 }
@@ -37,7 +39,6 @@ public class Vacuum extends Ability {
 
             if (vacuumStart + duration < player.game.tickStartTime) {
                 isVacuuming = false;
-                player.mass = player.game.settings.playerDefaultMass;
             }
         }
     }
@@ -48,6 +49,5 @@ public class Vacuum extends Ability {
 
         isVacuuming = true;
         vacuumStart = player.game.tickStartTime;
-        player.mass = 999;
     }
 }
