@@ -117,6 +117,7 @@ public class Game implements Runnable {
         try {
             games.insertOne(doc);
         } catch (MongoWriteException ex) {
+            System.out.println("Error saving game to db.");
             ex.printStackTrace();
         }
         
@@ -469,6 +470,7 @@ public class Game implements Runnable {
                 try {
                     Thread.sleep(timeTilNext);
                 } catch (InterruptedException ex) {
+                    System.out.println("Error while sleeping.");
                     ex.printStackTrace();
                 }
             } else {

@@ -23,7 +23,7 @@ public class GrenadeLauncher extends Ability {
 
         if (grenade == null) {
             grenade = new Grenade(this, player.rotation, 12, amountOfForce, damage);
-            cooldown = 800L;
+            cooldown = 300L;
             SendCooldownMessage();
             JSONObject json = new JSONObject();
             json.put("t", "blast");

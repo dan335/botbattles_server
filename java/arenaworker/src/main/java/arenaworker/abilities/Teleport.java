@@ -6,7 +6,8 @@ import arenaworker.lib.Vector2;
 public class Teleport extends Ability {
 
     double distance = 600;
-    double searchRadius = 100;
+    double searchRadius = 80;
+    int tries = 6;
     
     public Teleport(Player player, int abilityNum) {
         super(player, abilityNum);
@@ -16,13 +17,20 @@ public class Teleport extends Ability {
     @Override
     public void Fire() {
         super.Fire();
-        
-        Vector2 teleportPos = new Vector2(
-            player.position.x + Math.cos(player.rotation) * distance,
-            player.position.y + Math.sin(player.rotation) * distance
-        );
 
-        Vector2 emptyPos = player.game.map.GetEmptyPos(player.radius * 2, teleportPos.x-searchRadius, teleportPos.y-searchRadius, teleportPos.x+searchRadius, teleportPos.y+searchRadius, 4);
+        Vector2 emptyPos;
+
+        if (Vector2.distance(player.position, player.mousePosition) <= distance) {
+            emptyPos = player.game.map.GetEmptyPos(player.radius, player.mousePosition.x-searchRadius, player.mousePosition.y-searchRadius, player.mousePosition.x+searchRadius, player.mousePosition.y+searchRadius, tries);
+        } else {
+            Vector2 teleportPos = new Vector2(
+                player.position.x + Math.cos(player.rotation) * distance,
+                player.position.y + Math.sin(player.rotation) * distance
+            );
+
+            emptyPos = player.game.map.GetEmptyPos(player.radius, teleportPos.x-searchRadius, teleportPos.y-searchRadius, teleportPos.x+searchRadius, teleportPos.y+searchRadius, tries);
+        }
+        
         if (emptyPos != null) {
             // make sure it's not outside map
             if (

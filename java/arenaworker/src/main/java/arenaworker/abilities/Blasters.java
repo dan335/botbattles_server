@@ -14,7 +14,7 @@ public class Blasters extends Ability {
     
     public Blasters(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 200L;
+        cooldown = 250L;
     }
 
     @Override
