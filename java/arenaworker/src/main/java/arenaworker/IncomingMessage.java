@@ -114,6 +114,7 @@ public class IncomingMessage {
             }
             catch (Throwable e)
             {
+                System.out.println("Error sending message to session.");
                 e.printStackTrace();
             }
         }

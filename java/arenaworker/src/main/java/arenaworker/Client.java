@@ -73,6 +73,7 @@ public class Client {
                     }
                     catch (Throwable e)
                     {
+                        System.out.println("Error sending message from client.");
                         e.printStackTrace();
                     }
                 }
