@@ -1,7 +1,5 @@
 package arenaworker.abilityobjects;
 
-import org.json.JSONObject;
-
 import arenaworker.Obj;
 import arenaworker.abilities.Ability;
 

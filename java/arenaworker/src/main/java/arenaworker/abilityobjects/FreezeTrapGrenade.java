@@ -1,7 +1,5 @@
 package arenaworker.abilityobjects;
 
-import java.util.Set;
-
 import arenaworker.Base;
 import arenaworker.Box;
 import arenaworker.Obj;
@@ -10,7 +8,6 @@ import arenaworker.Player;
 import arenaworker.abilities.Ability;
 import arenaworker.abilities.FreezeTrap;
 import arenaworker.lib.Physics;
-import arenaworker.lib.Vector2;
 
 public class FreezeTrapGrenade extends AbilityObjectPhysics implements Comparable<FreezeTrapGrenade> {
 

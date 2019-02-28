@@ -20,7 +20,7 @@ public class Shotgun extends Ability {
         double intervalAngle = Math.toRadians(angleInDegrees / numBullets);
         for (int i = 0; i < numBullets; i++) {
             double angle = player.rotation + intervalAngle * i - intervalAngle * numBullets / 2;
-            new BlasterBullet(this, player.position.x, player.position.y, angle, 6, 10, 1, "0xff4444", 1.1);
+            new BlasterBullet(this, player.position.x, player.position.y, angle, 6, 10, 1, "0xff4444", 1.05);
         }
     }
 }

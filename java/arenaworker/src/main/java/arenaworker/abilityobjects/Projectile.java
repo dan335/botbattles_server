@@ -1,9 +1,6 @@
 package arenaworker.abilityobjects;
 
-import org.json.JSONObject;
-
 import arenaworker.abilities.Ability;
-import arenaworker.lib.Vector2;
 
 
 public class Projectile extends AbilityObjectPhysics {

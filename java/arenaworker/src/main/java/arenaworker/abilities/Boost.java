@@ -1,7 +1,6 @@
 package arenaworker.abilities;
 
 import arenaworker.Player;
-import arenaworker.lib.Vector2;
 
 public class Boost extends Ability {
 

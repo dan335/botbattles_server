@@ -134,7 +134,8 @@ public class TurretObject extends AbilityObjectPhysics {
 
 
     void RotateTowardsTarget() {
-        rotation = Physics.slowlyRotateToward(position, rotation, interceptPos, 5);
+        //rotation = Physics.slowlyRotateToward(position, rotation, interceptPos, 5);
+        rotation = Math.atan2(interceptPos.y - position.y, interceptPos.x - position.x);
         needsUpdate = true;
     }
 
@@ -184,7 +185,7 @@ public class TurretObject extends AbilityObjectPhysics {
     @Override
     public void Destroy() {
         super.Destroy();
-        new Explosion(ability.player.game, position.x, position.y, radius*3, 50, 1, "0xff4444", ability.player);
+        new Explosion(ability.player.game, position.x, position.y, radius*3, 20, 1, "0xff4444", ability.player);
         ((Turret)ability).turrets.remove(this);
     }
 

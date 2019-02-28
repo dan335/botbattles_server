@@ -9,7 +9,6 @@ import arenaworker.Game;
 import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
-import arenaworker.abilityobjects.Grenade;
 import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
