@@ -22,7 +22,7 @@ public class GrenadeLauncher extends Ability {
         lastFired = player.game.tickStartTime;
 
         if (grenade == null) {
-            grenade = new Grenade(this, player.rotation, 12, amountOfForce, damage);
+            grenade = new Grenade(this, player.rotation, 12, amountOfForce, damage, true);
             cooldown = 300L;
             SendCooldownMessage();
             JSONObject json = new JSONObject();

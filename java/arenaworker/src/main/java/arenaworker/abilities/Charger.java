@@ -1,5 +1,7 @@
 package arenaworker.abilities;
 
+import org.json.JSONObject;
+
 import arenaworker.Player;
 import arenaworker.abilityobjects.BlasterBullet;
 
@@ -26,10 +28,15 @@ public class Charger extends Ability {
             isCharging = false;
             player.isFrozen = false;
             double time = (double)(player.game.tickStartTime - chargeStart);
-            new BlasterBullet(this, player.position.x, player.position.y, player.rotation, Math.min(80, time * sizeMultiplier), time * damageMultiplier, 1, color, 3);
+            new BlasterBullet(this, player.position.x, player.position.y, player.rotation, Math.min(80, time * sizeMultiplier), time * damageMultiplier, 1, color, 3, true);
             cooldown = defaultCooldown;
             lastFired = player.game.tickStartTime;
             SendCooldownMessage();
+
+            JSONObject json = new JSONObject();
+            json.put("t", "chargeEnd");
+            json.put("shipId", player.id);
+            player.game.SendJsonToClients(json);
         } else {
             isCharging = true;
             chargeStart = player.game.tickStartTime;
@@ -38,6 +45,11 @@ public class Charger extends Ability {
             cooldown = 300L;
             lastFired = player.game.tickStartTime;
             SendCooldownMessage();
+
+            JSONObject json = new JSONObject();
+            json.put("t", "chargeStart");
+            json.put("shipId", player.id);
+            player.game.SendJsonToClients(json);
         }
     }
 }

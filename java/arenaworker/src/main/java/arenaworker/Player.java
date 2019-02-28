@@ -24,7 +24,7 @@ public class Player extends Obj {
     public double shield;
     public double health;
     long lastTakenDamage = 0;
-    boolean isHealing = true;
+    boolean isHealing = false;
     public PlayerInfo playerInfo;
     public boolean isCharging = false;
     public boolean isStunned = false;
@@ -244,18 +244,41 @@ public class Player extends Obj {
             }
         }
 
-        if (lastTakenDamage + game.settings.playerHealDelay < game.tickStartTime) {
-            isHealing = true;
+        if (shield < game.settings.maxShield && lastTakenDamage + game.settings.playerHealDelay < game.tickStartTime) {
+            StartShieldRecharging();
         }
 
         if (isHealing) {
             if (shield < game.settings.maxShield) {
-                double newValue = shield + Math.min(game.settings.playerHealPerInterval * game.deltaTime, game.settings.maxShield - shield);
-                if (newValue <= game.settings.maxShield) {
-                    shield = newValue;
-                    needsUpdate = true;
-                }
+                shield = Math.min(shield + game.settings.playerHealPerInterval * game.deltaTime, game.settings.maxShield);
+                needsUpdate = true;
+            } else {
+                StopShieldRecharging();
             }
+        }
+    }
+
+
+    public void StartShieldRecharging() {
+        if (!isHealing) {
+            isHealing = true;
+
+            JSONObject json = new JSONObject();
+            json.put("t", "shieldRechargeStart");
+            json.put("shipId", id);
+            game.SendJsonToClients(json);
+        }
+    }
+
+
+    public void StopShieldRecharging() {
+        if (isHealing) {
+            isHealing = false;
+
+            JSONObject json = new JSONObject();
+            json.put("t", "shieldRechargeEnd");
+            json.put("shipId", id);
+            game.SendJsonToClients(json);
         }
     }
 
@@ -263,6 +286,11 @@ public class Player extends Obj {
     public void Rage(long duration) {
         isRaging = true;
         rageEnd = game.tickStartTime + duration;
+
+        JSONObject json = new JSONObject();
+        json.put("t", "rageStart");
+        json.put("shipId", id);
+        game.SendJsonToClients(json);
     }
 
     public void RageEnd() {
@@ -431,7 +459,10 @@ public class Player extends Obj {
 
         needsUpdate = true;
         lastTakenDamage = game.tickStartTime;
-        isHealing = false;
+        if (isHealing) {
+            StopShieldRecharging();
+        }
+        
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
             abilities[i].PlayerTookDamage();

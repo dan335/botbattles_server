@@ -3,12 +3,12 @@ package arenaworker.abilities;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import arenaworker.Player;
-import arenaworker.abilityobjects.Grenade;
+import arenaworker.abilityobjects.Mine;
 
 public class BombDropper extends Ability {
 
     public long defaultInterval = 2500L;
-    public ConcurrentSkipListSet<Grenade> grenades = new ConcurrentSkipListSet<Grenade>();
+    public ConcurrentSkipListSet<Mine> grenades = new ConcurrentSkipListSet<Mine>();
     int maxGrenades = 15;
     
     public BombDropper(Player player, int abilityNum) {
@@ -19,7 +19,7 @@ public class BombDropper extends Ability {
     @Override
     public void Fire() {
         super.Fire();
-        grenades.add(new Grenade(this, player.rotation, 12, 0, 100));
+        grenades.add(new Mine(this, player.rotation, 12, 0, 100));
 
         if (grenades.size() > maxGrenades) {
             grenades.last().Explode();

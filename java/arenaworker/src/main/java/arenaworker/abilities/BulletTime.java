@@ -1,5 +1,7 @@
 package arenaworker.abilities;
 
+import org.json.JSONObject;
+
 import arenaworker.Player;
 
 public class BulletTime extends Ability {
@@ -21,5 +23,10 @@ public class BulletTime extends Ability {
 
         player.game.StartBulletTime();
         player.shipEngineSpeed = player.game.settings.shipEngineSpeed * 2;
+
+        JSONObject json = new JSONObject();
+        json.put("t", "bulletTimeInitial");
+        json.put("shipId", player.id);
+        player.game.SendJsonToClients(json);
     }
 }

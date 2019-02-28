@@ -19,9 +19,9 @@ public class FreezeTrapGrenade extends AbilityObjectPhysics implements Comparabl
     
     public FreezeTrapGrenade(Ability ability, double rotation, double radius) {
         super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, false);
-        initialUpdateName = "grenadeInitial";
-        updateName = "grenadeUpdate";
-        destroyUpdateName = "grenadeDestroy";
+        initialUpdateName = "mineInitial";
+        updateName = "mineUpdate";
+        destroyUpdateName = "mineDestroy";
         mass = 0.4;
         SendInitialToAll();
     }

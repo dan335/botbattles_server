@@ -1,5 +1,7 @@
 package arenaworker.abilities;
 
+import org.json.JSONObject;
+
 import arenaworker.Player;
 import arenaworker.abilityobjects.BlasterBullet;
 
@@ -27,13 +29,20 @@ public class Cannon extends Ability {
             if (chargeStart + chargeTime < player.game.tickStartTime) {
 
                 double intervalAngle = Math.toRadians(angleInDegrees / numBullets);
+                boolean isFirst = true;
                 for (int i = 0; i < numBullets; i++) {
                     double angle = player.rotation + intervalAngle * i - intervalAngle * numBullets / 2;
-                    new BlasterBullet(this, player.position.x, player.position.y, angle, 16, damage, 1, "0xff4444", 1.1);
+                    new BlasterBullet(this, player.position.x, player.position.y, angle, 16, damage, 1, "0xff4444", 1.1, isFirst);
+                    isFirst = false;
                 }
 
                 isCharging = false;
                 player.isCharging = false;
+
+                JSONObject json = new JSONObject();
+                json.put("t", "chargeEnd");
+                json.put("shipId", player.id);
+                player.game.SendJsonToClients(json);
             }
         }
     }
@@ -45,5 +54,10 @@ public class Cannon extends Ability {
         player.isCharging = true;
         chargeStart = player.game.tickStartTime;
         isCharging = true;
+
+        JSONObject json = new JSONObject();
+        json.put("t", "chargeStart");
+        json.put("shipId", player.id);
+        player.game.SendJsonToClients(json);
     }
 }

@@ -17,8 +17,10 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
     public double speed = 0.1;
     public double damage = 10;
     public double shieldDamageMultiplier = 1;
+
+    // sendInitial boolean is so that Mine.java can override initialUpdateName etc
     
-    public Grenade(Ability ability, double rotation, double radius, double amountOfForce, double damage) {
+    public Grenade(Ability ability, double rotation, double radius, double amountOfForce, double damage, boolean sendInitial) {
         super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, false);
         initialUpdateName = "grenadeInitial";
         updateName = "grenadeUpdate";
@@ -31,7 +33,9 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
             Math.sin(rotation) * amountOfForce
         );
 
-        SendInitialToAll();
+        if (sendInitial) {
+            SendInitialToAll();
+        }
     }
 
 

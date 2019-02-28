@@ -14,8 +14,9 @@ import arenaworker.other.Explosion;
 public class BlasterBullet extends Projectile {
 
     String color;
+    boolean playSound;
     
-    public BlasterBullet(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color, double speed) {
+    public BlasterBullet(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color, double speed, boolean playSound) {
         super(ability, x, y, radius, rotation, false);
         initialUpdateName = "blasterBulletInitial";
         updateName = "blasterBulletUpdate";
@@ -25,6 +26,7 @@ public class BlasterBullet extends Projectile {
         mass = 0.4;
         this.damage = damage;
         this.shieldDamageMultiplier = shieldDamageMultiplier;
+        this.playSound = playSound;
         SendInitialToAll();
     }
 
@@ -68,6 +70,7 @@ public class BlasterBullet extends Projectile {
     public JSONObject InitialData() {
         JSONObject json = super.InitialData();
         json.put("color", color);
+        json.put("playSound", playSound);
         return json;
     }
 }

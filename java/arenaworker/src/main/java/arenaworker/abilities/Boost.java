@@ -1,5 +1,7 @@
 package arenaworker.abilities;
 
+import org.json.JSONObject;
+
 import arenaworker.Player;
 
 public class Boost extends Ability {
@@ -34,6 +36,10 @@ public class Boost extends Ability {
 
     void Activate() {
         player.shipSpeedMultiplier += 1;
+        JSONObject json = new JSONObject();
+        json.put("t", "boostInitial");
+        json.put("shipId", player.id);
+        player.game.SendJsonToClients(json);
     }
 
     void Deactivate() {

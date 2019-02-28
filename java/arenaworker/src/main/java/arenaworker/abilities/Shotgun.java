@@ -18,9 +18,11 @@ public class Shotgun extends Ability {
         super.Fire();
 
         double intervalAngle = Math.toRadians(angleInDegrees / numBullets);
+        boolean isFirst = true;
         for (int i = 0; i < numBullets; i++) {
             double angle = player.rotation + intervalAngle * i - intervalAngle * numBullets / 2;
-            new BlasterBullet(this, player.position.x, player.position.y, angle, 6, 10, 1, "0xff4444", 1.05);
+            new BlasterBullet(this, player.position.x, player.position.y, angle, 6, 10, 1, "0xff4444", 1.05, isFirst);
+            isFirst = false;
         }
     }
 }
