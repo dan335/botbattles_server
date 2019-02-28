@@ -9,7 +9,7 @@ public class Cannon extends Ability {
 
     int numBullets = 3;
     double angleInDegrees = 20;
-    long chargeTime = 700L;
+    long chargeTime = 1000L;
     long chargeStart;
     boolean isCharging = false;
     double damage = 40;
@@ -43,6 +43,7 @@ public class Cannon extends Ability {
                 json.put("t", "chargeEnd");
                 json.put("shipId", player.id);
                 player.game.SendJsonToClients(json);
+                player.FreezeEnd();
             }
         }
     }
@@ -51,7 +52,7 @@ public class Cannon extends Ability {
     @Override
     public void Fire() {
         super.Fire();
-        player.isCharging = true;
+        player.Freeze(1000L * 60L);
         chargeStart = player.game.tickStartTime;
         isCharging = true;
 
