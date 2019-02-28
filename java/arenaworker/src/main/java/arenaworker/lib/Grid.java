@@ -1,7 +1,6 @@
 package arenaworker.lib;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +13,7 @@ import arenaworker.ObjRectangle;
 public class Grid {
     
     private double g;  // optimization
-    private ConcurrentHashMap<String, Set<Base>> objects = new ConcurrentHashMap<>();  // TODO: needs to be different.  why?
+    private ConcurrentHashMap<String, Set<Base>> objects = new ConcurrentHashMap<>();
     
     public Grid(double size, int divisions) {
         this.g = divisions / size;
@@ -61,7 +60,7 @@ public class Grid {
         for (String grid : obj.grids) {
             objects.get(grid).remove(obj);
         }
-        obj.grids = new String[0];
+        obj.grids.clear();
     }
     
     
@@ -69,11 +68,11 @@ public class Grid {
     public Set<Base> retrieve(Vector2 pos, double radius) {
         retrievedObjects.clear();
 
-        String[] grids = getGridsObjCircleIsIn(pos, radius);
+        Set<String> grids = getGridsObjCircleIsIn(pos, radius);
         
-        for (int i = 0; i < grids.length; i++) {
-            if (objects.containsKey(grids[i])) {
-                retrievedObjects.addAll(objects.get(grids[i]));
+        for (String grid : grids) {
+            if (objects.containsKey(grid)) {
+                retrievedObjects.addAll(objects.get(grid));
             }
         }
         
@@ -84,11 +83,11 @@ public class Grid {
     public Set<Base> retrieve(Vector2 pos, Vector2 scale) {
         retrievedObjects.clear();
 
-        String[] grids = getGridsObjRectangleIsIn(pos, scale);
+        Set<String> grids = getGridsObjRectangleIsIn(pos, scale);
 
-        for (int i = 0; i < grids.length; i++) {
-            if (objects.containsKey(grids[i])) {
-                retrievedObjects.addAll(objects.get(grids[i]));
+        for (String grid : grids) {
+            if (objects.containsKey(grid)) {
+                retrievedObjects.addAll(objects.get(grid));
             }
         }
         
@@ -98,8 +97,8 @@ public class Grid {
 
     
     
-    private String[] getGridsObjCircleIsIn(Vector2 pos, double radius) {
-        List<String> grids = new ArrayList<>();
+    private Set<String> getGridsObjCircleIsIn(Vector2 pos, double radius) {
+        Set<String> grids = new HashSet<>();
 
         int[] min = positionToGrid(pos.x - radius, pos.y - radius);
         int[] max = positionToGrid(pos.x + radius, pos.y + radius);
@@ -110,12 +109,12 @@ public class Grid {
             }
         }
         
-        return grids.toArray(new String[grids.size()]);
+        return grids;
     }
 
 
-    private String[] getGridsObjRectangleIsIn(Vector2 pos, Vector2 scale) {
-        List<String> grids = new ArrayList<>();
+    private Set<String> getGridsObjRectangleIsIn(Vector2 pos, Vector2 scale) {
+        Set<String> grids = new HashSet<>();
 
         // https://stackoverflow.com/questions/622140/calculate-bounding-box-coordinates-from-a-rotated-rectangle
         // TODO: remove rotation part to make faster - boxes are never rotated
@@ -153,7 +152,7 @@ public class Grid {
             }
         }
 
-        return grids.toArray(new String[grids.size()]);
+        return grids;
     }
     
     

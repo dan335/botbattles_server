@@ -21,6 +21,6 @@ public class Turret extends Ability {
         super.Fire();
 
         Vector2 pos = player.game.map.GetEmptyPos(40, player.position.x - 100, player.position.y - 100, player.position.x + 100, player.position.y + 100, 20);
-        turrets.add(new TurretObject(this, player.rotation, pos.x, pos.y));
+        turrets.add(new TurretObject(this, 0, pos.x, pos.y));
     }
 }

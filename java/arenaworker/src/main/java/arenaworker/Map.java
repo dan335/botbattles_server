@@ -102,6 +102,11 @@ public class Map {
         Vector2 pos = null;
         int tries = 0;
 
+        minX = Math.max(minX, -size + game.settings.wallWidth/2);
+        minY = Math.max(minY, -size + game.settings.wallWidth/2);
+        maxX = Math.min(maxX, size - game.settings.wallWidth/2);
+        maxY = Math.min(maxY, size - game.settings.wallWidth/2);
+
         while (!foundSpot && tries < maxTries) {
             foundSpot = true;
             

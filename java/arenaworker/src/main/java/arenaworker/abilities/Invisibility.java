@@ -1,7 +1,5 @@
 package arenaworker.abilities;
 
-import org.json.JSONObject;
-
 import arenaworker.Player;
 
 public class Invisibility extends Ability {

@@ -1,7 +1,5 @@
 package arenaworker.abilityobjects;
 
-import java.util.Set;
-
 import org.json.JSONObject;
 
 import arenaworker.Base;
@@ -37,24 +35,6 @@ public class MouseSeekingMissle extends AbilityObjectPhysics {
 
     @Override
     public void Tick() {
-        Player closestPlayer = null;
-        double distance = 999999999;
-
-        Set<Base> objs = ability.player.game.grid.retrieve(position, searchRadius);
-        for (Base o : objs) {
-            if (o instanceof Player) {
-                if (o != ability.player) {
-                    if (Physics.circleInCircle(position.x, position.y, searchRadius, o.position.x, o.position.y, o.radius)) {
-                        double dist = position.subtract(o.position).length();
-                        if (dist < distance) {
-                            closestPlayer = (Player)o;
-                            distance = dist;
-                        }
-                    }
-                }
-            }
-        }
-
         if (ability.player.mousePosition == null) {
             forces = new Vector2(
                 Math.cos(rotation) * speed,

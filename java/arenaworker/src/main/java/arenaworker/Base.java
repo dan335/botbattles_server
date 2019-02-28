@@ -1,7 +1,9 @@
 package arenaworker;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.json.JSONObject;
 
@@ -25,7 +27,7 @@ public class Base {
     // used to telport player
     public boolean teleportToNextPosition = false;
     
-    public String[] grids = new String[0];
+    public Set<String> grids = new CopyOnWriteArraySet<>();
     public Game game;
     public boolean needsUpdate = false;
 

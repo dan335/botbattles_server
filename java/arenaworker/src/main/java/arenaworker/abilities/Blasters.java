@@ -36,6 +36,6 @@ public class Blasters extends Ability {
             left = true;
         }
 
-        new BlasterBullet(this, pos.x, pos.y, player.rotation, 6, damage, shieldDamageMultiplier, color, 1.1);
+        new BlasterBullet(this, pos.x, pos.y, player.rotation, 6, damage, shieldDamageMultiplier, color, 1.05);
     }
 }
