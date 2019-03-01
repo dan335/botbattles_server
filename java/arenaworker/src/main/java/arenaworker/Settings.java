@@ -21,8 +21,8 @@ public class Settings {
     public long playerHealDelay = 1000L * 3L;
     public double playerHealPerInterval = 0.03;
     public long maxReplayTime = 1000L * 60L * 5L;
-    public double maxHealth = 300;
-    public double maxShield = 120;
+    public double maxHealth = 280;
+    public double maxShield = 100;
     public double defaultRating = 1000;
     public double playerDefaultMass = 1;
 

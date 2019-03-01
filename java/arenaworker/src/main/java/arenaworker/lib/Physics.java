@@ -128,14 +128,14 @@ public class Physics {
         final double restitution = Math.min(a.restitution, b.restitution);
         
         // mass = 0 is infinite mass
-        double aInverseMass, bInverseMass;
-        if (a.mass == 0) {
-            aInverseMass = 0;
-        } else {
-            aInverseMass = 1 / a.mass;
-        }
+        // double aInverseMass, bInverseMass;
+        // if (a.mass == 0) {
+        //     aInverseMass = 0;
+        // } else {
+        //     aInverseMass = 1 / a.mass;
+        // }
         
-        bInverseMass = 0;
+        // bInverseMass = 0;
 
         // calculate impulse scalar j
         double j = -(1 + restitution) * velocityAlongNormal;

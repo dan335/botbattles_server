@@ -56,10 +56,12 @@ public class App
             ServletHolder wsHolder = new ServletHolder("servlet", new SocketServlet());
             context.addServlet(wsHolder, "/ws");
 
+            WebServer.Run(3030);
+
+            System.out.println("--- Bot Battles worker started ---");
+
             server.start();
             server.join();
-
-            System.out.println("Bot Battles worker started.");
         } catch (EOFException ex) {
             // do nothing
         } catch (Throwable ex) {
