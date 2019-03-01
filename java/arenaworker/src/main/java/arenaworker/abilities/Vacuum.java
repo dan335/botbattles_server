@@ -8,6 +8,7 @@ import arenaworker.Base;
 import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
+import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Physics;
 
 public class Vacuum extends Ability {
@@ -30,10 +31,10 @@ public class Vacuum extends Ability {
         if (isVacuuming) {
             Set<Base> objs = player.game.grid.retrieve(player.position, radius);
             for (Base o : objs) {
-                if (o instanceof Player || o instanceof Obstacle) {
+                if (o instanceof Player || o instanceof Obstacle || o instanceof TurretObject) {
                     if (o != player) {
                         if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
-                            if (o instanceof Player) {
+                            if (o instanceof Player || o instanceof TurretObject) {
                                 ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.1));
                             } else {
                                 ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.01));

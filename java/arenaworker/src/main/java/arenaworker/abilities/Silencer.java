@@ -34,7 +34,7 @@ public class Silencer extends Ability {
         }
 
         JSONObject json = new JSONObject();
-        json.put("t", "slamInitial");
+        json.put("t", "silencerInitial");
         json.put("shipId", player.id);
         json.put("radius", radius);
         player.game.SendJsonToClients(json);

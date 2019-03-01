@@ -117,6 +117,7 @@ public class Player extends Obj {
             }
         }
     }
+    
 
 
     public void AbilityKeyUp(int num) {
@@ -308,11 +309,21 @@ public class Player extends Obj {
                 abilities[i].Stop();
             }
         }
+
+        JSONObject json = new JSONObject();
+        json.put("t", "stunnedStart");
+        json.put("shipId", id);
+        game.SendJsonToClients(json);
     }
 
     public void StunEnd() {
         isStunned = false;
         RestartAbilities();
+
+        JSONObject json = new JSONObject();
+        json.put("t", "stunnedEnd");
+        json.put("shipId", id);
+        game.SendJsonToClients(json);
     }
 
 
@@ -522,15 +533,26 @@ public class Player extends Obj {
     public void Contact(Base otherObject) {
         if (otherObject instanceof Obstacle) {
             Physics.resolveCollision(this, (Obj)otherObject);
+
         } else if (otherObject instanceof Player) {
             Collision response = Physics.resolveCollision(this, (Obj)otherObject);
             if (response != null) {
                 for (int i = 0; i < game.settings.numAbilities; i++) {
-                    abilities[i].PlayerCollision(response);
+                    abilities[i].Collision(response);
                 }
             }
+
         } else if (otherObject instanceof Box) {
             Physics.resolveCollision(this, (ObjRectangle)otherObject);
+        
+        } else {
+            // not sure if this is good to include everything
+            Collision response = Physics.resolveCollision(this, (Obj)otherObject);
+            if (response != null) {
+                for (int i = 0; i < game.settings.numAbilities; i++) {
+                    abilities[i].Collision(response);
+                }
+            }
         }
     }
 }

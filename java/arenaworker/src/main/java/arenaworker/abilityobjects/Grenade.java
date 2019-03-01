@@ -42,20 +42,30 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
     @Override
     public void Contact(Base otherObject) {
         if (otherObject instanceof Obstacle) {
+
             Physics.resolveCollision(this, (Obj)otherObject);
+
         } else if (otherObject instanceof ShieldBubble) {
+
             if (((ShieldBubble)otherObject).ability.player != ability.player) {
                 Destroy();
             }
+
         } else if (otherObject instanceof Player) {
+
             if (ability.player != otherObject) {
                 Physics.resolveCollision(this, (Obj)otherObject);
                 Explode();
             }
+
         } else if (otherObject instanceof Box) {
+
             Explode();
+
         } else if (otherObject instanceof TurretObject) {
+
             Physics.resolveCollision(this, (Obj)otherObject);
+            
         }
     }
 

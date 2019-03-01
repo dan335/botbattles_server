@@ -36,6 +36,7 @@ public class Boost extends Ability {
 
     void Activate() {
         player.shipSpeedMultiplier += 1;
+        
         JSONObject json = new JSONObject();
         json.put("t", "boostInitial");
         json.put("shipId", player.id);

@@ -1,5 +1,7 @@
 package arenaworker.abilities;
 
+import org.json.JSONObject;
+
 import arenaworker.Player;
 import arenaworker.lib.Vector2;
 
@@ -20,5 +22,10 @@ public class Dash extends Ability {
             Math.cos(player.rotation) * extraForce,
             Math.sin(player.rotation) * extraForce
         ));
+
+        JSONObject json = new JSONObject();
+        json.put("t", "boostInitial");
+        json.put("shipId", player.id);
+        player.game.SendJsonToClients(json);
     }
 }

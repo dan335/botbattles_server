@@ -1,12 +1,14 @@
 package arenaworker.abilities;
 
+import org.json.JSONObject;
+
 import arenaworker.Player;
 import arenaworker.lib.Vector2;
 
 public class Teleport extends Ability {
 
     double distance = 600;
-    double searchRadius = 80;
+    double searchRadius = 30;
     int tries = 6;
     
     public Teleport(Player player, int abilityNum) {
@@ -44,6 +46,11 @@ public class Teleport extends Ability {
 
             player.SetPosition(emptyPos);
             player.teleportToNextPosition = true;
+
+            JSONObject json = new JSONObject();
+            json.put("t", "teleportInitial");
+            json.put("shipId", player.id);
+            player.game.SendJsonToClients(json);
         }
     }
 }

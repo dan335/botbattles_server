@@ -64,6 +64,7 @@ public class MouseSeekingMissle extends AbilityObjectPhysics {
         if (otherObject instanceof Obstacle) {
             Physics.resolveCollision(this, (Obj)otherObject);
             Destroy();
+
         } else if (otherObject instanceof Player) {
             if (ability.player != otherObject) {
                 Physics.resolveCollision(this, (Obj)otherObject);
@@ -71,18 +72,22 @@ public class MouseSeekingMissle extends AbilityObjectPhysics {
                 player.TakeDamage(damage, shieldDamageMultiplier, ability.player);
                 Destroy();
             }
+
         } else if (otherObject instanceof Box) {
             Destroy();
+
         } else if (otherObject instanceof ShieldBubble) {
             if (((ShieldBubble)otherObject).ability.player != ability.player) {
                 Destroy();
             }
+
         } else if (otherObject instanceof TurretObject) {
             TurretObject turret = (TurretObject)otherObject;
             if (turret.ability.player != ability.player) {
                 turret.TakeDamage(damage, ability.player);
                 Destroy();
             }
+            
         }
     }
 

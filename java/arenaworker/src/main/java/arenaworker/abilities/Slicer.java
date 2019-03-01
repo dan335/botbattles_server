@@ -3,6 +3,7 @@ package arenaworker.abilities;
 import org.json.JSONObject;
 
 import arenaworker.Player;
+import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Collision;
 
 public class Slicer extends Ability {
@@ -60,11 +61,17 @@ public class Slicer extends Ability {
 
 
     @Override
-    public void PlayerCollision(Collision collision) {
+    public void Collision(Collision collision) {
         if (isOn) {
             if (collision.b instanceof Player) {
                 if (collision.b != player) {
                     ((Player)collision.b).TakeDamage(damage, shieldDamageMultiplier, player);
+                }
+            } else if (collision.b instanceof TurretObject) {
+                TurretObject turret = (TurretObject)collision.b;
+                if (turret.ability.player != player) {
+                    System.out.println(damage);
+                    turret.TakeDamage(damage, player);
                 }
             }
         }

@@ -84,9 +84,7 @@ public class Base {
 
 
     public void Destroy() {
-        JSONObject json = new JSONObject();
-        json.put("t", destroyUpdateName);
-        json.put("id", id);
+        JSONObject json = DestroyData();
         game.SendJsonToClients(json);
         if (isInGrid) {
             game.grid.remove(this);
@@ -150,6 +148,14 @@ public class Base {
         json.put("y", position.y);
         json.put("rotation", rotation);
         json.put("time", new Date().getTime());
+        return json;
+    }
+
+
+    public JSONObject DestroyData() {
+        JSONObject json = new JSONObject();
+        json.put("t", destroyUpdateName);
+        json.put("id", id);
         return json;
     }
 }

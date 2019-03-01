@@ -20,7 +20,7 @@ public class Heal extends Ability {
         super.Tick();
 
         if (isCharging && stunStart + stunDuration < player.game.tickStartTime) {
-            player.isStunned = false;
+            player.StunEnd();
             player.health += healAmount;
             if (player.health > player.game.settings.maxHealth) {
                 player.health = player.game.settings.maxHealth;

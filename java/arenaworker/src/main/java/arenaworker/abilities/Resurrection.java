@@ -1,5 +1,7 @@
 package arenaworker.abilities;
 
+import org.json.JSONObject;
+
 import arenaworker.Player;
 
 public class Resurrection extends Ability {
@@ -17,6 +19,15 @@ public class Resurrection extends Ability {
     @Override
     public void Init() {
         Fire();
+    }
+
+    @Override
+    public void Fire() {
+        super.Fire();
+        JSONObject json = new JSONObject();
+        json.put("t", "reviveInitial");
+        json.put("shipId", player.id);
+        player.game.SendJsonToClients(json);
     }
 
 

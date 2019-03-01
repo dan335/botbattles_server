@@ -25,6 +25,7 @@ public class Charger extends Ability {
         lastFired = player.game.tickStartTime;
 
         if (isCharging) {
+            // fire
             isCharging = false;
             player.isFrozen = false;
             double time = (double)(player.game.tickStartTime - chargeStart);
@@ -38,6 +39,7 @@ public class Charger extends Ability {
             json.put("shipId", player.id);
             player.game.SendJsonToClients(json);
         } else {
+            // start charging
             isCharging = true;
             chargeStart = player.game.tickStartTime;
             player.isFrozen = true;

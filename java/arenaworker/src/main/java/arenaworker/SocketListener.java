@@ -44,9 +44,8 @@ public class SocketListener implements WebSocketListener {
     @Override
     public void onWebSocketError(Throwable cause)
     {
-        if (cause.getClass().getSimpleName() != "EofException") {
+        if (cause.getClass().toString() != "org.eclipse.jetty.io.EofException") {
             System.out.println("Error in onWebSocketError.");
-            System.out.println(cause.getClass());
             cause.printStackTrace();
         }
     }

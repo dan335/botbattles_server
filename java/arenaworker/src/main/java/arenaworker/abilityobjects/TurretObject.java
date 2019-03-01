@@ -157,9 +157,17 @@ public class TurretObject extends AbilityObjectPhysics {
     public void Contact(Base otherObject) {
         if (otherObject instanceof Obstacle) {
             Physics.resolveCollision(this, (Obj)otherObject);
+
         } else if (otherObject instanceof Player) {
             Physics.resolveCollision(this, (Obj)otherObject);
+
         } else if (otherObject instanceof Box) {
+            Destroy();
+
+        } else if (otherObject instanceof TurretObject) {
+            Physics.resolveCollision(this, (Obj)otherObject);
+
+        } else if (otherObject instanceof ShieldBubble) {
             Destroy();
         }
     }

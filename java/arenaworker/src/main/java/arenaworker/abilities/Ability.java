@@ -97,7 +97,7 @@ public class Ability {
     }
 
 
-    public void PlayerCollision(Collision collision) {
+    public void Collision(Collision collision) {
         
     }
 

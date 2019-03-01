@@ -3,6 +3,7 @@ package arenaworker.abilities;
 import org.json.JSONObject;
 
 import arenaworker.Player;
+import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Collision;
 
 public class Smasher extends Ability {
@@ -62,12 +63,20 @@ public class Smasher extends Ability {
 
 
     @Override
-    public void PlayerCollision(Collision collision) {
+    public void Collision(Collision collision) {
         if (isOn) {
             if (collision.b instanceof Player) {
                 if (collision.b != player) {
                     if (!hasDoneDamange) {
                         ((Player) collision.b).TakeDamage(damage * collision.magnitude, shieldDamageMultiplier, player);
+                        hasDoneDamange = true;
+                    }
+                }
+            } else if (collision.b instanceof TurretObject) {
+                if (!hasDoneDamange) {
+                    TurretObject turret = (TurretObject)collision.b;
+                    if (turret.ability.player != player) {
+                        turret.TakeDamage(damage * collision.magnitude, player);
                         hasDoneDamange = true;
                     }
                 }

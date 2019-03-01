@@ -30,18 +30,30 @@ public class FreezeTrapGrenade extends AbilityObjectPhysics implements Comparabl
     @Override
     public void Contact(Base otherObject) {
         if (otherObject instanceof Obstacle) {
+
             Physics.resolveCollision(this, (Obj)otherObject);
+
         } else if (otherObject instanceof ShieldBubble) {
+
             if (((ShieldBubble)otherObject).ability.player != ability.player) {
                 Destroy();
             }
+
         } else if (otherObject instanceof Player) {
+
             if (ability.player != otherObject) {
                 ((Player)otherObject).Freeze(stunDuration);
                 Destroy();
             }
-        } else if (otherObject instanceof Box) {
+
+        } else if (otherObject instanceof TurretObject) {
+
             Destroy();
+
+        } else if (otherObject instanceof Box) {
+
+            Destroy();
+            
         }
     }
 

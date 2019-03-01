@@ -2,6 +2,8 @@ package arenaworker.abilityobjects;
 
 import java.util.Set;
 
+import org.json.JSONObject;
+
 import arenaworker.Base;
 import arenaworker.Box;
 import arenaworker.Obj;
@@ -22,9 +24,9 @@ public class VortexGrenade extends AbilityObjectPhysics {
     
     public VortexGrenade(Ability ability, double rotation, double radius, double amountOfForce) {
         super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, false);
-        initialUpdateName = "grenadeInitial";
-        updateName = "grenadeUpdate";
-        destroyUpdateName = "grenadeDestroy";
+        initialUpdateName = "vortexGrenadeInitial";
+        updateName = "vortexGrenadeUpdate";
+        destroyUpdateName = "vortexGrenadeDestroy";
         mass = 0.4;
         shieldDamageMultiplier = 1;
         forces = new Vector2(
@@ -40,17 +42,21 @@ public class VortexGrenade extends AbilityObjectPhysics {
     public void Contact(Base otherObject) {
         if (otherObject instanceof Obstacle) {
             Physics.resolveCollision(this, (Obj)otherObject);
+
         } else if (otherObject instanceof ShieldBubble) {
             if (((ShieldBubble)otherObject).ability.player != ability.player) {
                 Destroy();
             }
+
         } else if (otherObject instanceof Player) {
             if (ability.player != otherObject) {
                 Physics.resolveCollision(this, (Obj)otherObject);
                 Explode();
             }
+
         } else if (otherObject instanceof Box) {
             Explode();
+
         } else if (otherObject instanceof TurretObject) {
             Physics.resolveCollision(this, (Obj)otherObject);
         }
@@ -62,12 +68,20 @@ public class VortexGrenade extends AbilityObjectPhysics {
         
         Set<Base> objs = ability.player.game.grid.retrieve(position, vortexRadius);
         for (Base o : objs) {
-            if (o instanceof Player) {
+            if (o instanceof Player || o instanceof Obstacle || o instanceof TurretObject) {
                 if (Physics.circleInCircle(position.x, position.y, vortexRadius, o.position.x, o.position.y, o.radius)) {
-                    Player p = (Player)o;
+                    
                     Vector2 diff = position.copy().subtract(o.position);
-                    p.forces.add(diff.getNormalized().scale(diff.length() * 0.01));
-                    p.Stun(stunDuration);
+                    
+                    if (o instanceof Player) {
+                        Player p = (Player)o;
+                        p.forces.add(diff.getNormalized().scale(diff.length() * 0.01));
+                        p.Stun(stunDuration);
+                    } else if (o instanceof TurretObject) {
+                        ((Obj)o).forces.add(diff.getNormalized().scale(diff.length() * 0.01));
+                    } else {
+                        ((Obj)o).forces.add(diff.getNormalized().scale(diff.length() * 0.001));
+                    }
                 }
             }
         }
@@ -83,5 +97,15 @@ public class VortexGrenade extends AbilityObjectPhysics {
         }
 
         super.Destroy();
+    }
+
+
+    @Override
+    public JSONObject DestroyData() {
+        JSONObject json = super.DestroyData();
+        json.put("radius", vortexRadius);
+        json.put("x", position.x);
+        json.put("y", position.y);
+        return json;
     }
 }
