@@ -32,7 +32,7 @@ public class Cannon extends Ability {
                 boolean isFirst = true;
                 for (int i = 0; i < numBullets; i++) {
                     double angle = player.rotation + intervalAngle * i - intervalAngle * numBullets / 2;
-                    new BlasterBullet(this, player.position.x, player.position.y, angle, 16, damage, 1, "0xff4444", 1.1, isFirst);
+                    new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), angle, 16, damage, 1, "0xff4444", 1.1, isFirst);
                     isFirst = false;
                 }
 

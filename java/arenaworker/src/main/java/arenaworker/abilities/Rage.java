@@ -4,7 +4,7 @@ import arenaworker.Player;
 
 public class Rage extends Ability {
 
-    long rageDuration = 3000L;
+    long rageDuration = 4000L;
     
     public Rage(Player player, int abilityNum) {
         super(player, abilityNum);

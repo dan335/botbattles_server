@@ -31,7 +31,7 @@ public class Slicer extends Ability {
         isOn = true;
         lastCreated = player.game.tickStartTime;
         JSONObject json = new JSONObject();
-        json.put("t", "smasherSpikesInitial");
+        json.put("t", "slicerSpikesInitial");
         json.put("radius", radius);
         json.put("shipId", player.id);
         json.put("id", id);
@@ -41,7 +41,7 @@ public class Slicer extends Ability {
     void Off() {
         isOn = false;
         JSONObject json = new JSONObject();
-        json.put("t", "smasherSpikesDestroyed");
+        json.put("t", "slicerSpikesDestroyed");
         json.put("shipId", player.id);
         json.put("id", id);
         player.game.SendJsonToClients(json);

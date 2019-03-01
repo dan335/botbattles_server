@@ -148,7 +148,7 @@ public class TurretObject extends AbilityObjectPhysics {
 
 
     void FireAtTarget() {
-        new BlasterBullet(ability, position.x, position.y, rotation, 6, bulletDamage, shieldDamageMultiplier, bulletColor, 1.1, true);
+        new BlasterBullet(ability, FirePositionX(), FirePositionY(), rotation, 6, bulletDamage, shieldDamageMultiplier, bulletColor, 1.1, true);
         lastFired = ability.player.game.tickStartTime;
     }
 
@@ -170,6 +170,17 @@ public class TurretObject extends AbilityObjectPhysics {
         } else if (otherObject instanceof ShieldBubble) {
             Destroy();
         }
+    }
+
+
+    // position where bullets should spawn from
+    public double FirePositionX() {
+        return this.position.x + Math.cos(this.rotation) * this.radius;
+    }
+
+
+    public double FirePositionY() {
+        return this.position.y + Math.sin(this.rotation) * this.radius;
     }
 
 

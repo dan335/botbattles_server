@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import arenaworker.abilities.Ability;
 import arenaworker.abilities.Blasters;
 import arenaworker.abilities.Resurrection;
+import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Collision;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
@@ -116,6 +117,17 @@ public class Player extends Obj {
                 LoseInvis();
             }
         }
+    }
+
+
+    // position where bullets should spawn from
+    public double FirePositionX() {
+        return this.position.x + Math.cos(this.rotation) * this.radius;
+    }
+
+
+    public double FirePositionY() {
+        return this.position.y + Math.sin(this.rotation) * this.radius;
     }
     
 
@@ -296,7 +308,7 @@ public class Player extends Obj {
 
     public void RageEnd() {
         isRaging = false;
-        Stun(2000L);
+        Stun(1500L);
     }
 
 
@@ -545,8 +557,7 @@ public class Player extends Obj {
         } else if (otherObject instanceof Box) {
             Physics.resolveCollision(this, (ObjRectangle)otherObject);
         
-        } else {
-            // not sure if this is good to include everything
+        } else if (otherObject instanceof TurretObject) {
             Collision response = Physics.resolveCollision(this, (Obj)otherObject);
             if (response != null) {
                 for (int i = 0; i < game.settings.numAbilities; i++) {

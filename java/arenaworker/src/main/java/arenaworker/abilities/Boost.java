@@ -1,5 +1,7 @@
 package arenaworker.abilities;
 
+import java.util.UUID;
+
 import org.json.JSONObject;
 
 import arenaworker.Player;
@@ -9,6 +11,7 @@ public class Boost extends Ability {
     boolean isActive = false;
     long duration = 2000L;
     long start;
+    final String id = UUID.randomUUID().toString().substring(0, 8);
     
     public Boost(Player player, int abilityNum) {
         super(player, abilityNum);
@@ -38,12 +41,19 @@ public class Boost extends Ability {
         player.shipSpeedMultiplier += 1;
         
         JSONObject json = new JSONObject();
-        json.put("t", "boostInitial");
+        json.put("t", "boostStart");
         json.put("shipId", player.id);
+        json.put("id", id);
         player.game.SendJsonToClients(json);
     }
 
     void Deactivate() {
         player.shipSpeedMultiplier -= 1;
+
+        JSONObject json = new JSONObject();
+        json.put("t", "boostEnd");
+        json.put("shipId", player.id);
+        json.put("id", id);
+        player.game.SendJsonToClients(json);
     }
 }

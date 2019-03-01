@@ -8,7 +8,7 @@ public class BulletTime extends Ability {
     
     public BulletTime(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 8000L;
+        cooldown = 11000L;
     }
 
     @Override

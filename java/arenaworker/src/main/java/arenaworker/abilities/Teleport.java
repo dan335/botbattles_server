@@ -18,8 +18,6 @@ public class Teleport extends Ability {
 
     @Override
     public void Fire() {
-        super.Fire();
-
         Vector2 emptyPos;
 
         if (Vector2.distance(player.position, player.mousePosition) <= distance) {
@@ -44,13 +42,18 @@ public class Teleport extends Ability {
                 return;
             }
 
-            player.SetPosition(emptyPos);
-            player.teleportToNextPosition = true;
-
             JSONObject json = new JSONObject();
             json.put("t", "teleportInitial");
             json.put("shipId", player.id);
+            json.put("x", player.position.x);
+            json.put("y", player.position.y);
+            json.put("radius", player.radius);
             player.game.SendJsonToClients(json);
+
+            player.SetPosition(emptyPos);
+            player.teleportToNextPosition = true;
+
+            super.Fire();
         }
     }
 }

@@ -37,6 +37,8 @@ public class Emp extends Ability {
         json.put("t", "empInitial");
         json.put("shipId", player.id);
         json.put("radius", radius);
+        json.put("x", player.position.x);
+        json.put("y", player.position.y);
         player.game.SendJsonToClients(json);
     }
 }

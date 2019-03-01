@@ -49,7 +49,7 @@ public class Game implements Runnable {
     public double deltaTime = 0;
     public boolean isInBulletTime = false;
     public long bulletTimeStart;
-    public long bulletTimeDuration = 2000L;
+    public long bulletTimeDuration = 4000L;
     public Grid grid;
     public JSONArray replayJson = new JSONArray();
     boolean hasReplayBeenSaved = false;

@@ -24,8 +24,8 @@ public class Dash extends Ability {
         ));
 
         JSONObject json = new JSONObject();
-        json.put("t", "boostInitial");
+        json.put("t", "dashInitial");
         json.put("shipId", player.id);
         player.game.SendJsonToClients(json);
     }
-}
+} 

@@ -21,21 +21,21 @@ public class Blasters extends Ability {
     public void Fire() {
         super.Fire();
 
-        Vector2 pos;
-        if (left) {
-            pos = new Vector2(
-                player.position.x + Math.cos(player.rotation + Math.PI/2) * fireOffset,
-                player.position.y + Math.sin(player.rotation + Math.PI/2) * fireOffset
-                );
-            left = false;
-        } else {
-            pos = new Vector2(
-                player.position.x + Math.cos(player.rotation - Math.PI/2) * fireOffset,
-                player.position.y + Math.sin(player.rotation - Math.PI/2) * fireOffset
-                );
-            left = true;
-        }
+        //Vector2 pos = player.FirePosition();
+        // if (left) {
+        //     pos = new Vector2(
+        //         player.position.x + Math.cos(player.rotation + Math.PI/2) * fireOffset,
+        //         player.position.y + Math.sin(player.rotation + Math.PI/2) * fireOffset
+        //         );
+        //     left = false;
+        // } else {
+        //     pos = new Vector2(
+        //         player.position.x + Math.cos(player.rotation - Math.PI/2) * fireOffset,
+        //         player.position.y + Math.sin(player.rotation - Math.PI/2) * fireOffset
+        //         );
+        //     left = true;
+        // }
 
-        new BlasterBullet(this, pos.x, pos.y, player.rotation, 6, damage, shieldDamageMultiplier, color, 1.05, true);
+        new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), player.rotation, 6, damage, shieldDamageMultiplier, color, 1.05, true);
     }
 }
