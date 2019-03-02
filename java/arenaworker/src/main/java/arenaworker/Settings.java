@@ -9,7 +9,7 @@ public class Settings {
     public String[] defaultAbilityTypes = new String[]{"Blasters", "Shotgun", "GrenadeLauncher", "ForceField"};
     public long gameWaitToStartTimeMs = 1000L * 5L;
     public long tickIntervalMs = 16L;
-    public long updateIntervalMs = 40L;
+    public long updateIntervalMs = 32L;
     public JSONObject defaultMap = new JSONObject();
     public long mapUpdateInterval = 1000L * 2L;
     public double mapShrinkPerInterval = 0.008;

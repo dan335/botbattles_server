@@ -59,29 +59,26 @@ public class Client {
 
 
     public void Tick() {
-        
-        if (lastSend + game.settings.updateIntervalMs < game.tickStartTime) {
-            if (massMessages.size() > 0) {
-                for (JSONArray json : massMessages) {
-                    JSONObject m = new JSONObject();
-                    m.put("t", "mass");
-                    m.put("m", json);
+        if (massMessages.size() > 0) {
+            for (JSONArray json : massMessages) {
+                JSONObject m = new JSONObject();
+                m.put("t", "mass");
+                m.put("m", json);
 
-                    if (session.isOpen()) {
-                        try {
-                            session.getRemote().sendStringByFuture(m.toString());
-                        }
-                        catch (Throwable e)
-                        {
-                            System.out.println("Error sending message from client.");
-                            e.printStackTrace();
-                        }
+                if (session.isOpen()) {
+                    try {
+                        session.getRemote().sendStringByFuture(m.toString());
+                    }
+                    catch (Throwable e)
+                    {
+                        System.out.println("Error sending message from client.");
+                        e.printStackTrace();
                     }
                 }
-
-                massMessages.clear();
-                lastSend = game.tickStartTime;
             }
+
+            massMessages.clear();
+            lastSend = game.tickStartTime;
         }
     }
 
