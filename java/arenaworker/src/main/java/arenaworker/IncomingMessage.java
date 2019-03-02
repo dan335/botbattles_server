@@ -1,6 +1,7 @@
 package arenaworker;
 
 import java.lang.reflect.Method;
+import java.util.Calendar;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
@@ -35,6 +36,7 @@ public class IncomingMessage {
     static void ping(JSONObject json, Session session) {
         JSONObject obj = new JSONObject();
         obj.put("t", "pong");
+        obj.put("time", Calendar.getInstance().getTimeInMillis());
         SendJsonToSession(session, obj.toString());
     }
 

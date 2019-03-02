@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import arenaworker.abilities.BombDropper;
 import arenaworker.abilities.FreezeTrap;
+import arenaworker.abilities.Resurrection;
 import arenaworker.abilities.Turret;
 import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Grid;
@@ -319,6 +320,8 @@ public class Game implements Runnable {
                     for (TurretObject t : ((Turret)p.abilities[i]).turrets) {
                         t.Destroy();
                     }
+                } else if (p.abilities[i] instanceof Resurrection) {
+                    p.abilities[i].Fire();
                 }
             }
         }
@@ -387,7 +390,7 @@ public class Game implements Runnable {
     Double lastSentCountdown = null;
     public void run() {
         while (isRunning) {
-            deltaTime = Calendar.getInstance().getTimeInMillis() - tickStartTime;// / settings.updateIntervalMs;
+            deltaTime = Calendar.getInstance().getTimeInMillis() - tickStartTime;
 
             tickStartTime = Calendar.getInstance().getTimeInMillis();
 
@@ -474,7 +477,7 @@ public class Game implements Runnable {
                     ex.printStackTrace();
                 }
             } else {
-                System.out.println("Game is taking longer than updateIntervalMs");
+                System.out.println("Game is taking longer than it should");
             }
         }
     }

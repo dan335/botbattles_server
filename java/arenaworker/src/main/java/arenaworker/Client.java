@@ -20,8 +20,8 @@ public class Client {
     String userId;
     public String name = "Noname";
     CopyOnWriteArrayList<JSONArray> massMessages = new CopyOnWriteArrayList<>();
-    JSONArray massMessage = new JSONArray();   // collect websocket messages into one message
     int maxMassMessageBatchSize = 5;
+    long lastSend = 0;
 
     public Client(Session session, Game game, String name, String userId) {
         this.session = session;
@@ -60,26 +60,28 @@ public class Client {
 
     public void Tick() {
         
-        if (massMessages.size() > 0) {
-            for (JSONArray json : massMessages) {
-                JSONObject m = new JSONObject();
-                m.put("t", "mass");
-                m.put("m", json);
+        if (lastSend + game.settings.updateIntervalMs < game.tickStartTime) {
+            if (massMessages.size() > 0) {
+                for (JSONArray json : massMessages) {
+                    JSONObject m = new JSONObject();
+                    m.put("t", "mass");
+                    m.put("m", json);
 
-                if (session.isOpen()) {
-                    try {
-                        session.getRemote().sendStringByFuture(m.toString());
-                        massMessage = new JSONArray();
-                    }
-                    catch (Throwable e)
-                    {
-                        System.out.println("Error sending message from client.");
-                        e.printStackTrace();
+                    if (session.isOpen()) {
+                        try {
+                            session.getRemote().sendStringByFuture(m.toString());
+                        }
+                        catch (Throwable e)
+                        {
+                            System.out.println("Error sending message from client.");
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            massMessages.clear();
+                massMessages.clear();
+                lastSend = game.tickStartTime;
+            }
         }
     }
 

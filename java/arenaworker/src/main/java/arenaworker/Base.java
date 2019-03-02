@@ -31,8 +31,6 @@ public class Base {
     public Game game;
     public boolean needsUpdate = false;
 
-    long lastSendUpdate = 0L;
-
 
 
     public Base (Game game, double x, double y, double radius, double rotation, boolean addToGrid) {
@@ -99,7 +97,7 @@ public class Base {
 
     // called from Tick()
     public void SendUpdate() {
-        if (needsUpdate && lastSendUpdate + game.settings.updateIntervalMs < game.tickStartTime) {
+        if (needsUpdate) {
             JSONObject json = UpdateData();
             json.put("t", updateName);
 
@@ -111,7 +109,6 @@ public class Base {
             game.SendJsonToClients(json);
 
             needsUpdate = false;
-            lastSendUpdate = game.tickStartTime;
         }
     }
 

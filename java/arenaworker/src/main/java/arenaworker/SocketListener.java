@@ -44,8 +44,6 @@ public class SocketListener implements WebSocketListener {
     @Override
     public void onWebSocketError(Throwable cause)
     {
-        System.out.println(cause.getClass().getSimpleName());
-        System.out.println(cause.getClass().getSimpleName() == "EofException");
         if (cause.getClass().getSimpleName() != "EofException") {
             System.out.println("Error in onWebSocketError.");
             cause.printStackTrace();
