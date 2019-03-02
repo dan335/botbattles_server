@@ -137,6 +137,7 @@ public class Base {
         json.put("y", position.y);
         json.put("rotation", rotation);
         json.put("radius", radius);
+        json.put("time", new Date().getTime());
         return json;
     }
 
