@@ -35,9 +35,9 @@ public class Vacuum extends Ability {
                     if (o != player) {
                         if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
                             if (o instanceof Player || o instanceof TurretObject) {
-                                ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.1));
+                                ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.05));
                             } else {
-                                ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.01));
+                                ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.005));
                             }
                         }
                     }

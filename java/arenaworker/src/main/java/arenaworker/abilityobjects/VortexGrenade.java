@@ -75,12 +75,12 @@ public class VortexGrenade extends AbilityObjectPhysics {
                     
                     if (o instanceof Player) {
                         Player p = (Player)o;
-                        p.forces.add(diff.getNormalized().scale(diff.length() * 0.01));
+                        p.forces.add(diff.getNormalized().scale(diff.length() * 0.005));
                         p.Stun(stunDuration);
                     } else if (o instanceof TurretObject) {
-                        ((Obj)o).forces.add(diff.getNormalized().scale(diff.length() * 0.01));
+                        ((Obj)o).forces.add(diff.getNormalized().scale(diff.length() * 0.005));
                     } else {
-                        ((Obj)o).forces.add(diff.getNormalized().scale(diff.length() * 0.001));
+                        ((Obj)o).forces.add(diff.getNormalized().scale(diff.length() * 0.0005));
                     }
                 }
             }

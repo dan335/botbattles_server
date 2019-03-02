@@ -148,7 +148,7 @@ public class TurretObject extends AbilityObjectPhysics {
 
 
     void FireAtTarget() {
-        new BlasterBullet(ability, FirePositionX(), FirePositionY(), rotation, 6, bulletDamage, shieldDamageMultiplier, bulletColor, 1.1, true);
+        new BlasterBullet(ability, FirePositionX(), FirePositionY(), rotation, 6, bulletDamage, shieldDamageMultiplier, bulletColor, 0.8, true);
         lastFired = ability.player.game.tickStartTime;
     }
 

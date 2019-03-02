@@ -99,7 +99,7 @@ public class Base {
 
     // called from Tick()
     public void SendUpdate() {
-        if (needsUpdate && lastSendUpdate + game.settings.updateIntervalMs < game.tickStartTime) {
+        if (needsUpdate) {// && lastSendUpdate + game.settings.updateIntervalMs < game.tickStartTime) {
             JSONObject json = UpdateData();
             json.put("t", updateName);
 
@@ -111,7 +111,7 @@ public class Base {
             game.SendJsonToClients(json);
 
             needsUpdate = false;
-            lastSendUpdate = game.tickStartTime;
+            //lastSendUpdate = game.tickStartTime;
         }
     }
 

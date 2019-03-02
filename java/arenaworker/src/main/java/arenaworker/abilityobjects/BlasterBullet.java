@@ -23,7 +23,7 @@ public class BlasterBullet extends Projectile {
         destroyUpdateName = "blasterBulletDestroy";
         this.color = color;
         this.speed = speed;
-        mass = 0.4;
+        mass = 0.2;
         this.damage = damage;
         this.shieldDamageMultiplier = shieldDamageMultiplier;
         this.playSound = playSound;
@@ -62,7 +62,7 @@ public class BlasterBullet extends Projectile {
     @Override
     public void Destroy() {
         super.Destroy();
-        new Explosion(ability.player.game, position.x, position.y, radius * 4, 0, 0, color, ability.player);
+        new Explosion(ability.player.game, position.x, position.y, radius * 3, 0, 0, color, ability.player);
     }
 
 

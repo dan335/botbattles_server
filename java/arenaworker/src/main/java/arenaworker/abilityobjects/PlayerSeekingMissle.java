@@ -20,7 +20,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
     public double damage = 30;
     public double shieldDamageMultiplier = 1;
     double searchRadius = 600;
-    double speed = 0.15;
+    double speed = 0.075;
     
     public PlayerSeekingMissle(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color) {
         super(ability, x, y, radius, rotation, false);

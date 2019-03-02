@@ -15,8 +15,8 @@ public class Settings {
     public double mapShrinkPerInterval = 0.008;
     public double mapMinSize = 400;
     public int gridDivisions = 10;
-    public double shipEngineSpeed = 0.065;
-    public double drag = -0.2;
+    public double shipEngineSpeed = 0.035;
+    public double drag = -0.1;
     public double wallWidth = 80;
     public long playerHealDelay = 1000L * 3L;
     public double playerHealPerInterval = 0.03;

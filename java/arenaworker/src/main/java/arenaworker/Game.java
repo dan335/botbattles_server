@@ -496,7 +496,7 @@ public class Game implements Runnable {
         for (Player p : players) {
             Set<Base> objs = grid.retrieve(p.position, p.radius);
             for (Base o : objs) {
-                if (o.id != p.id) {
+                if (o != p) {
                     if (o instanceof ObjRectangle) {
                         if (Physics.circleInRectangle(p, (ObjRectangle)o)) {
                             p.Contact(o);
@@ -515,7 +515,7 @@ public class Game implements Runnable {
         for (Obstacle obstacle : obstacles) {
             Set<Base> objs = grid.retrieve(obstacle.position, obstacle.radius);
             for (Base other : objs) {
-                if (other.id != obstacle.id) {
+                if (other != obstacle) {
                     if (other instanceof ObjRectangle) {
                         if (Physics.circleInRectangle(obstacle, (ObjRectangle)other)) {
                             obstacle.Contact(other);
@@ -535,7 +535,7 @@ public class Game implements Runnable {
         for (Box box : boxes) {
             Set<Base> objs = grid.retrieve(box.position, box.scale);
             for (Base other : objs) {
-                if (other.id != box.id) {
+                if (other != box) {
                     if (other instanceof ObjRectangle) {
                         // don't react
                     } else if (other instanceof Obj) {
@@ -557,7 +557,7 @@ public class Game implements Runnable {
                     for (Base ao : p.abilities[i].abilityObjects) {
                         Set<Base> objs = grid.retrieve(ao.position, ao.radius);
                         for (Base other : objs) {
-                            if (other.id != ao.id) {
+                            if (other != ao) {
                                 if (other instanceof ObjRectangle) {
                                     if (Physics.circleInRectangle(ao, (ObjRectangle)other)) {
                                         ao.Contact(other);
