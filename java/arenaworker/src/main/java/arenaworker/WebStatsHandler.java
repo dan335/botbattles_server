@@ -20,16 +20,18 @@ public class WebStatsHandler implements HttpHandler {
         int numClients = 0;
 
         for (Game game : GameManager.games.values()) {
-            numPlayers += game.players.size();
-            numClients += game.clients.size();
+            if (!game.isEnded) {
+                numPlayers += game.players.size();
+                numClients += game.clients.size();
 
-            JSONObject gameInfo = new JSONObject();
-            gameInfo.put("id", game.id);
-            gameInfo.put("isStarted", game.isStarted);
-            gameInfo.put("isEnded", game.isEnded);
-            gameInfo.put("numPlayers", game.players.size());
-            gameInfo.put("numSpectators", game.clients.size() - game.players.size());
-            games.put(gameInfo);
+                JSONObject gameInfo = new JSONObject();
+                gameInfo.put("id", game.id);
+                gameInfo.put("isStarted", game.isStarted);
+                gameInfo.put("isEnded", game.isEnded);
+                gameInfo.put("numPlayers", game.players.size());
+                gameInfo.put("numSpectators", game.clients.size() - game.players.size());
+                games.put(gameInfo);
+            }
         }
 
         json.put("numPlayers", numPlayers);
