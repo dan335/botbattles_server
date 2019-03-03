@@ -98,7 +98,6 @@ public class Player extends Obj {
         if (mousePosition.x != x || mousePosition.y != y) {
             mousePosition.x = x;
             mousePosition.y = y;
-            //needsUpdate = true;
         }
     }
 
@@ -152,19 +151,15 @@ public class Player extends Obj {
         switch (key) {
             case "up":
                 isEngineOnUp = false;
-                needsUpdate = true;
                 break;
             case "down":
                 isEngineOnDown = false;
-                needsUpdate = true;
                 break;
             case "left":
                 isEngineOnLeft = false;
-                needsUpdate = true;
                 break;
             case "right":
                 isEngineOnRight = false;
-                needsUpdate = true;
                 break;
         }
     }
@@ -174,19 +169,15 @@ public class Player extends Obj {
         switch (key) {
             case "up":
                 isEngineOnUp = true;
-                needsUpdate = true;
                 break;
             case "down":
                 isEngineOnDown = true;
-                needsUpdate = true;
                 break;
             case "left":
                 isEngineOnLeft = true;
-                needsUpdate = true;
                 break;
             case "right":
                 isEngineOnRight = true;
-                needsUpdate = true;
                 break;
         }
     }
@@ -212,11 +203,15 @@ public class Player extends Obj {
                 forces.add(engineForce);
             }
             
-            this.rotation = Math.atan2(
+            double rotation = Math.atan2(
                 mousePosition.y - position.y,
                 mousePosition.x - position.x    
             );
-            needsUpdate = true;
+
+            if (this.rotation != rotation) {
+                this.rotation = rotation;
+                needsUpdate = true;
+            }
         }
 
         if (isStunned) {
@@ -508,7 +503,6 @@ public class Player extends Obj {
 
             if (resurrection != null) {
                 health = game.settings.maxHealth;
-                needsUpdate = true;
                 resurrection.Fire();
             } else {
                 if (otherPlayer != null) {

@@ -440,7 +440,6 @@ public class Game implements Runnable {
                 b.Tick();
             }
 
-
             PlayerPhysics();
             ObstaclePhysics();
             BoxPhysics();
