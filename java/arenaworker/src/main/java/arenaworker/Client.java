@@ -3,7 +3,7 @@ package arenaworker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -23,9 +23,8 @@ public class Client {
     Player player;
     String userId;
     public String name = "Noname";
-    CopyOnWriteArrayList<JSONObject> massMessages = new CopyOnWriteArrayList<>();
+    ConcurrentLinkedQueue<JSONObject> massMessages = new ConcurrentLinkedQueue<JSONObject>();
     int maxMassMessageBatchSize = 5;
-    long lastSend = 0;
 
     public Client(Session session, Game game, String name, String userId) {
         this.session = session;
@@ -63,13 +62,11 @@ public class Client {
 
 
     public void Tick() {
-        if (massMessages.isEmpty()) return;
-
         List<JSONArray> groups = new ArrayList<>();
         JSONArray temp = new JSONArray();
 
-        for (JSONObject message : massMessages) {
-            temp.put(message);
+        for (JSONObject obj = massMessages.poll(); obj != null; obj = massMessages.poll()) {
+            temp.put(obj);
 
             if (temp.length() >= maxMassMessageBatchSize) {
                 groups.add(temp);
@@ -98,9 +95,6 @@ public class Client {
                 }
             }
         }
-
-        massMessages.clear();
-        lastSend = game.tickStartTime;
     }
 
 
