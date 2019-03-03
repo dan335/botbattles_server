@@ -1,5 +1,6 @@
 package arenaworker;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -76,6 +77,11 @@ public class Base {
     }
 
     public void SetRadius(double radius) {
+        if (Double.isInfinite(radius)) {
+            System.out.println("radius is infinite");
+            Arrays.toString(Thread.currentThread().getStackTrace());
+            return;
+        };
         this.radius = radius;
         if (isInGrid) {
             game.grid.update(this);
@@ -137,7 +143,6 @@ public class Base {
         json.put("y", position.y);
         json.put("rotation", rotation);
         json.put("radius", radius);
-        json.put("time", new Date().getTime());
         return json;
     }
 

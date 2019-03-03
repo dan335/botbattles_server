@@ -1,7 +1,11 @@
 package arenaworker;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 // client contains a session
 // one per session
@@ -19,7 +23,7 @@ public class Client {
     Player player;
     String userId;
     public String name = "Noname";
-    CopyOnWriteArrayList<JSONArray> massMessages = new CopyOnWriteArrayList<>();
+    CopyOnWriteArrayList<JSONObject> massMessages = new CopyOnWriteArrayList<>();
     int maxMassMessageBatchSize = 5;
     long lastSend = 0;
 
@@ -59,61 +63,49 @@ public class Client {
 
 
     public void Tick() {
-        if (massMessages.size() > 0) {
-            for (JSONArray json : massMessages) {
-                JSONObject m = new JSONObject();
-                m.put("t", "mass");
-                m.put("m", json);
+        if (massMessages.isEmpty()) return;
 
-                if (session.isOpen()) {
-                    try {
-                        session.getRemote().sendStringByFuture(m.toString());
-                    }
-                    catch (Throwable e)
-                    {
-                        System.out.println("Error sending message from client.");
-                        e.printStackTrace();
-                    }
+        List<JSONArray> groups = new ArrayList<>();
+        JSONArray temp = new JSONArray();
+
+        for (JSONObject message : massMessages) {
+            temp.put(message);
+
+            if (temp.length() >= maxMassMessageBatchSize) {
+                groups.add(temp);
+                temp = new JSONArray();
+            }
+        }
+
+        if (!temp.isEmpty()) {
+            groups.add(temp);
+        }
+
+        for (JSONArray group : groups) {
+            JSONObject m = new JSONObject();
+            m.put("t", "mass");
+            m.put("m", group);
+
+            if (session.isOpen()) {
+                try {
+                    Future<Void> future = session.getRemote().sendStringByFuture(m.toString());
+                    future.get(2, TimeUnit.SECONDS);
+                }
+                catch (Throwable e)
+                {
+                    System.out.println("Error sending message from client.");
+                    e.printStackTrace();
                 }
             }
-
-            massMessages.clear();
-            lastSend = game.tickStartTime;
-        }
-    }
-
-
-    public void SendJson(JSONArray json) {
-        JSONArray group;
-        
-        if (massMessages.isEmpty()) {
-            group = new JSONArray();
-            massMessages.add(group);
-        } else if (massMessages.get(massMessages.size()-1).length() >= maxMassMessageBatchSize) {
-            group = new JSONArray();
-            massMessages.add(group);
-        } else {
-            group = massMessages.get(massMessages.size()-1);
         }
 
-        group.put(json);
+        massMessages.clear();
+        lastSend = game.tickStartTime;
     }
 
 
     public void SendJson(JSONObject json) {
-        JSONArray group;
-        
-        if (massMessages.isEmpty()) {
-            group = new JSONArray();
-            massMessages.add(group);
-        } else if (massMessages.get(massMessages.size()-1).length() >= maxMassMessageBatchSize) {
-            group = new JSONArray();
-            massMessages.add(group);
-        } else {
-            group = massMessages.get(massMessages.size()-1);
-        }
-
-        group.put(json);
+        massMessages.add(json);
     }
 
 }

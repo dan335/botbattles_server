@@ -344,13 +344,6 @@ public class Game implements Runnable {
         AddJsonToReplay(json);
     }
 
-    public void SendJsonToClients(JSONArray json) {
-        for (Client c : clients) {
-            c.SendJson(json);
-        }
-        AddJsonToReplay(json);
-    }
-
 
     public void AddJsonToReplay(JSONObject json) {
         if (tickEndTime - gameCreatedTime < settings.maxReplayTime) {

@@ -411,7 +411,7 @@ public class Player extends Obj {
     public void SendInitialToAll() {
         for (Client c : game.clients) {
             JSONObject json = InitialData();
-            if (c.id == this.client.id) {
+            if (c == this.client) {
                 json.put("t", "playerInitial");
             } else {
                 json.put("t", "shipInitial");

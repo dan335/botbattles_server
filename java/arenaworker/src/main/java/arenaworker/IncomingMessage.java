@@ -2,6 +2,8 @@ package arenaworker;
 
 import java.lang.reflect.Method;
 import java.util.Calendar;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
@@ -112,7 +114,8 @@ public class IncomingMessage {
     static void SendJsonToSession(Session session, String json) {
         if (session.isOpen()) {
             try {
-                session.getRemote().sendStringByFuture(json);
+                Future<Void> future = session.getRemote().sendStringByFuture(json);
+                future.get(2, TimeUnit.SECONDS);
             }
             catch (Throwable e)
             {
