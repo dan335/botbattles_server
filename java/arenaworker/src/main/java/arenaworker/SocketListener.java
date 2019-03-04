@@ -2,7 +2,6 @@ package arenaworker;
 
 import java.util.Date;
 
-import org.eclipse.jetty.io.EofException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
 
@@ -45,9 +44,7 @@ public class SocketListener implements WebSocketListener {
     @Override
     public void onWebSocketError(Throwable cause)
     {
-        System.out.println(cause.getClass() == EofException.class);
-        System.out.println(cause.getClass().getSimpleName());
-        if (cause.getClass() != EofException.class) {
+        if (cause.getClass() != org.eclipse.jetty.io.EofException.class && cause.getClass() != java.io.EOFException.class) {
             System.out.println("Error in onWebSocketError.");
             cause.printStackTrace();
         }

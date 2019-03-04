@@ -1,7 +1,11 @@
 package arenaworker;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -21,7 +25,7 @@ public class Player extends Obj {
     boolean isEngineOnUp = false;
     boolean isEngineOnDown = false;
     public Vector2 mousePosition = new Vector2();
-    public Ability[] abilities;
+    public ArrayList<Ability> abilities = new ArrayList<>();
     public boolean[] abilityKeysDown;
     public double shield;
     public double health;
@@ -45,7 +49,7 @@ public class Player extends Obj {
     public Player(
             Client client,
             Game game,
-            String[] abilityTypes,
+            ArrayList<String> abilityTypes,
             Vector2 pos
         ) {
         super(game, pos.x, pos.y, 25, 0, true);
@@ -55,21 +59,56 @@ public class Player extends Obj {
         health = game.settings.maxHealth;
         shield = game.settings.maxShield;
         
-        this.abilities = new Ability[game.settings.numAbilities];
         this.abilityKeysDown = new boolean[game.settings.numAbilities];
 
         this.client = client;
-        game.players.add(this);
-        
+ 
         mass = game.settings.playerDefaultMass;
         initialUpdateName = "shipInitial";
         updateName = "shipUpdate";
         destroyUpdateName = "shipDestroy";
 
+        SetupAbilities(abilityTypes);
+
+        SendInitialToAll();
+
+        for (int i = 0; i < game.settings.numAbilities; i++) {
+            abilities.get(i).Init();
+            abilityKeysDown[i] = false;
+        }
+
+        game.players.add(this);
+    }
+
+
+    void SetupAbilities(ArrayList<String> abilityTypes) {
+        // check for duplicates
+        Set<String> lump = new HashSet<String>();
+
+        for (int i = 0; i < abilityTypes.size(); i++) {
+
+            if (lump.contains(abilityTypes.get(i))) {
+
+                // find an ability to replace it
+                boolean found = false;
+                Iterator iter = game.settings.abilityNames.iterator();
+
+                while (!found) {
+                    String nextAbilityName = (String)iter.next();
+                    if (!abilityTypes.contains(nextAbilityName)) {
+                        abilityTypes.set(i, nextAbilityName);
+                        found = true;
+                    }
+                }
+            }
+
+            lump.add(abilityTypes.get(i));
+        }
+
         for (int i = 0; i < game.settings.numAbilities; i++) {
             Class<?> cls;
             try {
-                cls = Class.forName("arenaworker.abilities." + abilityTypes[i]);
+                cls = Class.forName("arenaworker.abilities." + abilityTypes.get(i));
             } catch (ClassNotFoundException ex) {
                 ex.printStackTrace();
                 cls = Blasters.class;
@@ -83,15 +122,19 @@ public class Player extends Obj {
                 ability = new Blasters(this, i);
             }
 
-            abilities[i] = ability;
+            abilities.add(ability);
+        }
+    }
+
+    private boolean SetContainsDuplicates(Set<String> values) {
+        Set<String> lump = new HashSet<String>();
+
+        for (String value : values) {
+            if (lump.contains(value)) return true;
+            lump.add(value);
         }
 
-        SendInitialToAll();
-
-        for (int i = 0; i < game.settings.numAbilities; i++) {
-            abilities[i].Init();
-            abilityKeysDown[i] = false;
-        }
+        return false;
     }
 
 
@@ -107,10 +150,10 @@ public class Player extends Obj {
         abilityKeysDown[num] = true;
 
         if (!isCharging && !isStunned && !isSilenced) {
-            abilities[num].Start();
+            abilities.get(num).Start();
 
             for (int i = 0; i < game.settings.numAbilities; i++) {
-                abilities[i].PlayerStartedAnAbility(abilities[num]);
+                abilities.get(i).PlayerStartedAnAbility(abilities.get(num));
             }
 
             if (isInvis) {
@@ -133,7 +176,7 @@ public class Player extends Obj {
 
 
     public void AbilityKeyUp(int num) {
-        abilities[num].Stop();
+        abilities.get(num).Stop();
         abilityKeysDown[num] = false;
     }
 
@@ -142,7 +185,7 @@ public class Player extends Obj {
     public void RestartAbilities() {
         for (int i = 0; i < game.settings.numAbilities; i++) {
             if (abilityKeysDown[i]) {
-                abilities[i].Start();
+                abilities.get(i).Start();
             }
         }
     }
@@ -248,9 +291,7 @@ public class Player extends Obj {
         super.Tick();
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
-            if (abilities[i] != null) { // not sure why it would be null but it keeps complaining
-                abilities[i].Tick();
-            }
+            abilities.get(i).Tick();
         }
 
         if (shield < game.settings.maxShield && lastTakenDamage + game.settings.playerHealDelay < game.tickStartTime) {
@@ -313,8 +354,8 @@ public class Player extends Obj {
         stunEnd = game.tickStartTime + duration;
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
-            if (abilities[i].isOn) {
-                abilities[i].Stop();
+            if (abilities.get(i).isOn) {
+                abilities.get(i).Stop();
             }
         }
 
@@ -340,8 +381,8 @@ public class Player extends Obj {
         silencedEnd = game.tickStartTime + duration;
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
-            if (abilities[i].isOn) {
-                abilities[i].Stop();
+            if (abilities.get(i).isOn) {
+                abilities.get(i).Stop();
             }
         }
     }
@@ -367,8 +408,8 @@ public class Player extends Obj {
         invisEnd = game.tickStartTime + duration;
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
-            if (abilities[i].isOn) {
-                abilities[i].Stop();
+            if (abilities.get(i).isOn) {
+                abilities.get(i).Stop();
             }
         }
 
@@ -389,7 +430,7 @@ public class Player extends Obj {
 
     public void Destroy() {
         for (int i = 0; i < game.settings.numAbilities; i++) {
-            abilities[i].Destroy();
+            abilities.get(i).Destroy();
         }
 
         game.players.remove(this);
@@ -482,7 +523,7 @@ public class Player extends Obj {
         
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
-            abilities[i].PlayerTookDamage();
+            abilities.get(i).PlayerTookDamage();
         }
 
         if (isInvis) {
@@ -493,9 +534,9 @@ public class Player extends Obj {
             Ability resurrection = null;
 
             for (int i = 0; i < game.settings.numAbilities; i++) {
-                if (abilities[i] instanceof Resurrection) {
-                    if (abilities[i].IsReady()) {
-                        resurrection = abilities[i];
+                if (abilities.get(i) instanceof Resurrection) {
+                    if (abilities.get(i).IsReady()) {
+                        resurrection = abilities.get(i);
                     }
                 }
             }
@@ -527,7 +568,7 @@ public class Player extends Obj {
     public void SetPosition(double x, double y) {
         if (position.x != x || position.y != y) {
             for (int i = 0; i < game.settings.numAbilities; i++) {
-                abilities[i].PlayerPositionChanged();
+                abilities.get(i).PlayerPositionChanged();
             }
         }
         super.SetPosition(x, y);
@@ -543,7 +584,7 @@ public class Player extends Obj {
             Collision response = Physics.resolveCollision(this, (Obj)otherObject);
             if (response != null) {
                 for (int i = 0; i < game.settings.numAbilities; i++) {
-                    abilities[i].Collision(response);
+                    abilities.get(i).Collision(response);
                 }
             }
 
@@ -554,7 +595,7 @@ public class Player extends Obj {
             Collision response = Physics.resolveCollision(this, (Obj)otherObject);
             if (response != null) {
                 for (int i = 0; i < game.settings.numAbilities; i++) {
-                    abilities[i].Collision(response);
+                    abilities.get(i).Collision(response);
                 }
             }
         }

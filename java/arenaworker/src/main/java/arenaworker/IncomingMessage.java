@@ -1,6 +1,7 @@
 package arenaworker;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -49,12 +50,15 @@ public class IncomingMessage {
 
         if (game == null) return;
 
-        String[] abilityTypes = new String[game.settings.numAbilities];
+        ArrayList<String> abilityTypes = new ArrayList<>(game.settings.numAbilities);
 
         JSONArray types = json.getJSONArray("abilityTypes");
         
         for (int i = 0; i < game.settings.numAbilities; i++) {
-            abilityTypes[i] = (String)types.get(i);
+            abilityTypes.add(types.optString(i));
+            if (abilityTypes.get(i) == "") {
+                abilityTypes.set(i, game.settings.defaultAbilityTypes[i]);
+            }
         }
 
         String name = json.optString("name");

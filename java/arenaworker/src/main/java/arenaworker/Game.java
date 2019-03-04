@@ -226,12 +226,7 @@ public class Game implements Runnable {
     }
 
 
-    public void JoinGame(
-        Session session,
-        String name,
-        String userId,
-        String[] abilityTypes
-    ) {
+    public void JoinGame( Session session, String name, String userId, ArrayList<String> abilityTypes) {
         Client c = Clients.GetClient(session);
         if (c != null) {
             // not sure why this would happen
@@ -266,7 +261,7 @@ public class Game implements Runnable {
 
             String[] abilities = new String[settings.numAbilities];
             for (int i = 0; i < settings.numAbilities; i++) {
-                abilities[i] = player.abilities[i].getClass().getSimpleName().toString();
+                abilities[i] = player.abilities.get(i).getClass().getSimpleName().toString();
             }
 
             PlayerInfo info = new PlayerInfo(player.id, name, userId, abilities);
@@ -308,20 +303,20 @@ public class Game implements Runnable {
         // destroy all bomb dropper bombs when game starts
         for (Player p : players) {
             for (int i = 0; i < p.game.settings.numAbilities; i++) {
-                if (p.abilities[i] instanceof BombDropper) {
-                    for (Base b : p.abilities[i].abilityObjects) {
+                if (p.abilities.get(i) instanceof BombDropper) {
+                    for (Base b : p.abilities.get(i).abilityObjects) {
                         b.Destroy();
                     }
-                } else if (p.abilities[i] instanceof FreezeTrap) {
-                    for (Base b : p.abilities[i].abilityObjects) {
+                } else if (p.abilities.get(i) instanceof FreezeTrap) {
+                    for (Base b : p.abilities.get(i).abilityObjects) {
                         b.Destroy();
                     }
-                } else if (p.abilities[i] instanceof Turret) {
-                    for (TurretObject t : ((Turret)p.abilities[i]).turrets) {
+                } else if (p.abilities.get(i) instanceof Turret) {
+                    for (TurretObject t : ((Turret)p.abilities.get(i)).turrets) {
                         t.Destroy();
                     }
-                } else if (p.abilities[i] instanceof Resurrection) {
-                    p.abilities[i].Fire();
+                } else if (p.abilities.get(i) instanceof Resurrection) {
+                    p.abilities.get(i).Fire();
                 }
             }
         }
@@ -371,7 +366,7 @@ public class Game implements Runnable {
         isInBulletTime = false;
         for (Player p : players) {
             for (int i = 0; i < settings.numAbilities; i++) {
-                p.abilities[i].BulletTimeEnded();
+                p.abilities.get(i).BulletTimeEnded();
             }
         }
     }
@@ -545,8 +540,8 @@ public class Game implements Runnable {
     private void AbilityObjectPhysics() {
         for (Player p : players) {
             for (int i = 0; i < settings.numAbilities; i++) {
-                if (p.abilities[i] != null) {   // it is sometimes null for some reason
-                    for (Base ao : p.abilities[i].abilityObjects) {
+                if (p.abilities.get(i) != null) {   // it is sometimes null for some reason
+                    for (Base ao : p.abilities.get(i).abilityObjects) {
                         Set<Base> objs = grid.retrieve(ao.position, ao.radius);
                         for (Base other : objs) {
                             if (other != ao) {
