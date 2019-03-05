@@ -19,8 +19,8 @@ public class Dash extends Ability {
         super.Fire();
 
         player.forces.add(new Vector2(
-            Math.cos(player.rotation) * extraForce,
-            Math.sin(player.rotation) * extraForce
+            Math.cos(player.GetRotation()) * extraForce,
+            Math.sin(player.GetRotation()) * extraForce
         ));
 
         JSONObject json = new JSONObject();

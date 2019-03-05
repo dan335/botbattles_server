@@ -63,7 +63,7 @@ public class Physics {
 
     // rectangle cannot be rotated
     public static Collision resolveCollision(Obj a, ObjRectangle b) {
-        if (b.rotation != 0) {
+        if (b.GetRotation() != 0) {
             System.out.println("Error: Rectangle cannot be rotated");
         }
 

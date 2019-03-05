@@ -19,6 +19,6 @@ public class Blasters extends Ability {
     public void Fire() {
         super.Fire();
 
-        new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), player.rotation, size, damage, shieldDamageMultiplier, color, 0.8, true);
+        new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), player.GetRotation(), size, damage, shieldDamageMultiplier, color, 0.8, true);
     }
 }

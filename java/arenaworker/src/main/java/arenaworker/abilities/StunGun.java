@@ -18,6 +18,6 @@ public class StunGun extends Ability {
     public void Fire() {
         super.Fire();
 
-        new StunGunBullet(this, player.FirePositionX(), player.FirePositionY(), player.rotation, size, stunDuration, color);
+        new StunGunBullet(this, player.FirePositionX(), player.FirePositionY(), player.GetRotation(), size, stunDuration, color);
     }
 }

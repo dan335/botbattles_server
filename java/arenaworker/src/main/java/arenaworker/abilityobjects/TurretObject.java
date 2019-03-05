@@ -135,7 +135,7 @@ public class TurretObject extends AbilityObjectPhysics {
 
     void RotateTowardsTarget() {
         //rotation = Physics.slowlyRotateToward(position, rotation, interceptPos, 5);
-        rotation = Math.atan2(interceptPos.y - position.y, interceptPos.x - position.x);
+        SetRotation(Math.atan2(interceptPos.y - position.y, interceptPos.x - position.x));
         needsUpdate = true;
     }
 
@@ -148,7 +148,7 @@ public class TurretObject extends AbilityObjectPhysics {
 
 
     void FireAtTarget() {
-        new BlasterBullet(ability, FirePositionX(), FirePositionY(), rotation, 6, bulletDamage, shieldDamageMultiplier, bulletColor, 0.8, true);
+        new BlasterBullet(ability, FirePositionX(), FirePositionY(), GetRotation(), 6, bulletDamage, shieldDamageMultiplier, bulletColor, 0.8, true);
         lastFired = ability.player.game.tickStartTime;
     }
 
@@ -175,12 +175,12 @@ public class TurretObject extends AbilityObjectPhysics {
 
     // position where bullets should spawn from
     public double FirePositionX() {
-        return this.position.x + Math.cos(this.rotation) * this.radius;
+        return this.position.x + Math.cos(GetRotation()) * this.radius;
     }
 
 
     public double FirePositionY() {
-        return this.position.y + Math.sin(this.rotation) * this.radius;
+        return this.position.y + Math.sin(GetRotation()) * this.radius;
     }
 
 

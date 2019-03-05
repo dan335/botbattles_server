@@ -19,6 +19,6 @@ public class PlayerSeeker extends Ability {
     public void Fire() {
         super.Fire();
 
-        new PlayerSeekingMissle(this, player.FirePositionX(), player.FirePositionY(), player.rotation, 8, damage, 1, color);
+        new PlayerSeekingMissle(this, player.FirePositionX(), player.FirePositionY(), player.GetRotation(), 8, damage, 1, color);
     }
 }

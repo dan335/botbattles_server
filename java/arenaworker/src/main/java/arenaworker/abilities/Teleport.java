@@ -24,8 +24,8 @@ public class Teleport extends Ability {
             emptyPos = player.game.map.GetEmptyPos(player.radius, player.mousePosition.x-searchRadius, player.mousePosition.y-searchRadius, player.mousePosition.x+searchRadius, player.mousePosition.y+searchRadius, tries);
         } else {
             Vector2 teleportPos = new Vector2(
-                player.position.x + Math.cos(player.rotation) * distance,
-                player.position.y + Math.sin(player.rotation) * distance
+                player.position.x + Math.cos(player.GetRotation()) * distance,
+                player.position.y + Math.sin(player.GetRotation()) * distance
             );
 
             emptyPos = player.game.map.GetEmptyPos(player.radius, teleportPos.x-searchRadius, teleportPos.y-searchRadius, teleportPos.x+searchRadius, teleportPos.y+searchRadius, tries);

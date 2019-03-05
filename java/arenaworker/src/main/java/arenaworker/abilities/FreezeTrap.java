@@ -18,7 +18,7 @@ public class FreezeTrap extends Ability {
     public void Fire() {
         super.Fire();
 
-        traps.add(new FreezeTrapGrenade(this, player.rotation, 12));
+        traps.add(new FreezeTrapGrenade(this, player.GetRotation(), 12));
 
         if (traps.size() > max) {
             traps.last().Destroy();

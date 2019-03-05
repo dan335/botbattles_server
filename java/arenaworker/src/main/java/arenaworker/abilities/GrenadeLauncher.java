@@ -22,14 +22,14 @@ public class GrenadeLauncher extends Ability {
         lastFired = player.game.tickStartTime;
 
         if (grenade == null) {
-            grenade = new Grenade(this, player.rotation, 12, amountOfForce, damage, true);
+            grenade = new Grenade(this, player.GetRotation(), 12, amountOfForce, damage, true);
             cooldown = 300L;
             SendCooldownMessage();
             JSONObject json = new JSONObject();
             json.put("t", "blast");
             json.put("x", player.position.x);
             json.put("y", player.position.y);
-            json.put("rotation", player.rotation);
+            json.put("rotation", player.GetRotation());
             json.put("color", "0xff4444");
             player.game.SendJsonToClients(json);
         } else {

@@ -31,7 +31,7 @@ public class Cannon extends Ability {
                 double intervalAngle = Math.toRadians(angleInDegrees / numBullets);
                 boolean isFirst = true;
                 for (int i = 0; i < numBullets; i++) {
-                    double angle = player.rotation + intervalAngle * i - intervalAngle * numBullets / 2;
+                    double angle = player.GetRotation() + intervalAngle * i - intervalAngle * numBullets / 2;
                     new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), angle, 16, damage, 1, "0xff4444", 0.9, isFirst);
                     isFirst = false;
                 }

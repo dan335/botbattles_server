@@ -19,7 +19,7 @@ public class VortexLauncher extends Ability {
         lastFired = player.game.tickStartTime;
 
         if (grenade == null) {
-            grenade = new VortexGrenade(this, player.rotation, 12, amountOfForce);
+            grenade = new VortexGrenade(this, player.GetRotation(), 12, amountOfForce);
             cooldown = 300L;
             SendCooldownMessage();
         } else {

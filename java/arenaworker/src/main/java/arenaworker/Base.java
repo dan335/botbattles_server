@@ -14,7 +14,7 @@ public class Base {
     public final String id = UUID.randomUUID().toString().substring(0, 8);
     final int hashcode = id.hashCode();
     public Vector2 position = new Vector2();
-    public double rotation = 0;
+    double rotation = 0;
     public double radius = 1;
 
     boolean isInGrid = true;
@@ -86,6 +86,21 @@ public class Base {
         if (isInGrid) {
             game.grid.update(this);
         }
+    }
+
+
+    public void SetRotation(double r) {
+        if (Double.isInfinite(r)) {
+            System.out.println("rotation is infinite");
+            Arrays.toString(Thread.currentThread().getStackTrace());
+            return;
+        };
+        this.rotation = r;
+    }
+
+
+    public double GetRotation() {
+        return this.rotation;
     }
 
 

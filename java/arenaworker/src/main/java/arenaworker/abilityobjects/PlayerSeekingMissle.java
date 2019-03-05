@@ -21,6 +21,8 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
     public double shieldDamageMultiplier = 1;
     double searchRadius = 600;
     double speed = 0.075;
+    long lifetime = 1000L * 10L;
+    long created;
     
     public PlayerSeekingMissle(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color) {
         super(ability, x, y, radius, rotation, false);
@@ -31,12 +33,18 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
         mass = 0.4;
         this.damage = damage;
         this.shieldDamageMultiplier = shieldDamageMultiplier;
+        created = ability.player.game.tickStartTime;
         SendInitialToAll();
     }
 
 
     @Override
     public void Tick() {
+        if (created + lifetime < ability.player.game.tickStartTime) {
+            Destroy();
+            return;
+        }
+        
         Player closestPlayer = null;
         double distance = 999999999;
 
@@ -57,13 +65,13 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
 
         if (closestPlayer == null) {
             forces = new Vector2(
-                Math.cos(rotation) * speed,
-                Math.sin(rotation) * speed
+                Math.cos(GetRotation()) * speed,
+                Math.sin(GetRotation()) * speed
             );
         } else {
             Vector2 straight = new Vector2(
-                Math.cos(rotation),
-                Math.sin(rotation)
+                Math.cos(GetRotation()),
+                Math.sin(GetRotation())
             );
 
             Vector2 towardsPlayer = closestPlayer.position.subtract(position).getNormalized();
@@ -72,7 +80,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
 
             forces = straight.add(towardsPlayer).normalize().scale(speed);
 
-            this.rotation = Math.atan2(forces.y, forces.x);
+            SetRotation(Math.atan2(forces.y, forces.x));
         }
          
         super.Tick();

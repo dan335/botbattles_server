@@ -19,6 +19,8 @@ public class MouseSeekingMissle extends AbilityObjectPhysics {
     public double shieldDamageMultiplier = 1;
     double searchRadius = 600;
     double speed = 0.075;
+    long lifetime = 1000L * 10L;
+    long created;
     
     public MouseSeekingMissle(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color) {
         super(ability, x, y, radius, rotation, false);
@@ -29,21 +31,27 @@ public class MouseSeekingMissle extends AbilityObjectPhysics {
         mass = 0.4;
         this.damage = damage;
         this.shieldDamageMultiplier = shieldDamageMultiplier;
+        created = ability.player.game.tickStartTime;
         SendInitialToAll();
     }
 
 
     @Override
     public void Tick() {
+        if (created + lifetime < ability.player.game.tickStartTime) {
+            Destroy();
+            return;
+        }
+
         if (ability.player.mousePosition == null) {
             forces = new Vector2(
-                Math.cos(rotation) * speed,
-                Math.sin(rotation) * speed
+                Math.cos(GetRotation()) * speed,
+                Math.sin(GetRotation()) * speed
             );
         } else {
             Vector2 straight = new Vector2(
-                Math.cos(rotation),
-                Math.sin(rotation)
+                Math.cos(GetRotation()),
+                Math.sin(GetRotation())
             );
 
             Vector2 towardsMouse = ability.player.mousePosition.subtract(position).getNormalized();
@@ -52,7 +60,7 @@ public class MouseSeekingMissle extends AbilityObjectPhysics {
 
             forces = straight.add(towardsMouse).normalize().scale(speed);
 
-            this.rotation = Math.atan2(forces.y, forces.x);
+            SetRotation(Math.atan2(forces.y, forces.x));
         }
          
         super.Tick();
