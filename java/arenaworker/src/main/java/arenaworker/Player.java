@@ -436,7 +436,7 @@ public class Player extends Obj {
         game.players.remove(this);
         super.Destroy();
 
-        if (game.players.size() == 1) {
+        if (game.players.size() == 1 && game.isStarted) {
             game.DeclareWinner(game.players.iterator().next());
         }
 

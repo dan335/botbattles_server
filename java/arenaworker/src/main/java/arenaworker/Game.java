@@ -44,7 +44,7 @@ public class Game implements Runnable {
     public Set<Obstacle> obstacles = ConcurrentHashMap.newKeySet();
     public Set<Box> boxes = ConcurrentHashMap.newKeySet();
     public Set<Base> other = ConcurrentHashMap.newKeySet();
-    long countdownStarted;
+    Long countdownStarted = null;
     public boolean isStarted = false;
     public boolean isEnded = false;
     public double deltaTime = 0;
