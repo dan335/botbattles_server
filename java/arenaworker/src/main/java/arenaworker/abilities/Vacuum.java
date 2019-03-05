@@ -14,7 +14,7 @@ import arenaworker.lib.Physics;
 public class Vacuum extends Ability {
 
     double extraForce = 5;
-    double radius = 250;
+    double radius = 300;
     long duration = 1000L;
     boolean isVacuuming = false;
     long vacuumStart;

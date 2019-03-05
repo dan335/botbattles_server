@@ -12,7 +12,7 @@ public class Resurrection extends Ability {
     
     public Resurrection(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 1000L * 90L;
+        cooldown = 1000L * 100L;
     }
 
 

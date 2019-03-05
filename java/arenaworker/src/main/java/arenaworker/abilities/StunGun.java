@@ -11,7 +11,7 @@ public class StunGun extends Ability {
     
     public StunGun(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 2000L;
+        cooldown = 2500L;
     }
 
     @Override

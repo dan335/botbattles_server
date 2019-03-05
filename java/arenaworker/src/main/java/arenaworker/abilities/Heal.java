@@ -6,7 +6,7 @@ public class Heal extends Ability {
 
     long stunDuration = 3000L;
     long stunStart;
-    double healAmount = 150;
+    double healAmount = 100;
     boolean isCharging = false;
     
     public Heal(Player player, int abilityNum) {

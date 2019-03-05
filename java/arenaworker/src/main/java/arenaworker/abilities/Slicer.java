@@ -8,7 +8,7 @@ import arenaworker.lib.Collision;
 
 public class Slicer extends Ability {
 
-    double duration = 1500L;
+    double duration = 2000L;
     double lastCreated;
     boolean isOn = false;
     double damage = 3;

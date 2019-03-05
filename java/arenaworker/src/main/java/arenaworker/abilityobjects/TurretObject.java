@@ -20,9 +20,9 @@ public class TurretObject extends AbilityObjectPhysics {
     Obj target;
     long lastFired = 0L;
     long fireCooldown = 500L;
-    double health = 100;
+    double health = 150;
     double aquireRadius = 700;
-    double bulletDamage = 5;
+    double bulletDamage = 6;
     double shieldDamageMultiplier = 1;
     String bulletColor = "0xff4444";
     Vector2 interceptPos = new Vector2();

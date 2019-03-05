@@ -15,7 +15,7 @@ import arenaworker.other.Explosion;
 public class MouseSeekingMissle extends AbilityObjectPhysics {
 
     String color;
-    public double damage = 60;
+    public double damage = 45;
     public double shieldDamageMultiplier = 1;
     double searchRadius = 600;
     double speed = 0.075;

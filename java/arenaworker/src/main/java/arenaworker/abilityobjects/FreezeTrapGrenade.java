@@ -14,7 +14,7 @@ public class FreezeTrapGrenade extends AbilityObjectPhysics implements Comparabl
     public double speed = 0.1;
     public double damage = 10;
     public double shieldDamageMultiplier = 1;
-    long stunDuration = 1500L;
+    long stunDuration = 2000L;
     double vortexRadius = 250;
     
     public FreezeTrapGrenade(Ability ability, double rotation, double radius) {

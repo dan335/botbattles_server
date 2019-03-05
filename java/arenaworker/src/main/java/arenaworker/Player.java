@@ -345,7 +345,7 @@ public class Player extends Obj {
 
     public void RageEnd() {
         isRaging = false;
-        Stun(1500L);
+        Stun(500L);
     }
 
 
