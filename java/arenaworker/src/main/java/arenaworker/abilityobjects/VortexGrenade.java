@@ -29,6 +29,11 @@ public class VortexGrenade extends AbilityObjectPhysics {
         destroyUpdateName = "vortexGrenadeDestroy";
         mass = 0.4;
         shieldDamageMultiplier = 1;
+
+        if (ability.player.game.isInBulletTime) {
+            amountOfForce *= 2;
+        }
+        
         forces = new Vector2(
             Math.cos(rotation) * amountOfForce,
             Math.sin(rotation) * amountOfForce

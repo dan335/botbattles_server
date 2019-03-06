@@ -298,7 +298,10 @@ public class Game implements Runnable {
 
     // called after all players have joined
     void StartGame() {
-        
+
+        for (Obstacle o : obstacles) {
+            o.GameStarted();
+        }        
 
         // destroy all bomb dropper bombs when game starts
         for (Player p : players) {

@@ -21,7 +21,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
     public double shieldDamageMultiplier = 1;
     double searchRadius = 600;
     double speed = 0.075;
-    long lifetime = 1000L * 10L;
+    long lifetime = 1000L * 8L;
     long created;
     
     public PlayerSeekingMissle(Ability ability, double x, double y, double rotation, double radius, double damage, double shieldDamageMultiplier, String color) {
@@ -44,7 +44,7 @@ public class PlayerSeekingMissle extends AbilityObjectPhysics {
             Destroy();
             return;
         }
-        
+
         Player closestPlayer = null;
         double distance = 999999999;
 

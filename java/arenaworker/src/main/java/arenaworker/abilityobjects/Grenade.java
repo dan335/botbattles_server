@@ -28,6 +28,11 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
         mass = 0.4;
         shieldDamageMultiplier = 1;
         this.damage = damage;
+
+        if (ability.player.game.isInBulletTime) {
+            amountOfForce *= 2;
+        }
+        
         forces = new Vector2(
             Math.cos(rotation) * amountOfForce,
             Math.sin(rotation) * amountOfForce

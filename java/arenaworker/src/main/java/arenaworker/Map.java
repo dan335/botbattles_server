@@ -35,8 +35,7 @@ public class Map {
             JSONObject ob = obs.getJSONObject(i);
 
             if (ob.getString("shape") == "circle") {
-                Obstacle o = new Obstacle(game, ob.getDouble("x"), ob.getDouble("y"), ob.getDouble("radius"));
-                o.mass = ob.getDouble("mass");
+                Obstacle o = new Obstacle(game, ob.getDouble("x"), ob.getDouble("y"), ob.getDouble("radius"), ob.getDouble("mass"));
             }
         }
     }

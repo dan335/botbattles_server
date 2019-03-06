@@ -35,6 +35,10 @@ public class Ability {
                 if (player.game.tickStartTime >= lastFired + cooldown * rageMultiplier) {
                     Fire();
                 }
+            } else if (player.game.isInBulletTime) {
+                if (player.game.tickStartTime >= lastFired + cooldown * 2) {
+                    Fire();
+                }
             } else {
                 if (player.game.tickStartTime >= lastFired + cooldown) {
                     Fire();
@@ -60,6 +64,10 @@ public class Ability {
             if (player.game.tickStartTime >= lastFired + cooldown * rageMultiplier) {
                 Fire();
             }
+        } else if (player.game.isInBulletTime) {
+            if (player.game.tickStartTime >= lastFired + cooldown * 2) {
+                Fire();
+            }
         } else {
             if (player.game.tickStartTime >= lastFired + cooldown) {
                 Fire();
@@ -70,6 +78,8 @@ public class Ability {
     public boolean IsReady() {
         if (player.isRaging) {
             return player.game.tickStartTime >= lastFired + cooldown * rageMultiplier;
+        } else if (player.game.isInBulletTime) {
+            return player.game.tickStartTime >= lastFired + cooldown * 2;
         } else {
             return player.game.tickStartTime >= lastFired + cooldown;
         }

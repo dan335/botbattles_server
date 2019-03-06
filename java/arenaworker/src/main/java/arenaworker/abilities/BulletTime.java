@@ -4,6 +4,10 @@ import org.json.JSONObject;
 
 import arenaworker.Player;
 
+// hard to get working because of cooldowns
+// if player is half way through cooldown and bullet time starts
+// hard part is updating client and changing how everything works
+
 public class BulletTime extends Ability {
     
     public BulletTime(Player player, int abilityNum) {

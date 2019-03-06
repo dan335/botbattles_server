@@ -126,16 +126,6 @@ public class Player extends Obj {
         }
     }
 
-    private boolean SetContainsDuplicates(Set<String> values) {
-        Set<String> lump = new HashSet<String>();
-
-        for (String value : values) {
-            if (lump.contains(value)) return true;
-            lump.add(value);
-        }
-
-        return false;
-    }
 
 
     public void SetMousePosition(double x, double y) {

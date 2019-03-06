@@ -7,13 +7,22 @@ import arenaworker.other.Explosion;
 
 public class Obstacle extends Obj {
 
-    public Obstacle(Game game, double x, double y, double radius) {
+    double defaultMass;
+
+    public Obstacle(Game game, double x, double y, double radius, double mass) {
         super(game, x, y, radius, 0, true);
         game.obstacles.add(this);
         initialUpdateName = "obstacleInitial";
         updateName = "obstacleUpdate";
         destroyUpdateName = "obstacleDestroy";
+        this.defaultMass = mass;
+        this.mass = 0;   // start un-movable; set mass when game starts
         SendInitialToAll();
+    }
+
+
+    public void GameStarted() {
+        mass = defaultMass;
     }
 
 
