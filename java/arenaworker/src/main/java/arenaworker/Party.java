@@ -1,7 +1,9 @@
 package arenaworker;
 
+import java.util.Calendar;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
@@ -11,6 +13,7 @@ public class Party {
 
     public String id;
     public Set<PartyMember> members = ConcurrentHashMap.newKeySet();
+    public ConcurrentSkipListSet<PartyChatMessage> chats = new ConcurrentSkipListSet<>();
 
     public Party(String id) {
         this.id = id;
@@ -20,6 +23,7 @@ public class Party {
     public void JoinParty(PartyMember member) {
         members.add(member);
         SendMemberList();
+        SendChatTo(member);
     }
 
 
@@ -40,6 +44,52 @@ public class Party {
                 SendMemberList();
             }
         }
+    }
+
+
+    public void AddChat(Session session, String message) {
+        PartyMember member = null;
+
+        for (PartyMember m : members) {
+            if (m.session == session) {
+                member = m;
+            }
+        }
+
+        if (member != null) {
+            chats.add(new PartyChatMessage(member, message));
+            SendChat();
+        }
+    }
+
+
+    void SendChat() {
+        JSONObject json = ChatJson();
+
+        for (PartyMember m : members) {
+            m.SendJson(json);
+        }
+    }
+
+
+    void SendChatTo(PartyMember member) {
+        member.SendJson(ChatJson());
+    }
+
+
+    JSONObject ChatJson() {
+        JSONObject json = new JSONObject();
+        json.put("t", "partyChat");
+
+        JSONArray chatArray = new JSONArray();
+
+        for (PartyChatMessage chat : chats) {
+            chatArray.put(chat.GetJson());
+        }
+
+        json.put("chat", chatArray);
+
+        return json;
     }
 
 

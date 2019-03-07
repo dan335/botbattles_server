@@ -65,6 +65,14 @@ public class IncomingMessage {
     }
 
 
+    static void partyChatMessage(JSONObject json, Session session) {
+        Party party = PartyManager.GetPartyById(json.optString("partyId"));
+        if (party != null) {
+            party.AddChat(session, json.optString("text"));
+        }
+    }
+
+
     // gameId
     static void joinGame(JSONObject json, Session session) {
         Game game = GameManager.GetGameById(json.getString("gameId"));
