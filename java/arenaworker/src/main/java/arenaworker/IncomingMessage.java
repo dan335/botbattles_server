@@ -44,6 +44,27 @@ public class IncomingMessage {
     }
 
 
+    static void joinParty(JSONObject json, Session session) {
+        String partyId = json.optString("partyId");
+        String name = json.optString("name");
+        if (partyId == "") return;
+        if (name.length() == 0) name = "Noname";
+
+        Party party = PartyManager.FindOrCreateParty(partyId);
+        if (party != null) {
+            party.JoinParty(new PartyMember(session, json.optString("id"), name));
+        }
+    }
+
+
+    static void setReady(JSONObject json, Session session) {
+        Party party = PartyManager.GetPartyById(json.optString("partyId"));
+        if (party != null) {
+            party.SetReady(session, json.getBoolean("isReady"));
+        }
+    }
+
+
     // gameId
     static void joinGame(JSONObject json, Session session) {
         Game game = GameManager.GetGameById(json.getString("gameId"));

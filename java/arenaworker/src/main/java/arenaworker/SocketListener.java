@@ -28,6 +28,7 @@ public class SocketListener implements WebSocketListener {
     public void onWebSocketClose(int statusCode, String reason)
     {
         DisconnectSession();
+        PartyManager.DestroyBySession(session);
     }
 
     @Override
