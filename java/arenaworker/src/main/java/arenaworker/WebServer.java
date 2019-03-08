@@ -14,6 +14,7 @@ public class WebServer {
         try {
             server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext("/stats", new WebStatsHandler());
+            server.createContext("/ping", new WebPingHandler());
             server.setExecutor(null);
             server.start();
         } catch (IOException ex) {
