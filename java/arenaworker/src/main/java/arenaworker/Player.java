@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import arenaworker.abilities.Ability;
 import arenaworker.abilities.Blasters;
+import arenaworker.abilities.Rage;
 import arenaworker.abilities.Resurrection;
 import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Collision;
@@ -331,11 +332,23 @@ public class Player extends Obj {
         json.put("t", "rageStart");
         json.put("shipId", id);
         game.SendJsonToClients(json);
+
+        for (Ability a : abilities) {
+            if (!(a instanceof Rage)) {
+                a.lastFired = 0;
+                a.SendFullCooldownMessage();
+            }
+        }
     }
 
     public void RageEnd() {
         isRaging = false;
         Stun(500L);
+
+        for (Ability a : abilities) {
+            a.lastFired = game.tickStartTime;
+            a.SendCooldownMessage();
+        }
     }
 
 

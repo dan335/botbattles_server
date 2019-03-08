@@ -18,7 +18,7 @@ public class FreezeTrapGrenade extends AbilityObjectPhysics implements Comparabl
     double vortexRadius = 250;
     
     public FreezeTrapGrenade(Ability ability, double rotation, double radius) {
-        super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, false);
+        super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, true);
         initialUpdateName = "mineInitial";
         updateName = "mineUpdate";
         destroyUpdateName = "mineDestroy";

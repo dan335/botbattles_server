@@ -8,7 +8,11 @@ import arenaworker.Base;
 import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
+import arenaworker.abilityobjects.FreezeTrapGrenade;
+import arenaworker.abilityobjects.Grenade;
+import arenaworker.abilityobjects.Mine;
 import arenaworker.abilityobjects.TurretObject;
+import arenaworker.abilityobjects.VortexGrenade;
 import arenaworker.lib.Physics;
 
 public class Vacuum extends Ability {
@@ -31,13 +35,21 @@ public class Vacuum extends Ability {
         if (isVacuuming) {
             Set<Base> objs = player.game.grid.retrieve(player.position, radius);
             for (Base o : objs) {
-                if (o instanceof Player || o instanceof Obstacle || o instanceof TurretObject) {
+                if (o instanceof Player || o instanceof Obstacle || o instanceof TurretObject || o instanceof FreezeTrapGrenade || o instanceof Grenade || o instanceof Mine || o instanceof VortexGrenade) {
                     if (o != player) {
                         if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
+                            Obj obj = (Obj)o;
+                            
+                            // scale by inverse mass
+                            double inverseMass = 0;
+                            if (obj.mass != 0) {
+                                inverseMass = 1 / obj.mass;
+                            }
+
                             if (o instanceof Player || o instanceof TurretObject) {
-                                ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.05));
+                                obj.forces.add(player.position.copy().subtract(o.position).normalize().scale(0.05).scale(inverseMass));
                             } else {
-                                ((Obj)o).forces.add(player.position.copy().subtract(o.position).normalize().scale(0.005));
+                                obj.forces.add(player.position.copy().subtract(o.position).normalize().scale(0.005).scale(inverseMass));
                             }
                         }
                     }

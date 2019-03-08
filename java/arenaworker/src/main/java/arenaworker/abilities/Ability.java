@@ -16,7 +16,7 @@ public class Ability {
     public final String id = UUID.randomUUID().toString().substring(0, 8);
     final int hashcode = id.hashCode();
     public Player player;
-    long lastFired = 0L;
+    public long lastFired = 0L;
     public long cooldown = 1000L;
     public boolean isOn = false;
     public Set<Base> abilityObjects = ConcurrentHashMap.newKeySet();
@@ -137,6 +137,16 @@ public class Ability {
         } else {
             json.put("cooldown", (double)cooldown);
         }
+        player.client.SendJson(json);
+    }
+
+
+    // for rage.  make ui cooldown bar full
+    public void SendFullCooldownMessage() {
+        JSONObject json = new JSONObject();
+        json.put("t", "abilityCooldownFull");
+        json.put("cooldown", (double)cooldown);
+        json.put("num", abilityNum);
         player.client.SendJson(json);
     }
 }

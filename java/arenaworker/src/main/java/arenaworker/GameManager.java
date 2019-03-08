@@ -15,7 +15,7 @@ public class GameManager {
         Game game = null;
 
         for (Game g : games.values()) {
-            if (!g.isStarted) {
+            if (!g.isStarted && g.players.size() < Settings.maxPlayers) {
                 game = g;
             }
         }

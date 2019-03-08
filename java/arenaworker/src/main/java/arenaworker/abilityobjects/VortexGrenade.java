@@ -23,7 +23,7 @@ public class VortexGrenade extends AbilityObjectPhysics {
     long stunDuration = 1000L;
     
     public VortexGrenade(Ability ability, double rotation, double radius, double amountOfForce) {
-        super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, false);
+        super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, true);
         initialUpdateName = "vortexGrenadeInitial";
         updateName = "vortexGrenadeUpdate";
         destroyUpdateName = "vortexGrenadeDestroy";
@@ -73,19 +73,27 @@ public class VortexGrenade extends AbilityObjectPhysics {
         
         Set<Base> objs = ability.player.game.grid.retrieve(position, vortexRadius);
         for (Base o : objs) {
-            if (o instanceof Player || o instanceof Obstacle || o instanceof TurretObject) {
+            if (o instanceof Player || o instanceof Obstacle || o instanceof TurretObject || o instanceof FreezeTrapGrenade || o instanceof Grenade || o instanceof Mine || o instanceof VortexGrenade) {
                 if (Physics.circleInCircle(position.x, position.y, vortexRadius, o.position.x, o.position.y, o.radius)) {
-                    
-                    Vector2 diff = position.copy().subtract(o.position);
+
+                    Obj obj = (Obj)o;
+
+                    Vector2 diff = position.copy().subtract(obj.position);
+
+                    // scale by inverse mass
+                    double inverseMass = 0;
+                    if (obj.mass != 0) {
+                        inverseMass = 1 / obj.mass;
+                    }
                     
                     if (o instanceof Player) {
                         Player p = (Player)o;
-                        p.forces.add(diff.getNormalized().scale(diff.length() * 0.005));
+                        p.forces.add(diff.getNormalized().scale(diff.length() * 0.005).scale(inverseMass));
                         p.Stun(stunDuration);
                     } else if (o instanceof TurretObject) {
-                        ((Obj)o).forces.add(diff.getNormalized().scale(diff.length() * 0.005));
+                        obj.forces.add(diff.getNormalized().scale(diff.length() * 0.005).scale(inverseMass));
                     } else {
-                        ((Obj)o).forces.add(diff.getNormalized().scale(diff.length() * 0.0005));
+                        obj.forces.add(diff.getNormalized().scale(diff.length() * 0.0005).scale(inverseMass));
                     }
                 }
             }

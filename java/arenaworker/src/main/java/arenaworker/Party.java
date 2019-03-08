@@ -21,9 +21,11 @@ public class Party {
 
 
     public void JoinParty(PartyMember member) {
-        members.add(member);
-        SendMemberList();
-        SendChatTo(member);
+        if (members.size() < Settings.maxPlayers) {
+            members.add(member);
+            SendMemberList();
+            SendChatTo(member);
+        }
     }
 
 

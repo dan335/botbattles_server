@@ -258,20 +258,15 @@ public class Game implements Runnable {
             if (players.size() == 2) {
                 countdownStarted = tickStartTime;
             }
-
-            String[] abilities = new String[settings.numAbilities];
-            for (int i = 0; i < settings.numAbilities; i++) {
-                abilities[i] = player.abilities.get(i).getClass().getSimpleName().toString();
-            }
-
-            PlayerInfo info = new PlayerInfo(player.id, name, userId, abilities);
-            playerInfo.add(info);
-            player.playerInfo = info;
         } else {
             JSONObject msg = new JSONObject();
             msg.put("t", "spectatorJoined");
             msg.put("name", client.name);
             SendJsonToClients(msg);
+
+            JSONObject json = new JSONObject();
+            json.put("t", "spectatorInitial");
+            client.SendJson(json);
         }
     }
 
@@ -298,6 +293,18 @@ public class Game implements Runnable {
 
     // called after all players have joined
     void StartGame() {
+
+        // add all players to playerInfo
+        for (Player p : players) {
+            String[] abilities = new String[settings.numAbilities];
+            for (int i = 0; i < settings.numAbilities; i++) {
+                abilities[i] = p.abilities.get(i).getClass().getSimpleName().toString();
+            }
+
+            PlayerInfo info = new PlayerInfo(p.id, p.client.name, p.client.userId, abilities);
+            playerInfo.add(info);
+            p.playerInfo = info;
+        }
 
         for (Obstacle o : obstacles) {
             o.GameStarted();

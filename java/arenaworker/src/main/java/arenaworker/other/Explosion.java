@@ -74,7 +74,14 @@ public class Explosion extends Obj {
         if (forceToApplyToObjects == 0) return;
         double distance = position.copy().subtract(obj.position).length() - obj.radius;
         double percent = 1 - distance / radius;
-        obj.forces.add(obj.position.copy().subtract(position).normalize().scale(percent).scale(forceToApplyToObjects));
+
+        // scale by inverse mass
+        double inverseMass = 0;
+        if (obj.mass != 0) {
+            inverseMass = 1 / obj.mass;
+        }
+        
+        obj.forces.add(obj.position.copy().subtract(position).normalize().scale(inverseMass).scale(percent).scale(forceToApplyToObjects));
     }
 
     @Override
