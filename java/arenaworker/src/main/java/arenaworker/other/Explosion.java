@@ -9,7 +9,11 @@ import arenaworker.Game;
 import arenaworker.Obj;
 import arenaworker.Obstacle;
 import arenaworker.Player;
+import arenaworker.abilityobjects.FreezeTrapGrenade;
+import arenaworker.abilityobjects.Grenade;
+import arenaworker.abilityobjects.Mine;
 import arenaworker.abilityobjects.TurretObject;
+import arenaworker.abilityobjects.VortexGrenade;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 
@@ -38,7 +42,7 @@ public class Explosion extends Obj {
 
         Set<Base> objs = game.grid.retrieve(new Vector2(x, y), radius);
         for (Base o : objs) {
-            if (o instanceof Player || o instanceof Obstacle || o instanceof TurretObject) {
+            if (o instanceof Player || o instanceof Obstacle || o instanceof TurretObject || o instanceof FreezeTrapGrenade || o instanceof Grenade || o instanceof Mine || o instanceof VortexGrenade) {
                 if (Physics.circleInCircle(position.x, position.y, radius, o.position.x, o.position.y, o.radius)) {
                     if (o instanceof Player) {
                         ApplyDamage((Player)o);
@@ -47,6 +51,8 @@ public class Explosion extends Obj {
                         ApplyForce((Obj)o);
                     } else if (o instanceof TurretObject) {
                         ApplyDamage((TurretObject)o);
+                    } else {
+                        ApplyForce((Obj)o);
                     }
                 }
             }
