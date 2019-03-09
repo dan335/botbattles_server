@@ -22,10 +22,11 @@ public class Vacuum extends Ability {
     long duration = 1000L;
     boolean isVacuuming = false;
     long vacuumStart;
+    long shieldDuration = 2000L;
     
     public Vacuum(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 5000L;
+        cooldown = 4000L;
     }
 
     @Override
@@ -72,6 +73,9 @@ public class Vacuum extends Ability {
 
         isVacuuming = true;
         vacuumStart = player.game.tickStartTime;
+
+        player.GainHalfDamageShield(shieldDuration);
+
         JSONObject json = new JSONObject();
         json.put("t", "vacuumStart");
         json.put("shipId", player.id);

@@ -20,7 +20,7 @@ public class TurretObject extends AbilityObjectPhysics {
     Obj target;
     long lastFired = 0L;
     long fireCooldown = 500L;
-    double health = 150;
+    double health = 300;
     double aquireRadius = 700;
     double bulletDamage = 6;
     double shieldDamageMultiplier = 1;

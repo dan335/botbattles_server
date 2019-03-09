@@ -67,6 +67,41 @@ public class Settings {
     public Settings() {
         CreateMap1();
         CreateMap2();
+        CreateMap3();
+    }
+
+
+    void CreateMap3() {
+        JSONObject json = new JSONObject();
+        json.put("startSize", 1800);
+
+        JSONArray obstacles = new JSONArray();
+
+        Set<Vector2> coords = new HashSet<>();
+
+        coords.add(new Vector2(1, 1));
+        coords.add(new Vector2(-1, 1));
+        coords.add(new Vector2(1, -1));
+        coords.add(new Vector2(-1, -1));
+
+        double start = 200;
+        int num = 4;
+
+        for (Vector2 coord : coords) {
+            for (double n = start; n < start * num; n += start) {
+                JSONObject o = new JSONObject();
+                o.put("x", coord.x * n);
+                o.put("y", coord.y * n);
+                o.put("radius", 70);
+                o.put("mass", 5);
+                o.put("shape", "circle");
+                obstacles.put(o);
+            }
+        }
+
+        json.put("obstacles", obstacles);
+
+        maps.add(json);
     }
 
 
@@ -93,6 +128,21 @@ public class Settings {
             o.put("mass", 5);
             o.put("shape", "circle");
             obstacles.put(o);
+
+            int num = 4;
+            double radius = 300;
+            for (int i = 0; i < num; i++) {
+                double angle = 2 * i * Math.PI / num ;
+                double x = coord.x + Math.cos(angle) * radius;
+                double y = coord.y + Math.sin(angle) * radius;
+                JSONObject obstacle = new JSONObject();
+                obstacle.put("x", x);
+                obstacle.put("y", y);
+                obstacle.put("radius", 40);
+                obstacle.put("mass", 3);
+                obstacle.put("shape", "circle");    // not used?
+                obstacles.put(obstacle);
+            }
         }
 
         json.put("obstacles", obstacles);

@@ -306,6 +306,21 @@ public class Game implements Runnable {
             p.playerInfo = info;
         }
 
+        // unstun players
+        for (Player p : players) {
+            if (p.isStunned) {
+                p.StunEnd();
+            }
+
+            if (p.isFrozen) {
+                p.FreezeEnd();
+            }
+
+            if (p.isSilenced) {
+                p.SilenceEnd();
+            }
+        }
+
         for (Obstacle o : obstacles) {
             o.GameStarted();
         }        

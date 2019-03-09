@@ -22,7 +22,7 @@ public class Silencer extends Ability {
     public void Fire() {
         super.Fire();
 
-        Set<Base> objs = player.game.grid.retrieve(player.position, player.radius);
+        Set<Base> objs = player.game.grid.retrieve(player.position, radius);
         for (Base o : objs) {
             if (o instanceof Player) {
                 if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {

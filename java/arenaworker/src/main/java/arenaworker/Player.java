@@ -38,14 +38,18 @@ public class Player extends Obj {
     public boolean isFrozen = false;
     public boolean isSilenced = false;
     public boolean isRaging = false;
+    public boolean isHalfDamageShield = false;
     public long stunEnd;
     public long frozenEnd;
     public long silencedEnd;
     public long rageEnd;
+    public long halfDamageShieldEnd;
     public boolean isInvis = false;
     public long invisEnd;
     public double shipSpeedMultiplier = 1;
     public double shipEngineSpeed = 1;
+    public double damageReceivedMultiplier = 1;
+    PlayerInfo killer;
     
     public Player(
             Client client,
@@ -279,6 +283,12 @@ public class Player extends Obj {
             }
         }
 
+        if (isHalfDamageShield) {
+            if (game.tickStartTime >= halfDamageShieldEnd) {
+                RemoveHalfDamageShield();
+            }
+        }
+
         super.Tick();
 
         for (int i = 0; i < game.settings.numAbilities; i++) {
@@ -396,6 +406,18 @@ public class Player extends Obj {
     }
 
 
+    public void GainHalfDamageShield(long duration) {
+        isHalfDamageShield = true;
+        halfDamageShieldEnd = duration + game.tickStartTime;
+        damageReceivedMultiplier = 0.5;
+    }
+
+    public void RemoveHalfDamageShield() {
+        isHalfDamageShield = false;
+        damageReceivedMultiplier = 1;
+    }
+
+
     public void Freeze(long duration) {
         isFrozen = true;
         frozenEnd = game.tickStartTime + duration;
@@ -431,6 +453,7 @@ public class Player extends Obj {
     }
 
 
+    @Override
     public void Destroy() {
         for (int i = 0; i < game.settings.numAbilities; i++) {
             abilities.get(i).Destroy();
@@ -505,6 +528,9 @@ public class Player extends Obj {
     public void TakeDamage(double damage, double shieldDamageMultiplier, Player otherPlayer) {
         if (!game.isStarted) return;
         if (damage <= 0) return;
+        if (health <= 0) return;
+
+        damage *= damageReceivedMultiplier;
         
         if (shield > 0) {
             shield -= Math.min(shield, damage * shieldDamageMultiplier);
@@ -550,6 +576,7 @@ public class Player extends Obj {
             } else {
                 if (otherPlayer != null) {
                     otherPlayer.AddKill();
+                    killer = otherPlayer.playerInfo;
                 }
                 Destroy();
             }
@@ -602,5 +629,17 @@ public class Player extends Obj {
                 }
             }
         }
+    }
+
+
+    @Override
+    public JSONObject DestroyData() {
+        JSONObject json = super.DestroyData();
+        if (killer == null) {
+            json.put("killer", "");
+        } else {
+            json.put("killer", killer.name);
+        }
+        return json;
     }
 }
