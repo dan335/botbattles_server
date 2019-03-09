@@ -17,7 +17,7 @@ public class Slicer extends Ability {
     
     public Slicer(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 5000L;
+        cooldown = 3500L;
         radius = player.radius + 13;
     }
 

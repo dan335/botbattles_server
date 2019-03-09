@@ -18,7 +18,7 @@ public class Smasher extends Ability {
     
     public Smasher(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 5000L;
+        cooldown = 3500L;
         radius = player.radius + 13;
     }
 

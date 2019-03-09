@@ -19,6 +19,7 @@ public class PlayerInfo {
     public double damageDealt = 0;
     public Document userData = null;
     public double ratingChange = 0;
+    public PlayerInfo killer = null;
 
     public PlayerInfo(String id, String name, String userId, String[] abilities) {
         this.id = id;   // game object id

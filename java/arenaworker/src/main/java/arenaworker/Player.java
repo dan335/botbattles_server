@@ -49,7 +49,7 @@ public class Player extends Obj {
     public double shipSpeedMultiplier = 1;
     public double shipEngineSpeed = 1;
     public double damageReceivedMultiplier = 1;
-    PlayerInfo killer;
+    
     
     public Player(
             Client client,
@@ -353,7 +353,6 @@ public class Player extends Obj {
 
     public void RageEnd() {
         isRaging = false;
-        Stun(500L);
 
         for (Ability a : abilities) {
             a.lastFired = game.tickStartTime;
@@ -576,7 +575,7 @@ public class Player extends Obj {
             } else {
                 if (otherPlayer != null) {
                     otherPlayer.AddKill();
-                    killer = otherPlayer.playerInfo;
+                    playerInfo.killer = otherPlayer.playerInfo;
                 }
                 Destroy();
             }
@@ -635,10 +634,10 @@ public class Player extends Obj {
     @Override
     public JSONObject DestroyData() {
         JSONObject json = super.DestroyData();
-        if (killer == null) {
+        if (playerInfo.killer == null) {
             json.put("killer", "");
         } else {
-            json.put("killer", killer.name);
+            json.put("killer", playerInfo.killer.name);
         }
         return json;
     }

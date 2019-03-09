@@ -37,17 +37,28 @@ public class BlasterBullet extends Projectile {
             Physics.resolveCollision(this, (Obj)otherObject);
             Destroy();
         } else if (otherObject instanceof Player) {
-            if (ability.player != otherObject) {
-                Physics.resolveCollision(this, (Obj)otherObject);
-                Player player = (Player) otherObject;
-                player.TakeDamage(damage, shieldDamageMultiplier, ability.player);
-                Destroy();
+            if (ricochetedFrom == null) {
+                if (ability.player != otherObject) {
+                    Physics.resolveCollision(this, (Obj)otherObject);
+                    Player player = (Player) otherObject;
+                    player.TakeDamage(damage, shieldDamageMultiplier, ability.player);
+                    Destroy();
+                }
+            } else {
+                if (ricochetedFrom != otherObject) {
+                    Physics.resolveCollision(this, (Obj)otherObject);
+                    Player player = (Player) otherObject;
+                    player.TakeDamage(damage, shieldDamageMultiplier, ricochetedFrom);
+                    Destroy();
+                }
             }
         } else if (otherObject instanceof Box) {
             Destroy();
         } else if (otherObject instanceof ShieldBubble) {
-            if (((ShieldBubble)otherObject).ability.player != ability.player) {
-                Destroy();
+            ShieldBubble sb = (ShieldBubble)otherObject;
+            if (sb.ability.player != ability.player) {
+                Ricochet(otherObject);
+                ricochetedFrom = sb.ability.player;
             }
         } else if (otherObject instanceof TurretObject) {
             TurretObject turret = (TurretObject)otherObject;
