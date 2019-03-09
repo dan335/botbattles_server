@@ -68,6 +68,60 @@ public class Settings {
         CreateMap1();
         CreateMap2();
         CreateMap3();
+        CreateMap4();
+    }
+
+
+    void CreateMap4() {
+        JSONObject json = new JSONObject();
+        json.put("startSize", 1800);
+
+        JSONArray obstacles = new JSONArray();
+
+        Set<Vector2> coords = new HashSet<>();
+
+        coords.add(new Vector2(1, 1));
+        coords.add(new Vector2(-1, 1));
+        coords.add(new Vector2(1, -1));
+        coords.add(new Vector2(-1, -1));
+
+        double distance = 300;
+
+        for (Vector2 coord : coords) {
+            Vector2 pos = coord.copy().scale(distance);
+
+            JSONObject o = new JSONObject();
+            o.put("x", pos.x);
+            o.put("y", pos.y);
+            o.put("radius", 70);
+            o.put("mass", 10);
+            o.put("shape", "circle");
+            obstacles.put(o);
+
+            Vector2 rotated = coord.rotateVector(90).scale(120);
+
+            o = new JSONObject();
+            o.put("x", pos.x + rotated.x);
+            o.put("y", pos.y + rotated.y);
+            o.put("radius", 70);
+            o.put("mass", 10);
+            o.put("shape", "circle");
+            obstacles.put(o);
+
+            rotated = coord.rotateVector(-90).scale(120);
+
+            o = new JSONObject();
+            o.put("x", pos.x + rotated.x);
+            o.put("y", pos.y + rotated.y);
+            o.put("radius", 70);
+            o.put("mass", 10);
+            o.put("shape", "circle");
+            obstacles.put(o);
+        }
+
+        json.put("obstacles", obstacles);
+
+        maps.add(json);
     }
 
 
