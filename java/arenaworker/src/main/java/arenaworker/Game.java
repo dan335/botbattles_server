@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +27,6 @@ import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Grid;
 import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
-import arenaworker.PlayerInfo;
 
 public class Game implements Runnable {
     public final String id = new ObjectId().toHexString();
@@ -60,7 +60,7 @@ public class Game implements Runnable {
     public Game(Settings settings) {
         this.settings = settings;
         grid = new Grid(2500, settings.gridDivisions);
-        map = new Map(settings.defaultMap, this);
+        map = new Map(settings.maps.get(new Random().nextInt(settings.maps.size())), this);
         gameCreatedTime = Calendar.getInstance().getTimeInMillis();
         thread = new Thread(this, "game_" + id);
         thread.start();

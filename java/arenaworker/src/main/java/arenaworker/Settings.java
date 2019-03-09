@@ -1,11 +1,14 @@
 package arenaworker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import arenaworker.lib.Vector2;
 
 public class Settings {
     // how long after the 2nd player joins should we wait to start the game
@@ -14,7 +17,7 @@ public class Settings {
     public final long gameWaitToStartTimeMs = 1000L * 5L;
     public final long tickIntervalMs = 16L;
     public final long updateIntervalMs = 50L;
-    public JSONObject defaultMap = new JSONObject();
+    public ArrayList<JSONObject> maps = new ArrayList<>();
     public final long mapUpdateInterval = 1000L * 2L;
     public final double mapShrinkPerInterval = 0.008;
     public final double mapMinSize = 400;
@@ -62,7 +65,45 @@ public class Settings {
     ));
 
     public Settings() {
-        defaultMap.put("startSize", 1800);
+        CreateMap1();
+        CreateMap2();
+    }
+
+
+    void CreateMap2() {
+        JSONObject json = new JSONObject();
+        json.put("startSize", 1800);
+
+        JSONArray obstacles = new JSONArray();
+
+        double offset = 400;
+
+        Set<Vector2> coords = new HashSet<>();
+
+        coords.add(new Vector2(offset, offset));
+        coords.add(new Vector2(-offset, offset));
+        coords.add(new Vector2(offset, -offset));
+        coords.add(new Vector2(-offset, -offset));
+        
+        for (Vector2 coord : coords) {
+            JSONObject o = new JSONObject();
+            o.put("x", coord.x);
+            o.put("y", coord.y);
+            o.put("radius", 70);
+            o.put("mass", 5);
+            o.put("shape", "circle");
+            obstacles.put(o);
+        }
+
+        json.put("obstacles", obstacles);
+
+        maps.add(json);
+    }
+
+
+    void CreateMap1() {
+        JSONObject json = new JSONObject();
+        json.put("startSize", 1800);
 
         JSONArray obstacles = new JSONArray();
 
@@ -104,6 +145,8 @@ public class Settings {
         obstacle.put("shape", "circle");    // not used?
         obstacles.put(obstacle);
 
-        defaultMap.put("obstacles", obstacles);
+        json.put("obstacles", obstacles);
+
+        maps.add(json);
     }
 }
