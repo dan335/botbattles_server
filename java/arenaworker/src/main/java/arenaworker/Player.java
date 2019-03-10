@@ -575,7 +575,9 @@ public class Player extends Obj {
             } else {
                 if (otherPlayer != null) {
                     otherPlayer.AddKill();
-                    playerInfo.killer = otherPlayer.playerInfo;
+                    if (playerInfo != null) {
+                        playerInfo.killer = otherPlayer.playerInfo;
+                    }
                 }
                 Destroy();
             }
@@ -584,11 +586,15 @@ public class Player extends Obj {
 
 
     public void AddKill() {
-        playerInfo.kills++;
+        if (playerInfo != null) {
+            playerInfo.kills++;
+        }
     }
 
     public void AddDamageDealt(double damage) {
-        playerInfo.damageDealt += damage;
+        if (playerInfo != null) {
+            playerInfo.damageDealt += damage;
+        }
     }
 
 
@@ -634,7 +640,7 @@ public class Player extends Obj {
     @Override
     public JSONObject DestroyData() {
         JSONObject json = super.DestroyData();
-        if (playerInfo.killer == null) {
+        if (playerInfo == null || playerInfo.killer == null) {
             json.put("killer", "");
         } else {
             json.put("killer", playerInfo.killer.name);
