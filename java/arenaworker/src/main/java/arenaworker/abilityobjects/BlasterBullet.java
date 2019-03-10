@@ -56,9 +56,16 @@ public class BlasterBullet extends Projectile {
             Destroy();
         } else if (otherObject instanceof ShieldBubble) {
             ShieldBubble sb = (ShieldBubble)otherObject;
-            if (sb.ability.player != ability.player) {
-                Ricochet(otherObject);
-                ricochetedFrom = sb.ability.player;
+            if (ricochetedFrom == null) {
+                if (sb.ability.player != ability.player) {
+                    Ricochet(otherObject);
+                    ricochetedFrom = sb.ability.player;
+                }
+            } else {
+                if (ricochetedFrom != sb.ability.player) {
+                    Ricochet(otherObject);
+                    ricochetedFrom = sb.ability.player;
+                }
             }
         } else if (otherObject instanceof TurretObject) {
             TurretObject turret = (TurretObject)otherObject;

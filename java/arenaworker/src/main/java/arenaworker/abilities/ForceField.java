@@ -6,7 +6,7 @@ import arenaworker.abilityobjects.ShieldBubble;
 public class ForceField extends Ability {
 
     ShieldBubble shieldBubble;
-    double duration = 20000L;
+    double duration = 2000L;
     double lastCreated;
     
     public ForceField(Player player, int abilityNum) {
