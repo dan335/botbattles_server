@@ -44,6 +44,7 @@ public class Party {
                 PartyManager.DestroyParty(this);
             } else {
                 SendMemberList();
+                CheckForStart();
             }
         }
     }
@@ -107,8 +108,12 @@ public class Party {
         if (member != null) {
             member.isReady = isReady;
             SendMemberList();
+            CheckForStart();
         }
+    }
 
+
+    void CheckForStart() {
         if (members.size() > 1) {
             boolean isAllReady = true;
             for (PartyMember m : members) {

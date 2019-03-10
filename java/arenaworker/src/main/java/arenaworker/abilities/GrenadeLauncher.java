@@ -11,6 +11,7 @@ public class GrenadeLauncher extends Ability {
     double amountOfForce = 2.5;
     public long defaultInterval = 5000L;
     double damage = 90;
+    String color = "0xffbb44";
     
     public GrenadeLauncher(Player player, int abilityNum) {
         super(player, abilityNum);
@@ -22,7 +23,7 @@ public class GrenadeLauncher extends Ability {
         lastFired = player.game.tickStartTime;
 
         if (grenade == null) {
-            grenade = new Grenade(this, player.GetRotation(), 12, amountOfForce, damage, true);
+            grenade = new Grenade(this, player.GetRotation(), 12, amountOfForce, damage, true, color);
             cooldown = 300L;
             SendCooldownMessage();
             JSONObject json = new JSONObject();

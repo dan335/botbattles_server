@@ -57,7 +57,7 @@ public class Player extends Obj {
             ArrayList<String> abilityTypes,
             Vector2 pos
         ) {
-        super(game, pos.x, pos.y, 25, 0, true);
+        super(game, pos.x, pos.y, 30, 0, true);
 
         shipEngineSpeed = game.settings.shipEngineSpeed;
 

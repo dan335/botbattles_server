@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import arenaworker.Player;
 import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Collision;
+import arenaworker.lib.Vector2;
 
 public class Smasher extends Ability {
 
@@ -15,6 +16,7 @@ public class Smasher extends Ability {
     double shieldDamageMultiplier = 1;
     double radius;
     boolean hasDoneDamange = false;
+    double extraForce = 2;
     
     public Smasher(Player player, int abilityNum) {
         super(player, abilityNum);
@@ -38,6 +40,16 @@ public class Smasher extends Ability {
         json.put("shipId", player.id);
         json.put("id", id);
         player.game.SendJsonToClients(json);
+
+        player.forces.add(new Vector2(
+            Math.cos(player.GetRotation()) * extraForce,
+            Math.sin(player.GetRotation()) * extraForce
+        ));
+
+        JSONObject json2 = new JSONObject();
+        json2.put("t", "dashInitial");
+        json2.put("shipId", player.id);
+        player.game.SendJsonToClients(json2);
     }
 
     void Off() {

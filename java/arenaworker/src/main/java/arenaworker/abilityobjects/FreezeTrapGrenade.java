@@ -1,5 +1,7 @@
 package arenaworker.abilityobjects;
 
+import org.json.JSONObject;
+
 import arenaworker.Base;
 import arenaworker.Box;
 import arenaworker.Obj;
@@ -16,13 +18,15 @@ public class FreezeTrapGrenade extends AbilityObjectPhysics implements Comparabl
     public double shieldDamageMultiplier = 1;
     long stunDuration = 2000L;
     double vortexRadius = 250;
+    String color;
     
-    public FreezeTrapGrenade(Ability ability, double rotation, double radius) {
+    public FreezeTrapGrenade(Ability ability, double rotation, double radius, String color) {
         super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, true);
         initialUpdateName = "mineInitial";
         updateName = "mineUpdate";
         destroyUpdateName = "mineDestroy";
-        mass = 0.4;
+        mass = 0.6;
+        this.color = color;
         SendInitialToAll();
     }
 
@@ -68,5 +72,12 @@ public class FreezeTrapGrenade extends AbilityObjectPhysics implements Comparabl
 
     public int compareTo(FreezeTrapGrenade o) {
         return id.compareTo(o.id);
+    }
+
+    @Override
+    public JSONObject InitialData() {
+        JSONObject json = super.InitialData();
+        json.put("color", color);
+        return json;
     }
 }

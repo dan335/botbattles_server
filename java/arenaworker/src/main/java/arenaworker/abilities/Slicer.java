@@ -36,6 +36,8 @@ public class Slicer extends Ability {
         json.put("shipId", player.id);
         json.put("id", id);
         player.game.SendJsonToClients(json);
+
+        player.shipSpeedMultiplier += 1;
     }
 
     void Off() {
@@ -45,6 +47,8 @@ public class Slicer extends Ability {
         json.put("shipId", player.id);
         json.put("id", id);
         player.game.SendJsonToClients(json);
+
+        player.shipSpeedMultiplier -= 1;
     }
 
 

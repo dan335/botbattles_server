@@ -14,6 +14,7 @@ public class Charger extends Ability {
     long chargeStart;
     double damageMultiplier = 0.03;
     double sizeMultiplier = 0.008;
+    double bulletSpeed = 1.5;
     
     public Charger(Player player, int abilityNum) {
         super(player, abilityNum);
@@ -29,7 +30,7 @@ public class Charger extends Ability {
             isCharging = false;
             player.isFrozen = false;
             double time = (double)(player.game.tickStartTime - chargeStart);
-            new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), player.GetRotation(), Math.min(80, time * sizeMultiplier), time * damageMultiplier, 1, color, 1.5, true);
+            new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), player.GetRotation(), Math.min(80, time * sizeMultiplier), time * damageMultiplier, 1, color, bulletSpeed, true);
             cooldown = defaultCooldown;
             lastFired = player.game.tickStartTime;
             SendCooldownMessage();

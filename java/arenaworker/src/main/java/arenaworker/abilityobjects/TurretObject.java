@@ -20,13 +20,13 @@ public class TurretObject extends AbilityObjectPhysics {
     Obj target;
     long lastFired = 0L;
     long fireCooldown = 500L;
-    double health = 200;
+    double health = 150;
     double aquireRadius = 700;
-    double bulletDamage = 6;
+    double bulletDamage = 8;
     double shieldDamageMultiplier = 1;
     String bulletColor = "0xff4444";
     Vector2 interceptPos = new Vector2();
-    double bulletSpeed = 1; // should be the same as blaster bullet
+    double bulletSpeed = 0.9;
 
 
     public TurretObject(Ability ability, double rotation, double x, double y) {
@@ -148,7 +148,7 @@ public class TurretObject extends AbilityObjectPhysics {
 
 
     void FireAtTarget() {
-        new BlasterBullet(ability, FirePositionX(), FirePositionY(), GetRotation(), 6, bulletDamage, shieldDamageMultiplier, bulletColor, 0.8, true);
+        new BlasterBullet(ability, FirePositionX(), FirePositionY(), GetRotation(), 6, bulletDamage, shieldDamageMultiplier, bulletColor, bulletSpeed, true);
         lastFired = ability.player.game.tickStartTime;
     }
 

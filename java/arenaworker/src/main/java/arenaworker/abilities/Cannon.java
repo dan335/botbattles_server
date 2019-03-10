@@ -13,6 +13,7 @@ public class Cannon extends Ability {
     long chargeStart;
     boolean isCharging = false;
     double damage = 40;
+    double bulletSpeed = 0.9;
     
 
     public Cannon(Player player, int abilityNum) {
@@ -32,7 +33,7 @@ public class Cannon extends Ability {
                 boolean isFirst = true;
                 for (int i = 0; i < numBullets; i++) {
                     double angle = player.GetRotation() + intervalAngle * i - intervalAngle * numBullets / 2;
-                    new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), angle, 16, damage, 1, "0xff4444", 0.9, isFirst);
+                    new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), angle, 16, damage, 1, "0xff4444", bulletSpeed, isFirst);
                     isFirst = false;
                 }
 

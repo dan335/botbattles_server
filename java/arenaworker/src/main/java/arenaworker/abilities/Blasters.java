@@ -9,6 +9,7 @@ public class Blasters extends Ability {
     double damage = 15;
     double shieldDamageMultiplier = 1;
     double size = 8;
+    double bulletSpeed = 0.9;
     
     public Blasters(Player player, int abilityNum) {
         super(player, abilityNum);
@@ -19,6 +20,6 @@ public class Blasters extends Ability {
     public void Fire() {
         super.Fire();
 
-        new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), player.GetRotation(), size, damage, shieldDamageMultiplier, color, 0.8, true);
+        new BlasterBullet(this, player.FirePositionX(), player.FirePositionY(), player.GetRotation(), size, damage, shieldDamageMultiplier, color, bulletSpeed, true);
     }
 }

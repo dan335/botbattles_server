@@ -8,6 +8,8 @@ import arenaworker.abilityobjects.Mine;
 public class BombDropper extends Ability {
 
     double damage = 150;
+    double mineRadius = 36;
+    String color = "0xffbb44";
 
     public long defaultInterval = 2500L;
     public ConcurrentSkipListSet<Mine> grenades = new ConcurrentSkipListSet<Mine>();
@@ -21,7 +23,7 @@ public class BombDropper extends Ability {
     @Override
     public void Fire() {
         super.Fire();
-        grenades.add(new Mine(this, player.GetRotation(), 12, 0, damage));
+        grenades.add(new Mine(this, player.GetRotation(), mineRadius, 0, damage, color));
 
         if (grenades.size() > maxGrenades) {
             grenades.last().Explode();

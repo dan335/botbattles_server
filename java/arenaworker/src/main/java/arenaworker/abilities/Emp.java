@@ -14,7 +14,7 @@ public class Emp extends Ability {
     
     public Emp(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 11000L;
+        cooldown = 8000L;
     }
 
     @Override

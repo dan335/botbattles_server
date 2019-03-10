@@ -1,5 +1,7 @@
 package arenaworker.abilityobjects;
 
+import org.json.JSONObject;
+
 import arenaworker.Base;
 import arenaworker.Box;
 import arenaworker.Obj;
@@ -17,17 +19,19 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
     public double speed = 0.1;
     public double damage = 10;
     public double shieldDamageMultiplier = 1;
+    String color;
 
     // sendInitial boolean is so that Mine.java can override initialUpdateName etc
     
-    public Grenade(Ability ability, double rotation, double radius, double amountOfForce, double damage, boolean sendInitial) {
+    public Grenade(Ability ability, double rotation, double radius, double amountOfForce, double damage, boolean sendInitial, String color) {
         super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, true);
         initialUpdateName = "grenadeInitial";
         updateName = "grenadeUpdate";
         destroyUpdateName = "grenadeDestroy";
-        mass = 0.4;
+        mass = 0.6;
         shieldDamageMultiplier = 1;
         this.damage = damage;
+        this.color = color;
 
         if (ability.player.game.isInBulletTime) {
             amountOfForce *= 2;
@@ -99,5 +103,13 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
 
     public int compareTo(Grenade o) {
         return id.compareTo(o.id);
+    }
+
+
+    @Override
+    public JSONObject InitialData() {
+        JSONObject json = super.InitialData();
+        json.put("color", color);
+        return json;
     }
 }

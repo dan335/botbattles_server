@@ -62,6 +62,7 @@ public class Vacuum extends Ability {
                 JSONObject json = new JSONObject();
                 json.put("t", "vacuumEnd");
                 json.put("id", id);
+                json.put("shipId", player.id);
                 player.game.SendJsonToClients(json);
             }
         }
