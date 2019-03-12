@@ -24,7 +24,7 @@ public class Settings {
     public final int gridDivisions = 10;
     public final double shipEngineSpeed = 0.035;
     public final double drag = -0.1;
-    public final double wallWidth = 80;
+    public final double wallWidth = 60;
     public final long playerHealDelay = 1000L * 3L;
     public final double playerHealPerInterval = 0.03;
     public final long maxReplayTime = 1000L * 60L * 3L;

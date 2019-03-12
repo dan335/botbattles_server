@@ -12,7 +12,7 @@ import arenaworker.lib.Physics;
 
 public class Slicer extends Ability {
 
-    double duration = 2000L;
+    double duration = 1500L;
     double lastCreated;
     boolean isOn = false;
     double damage = 3;

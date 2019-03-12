@@ -12,7 +12,7 @@ public class Smasher extends Ability {
     double duration = 1500L;
     double lastCreated;
     boolean isOn = false;
-    double damage = 50;
+    double damage = 60;
     double shieldDamageMultiplier = 1;
     double radius;
     boolean hasDoneDamange = false;
