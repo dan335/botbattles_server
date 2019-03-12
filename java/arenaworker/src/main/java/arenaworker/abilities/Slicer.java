@@ -1,24 +1,28 @@
 package arenaworker.abilities;
 
+import java.util.Set;
+
 import org.json.JSONObject;
 
+import arenaworker.Base;
 import arenaworker.Player;
 import arenaworker.abilityobjects.TurretObject;
 import arenaworker.lib.Collision;
+import arenaworker.lib.Physics;
 
 public class Slicer extends Ability {
 
     double duration = 2000L;
     double lastCreated;
     boolean isOn = false;
-    double damage = 5;
+    double damage = 3;
     double shieldDamageMultiplier = 1;
     double radius;
     
     public Slicer(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 3500L;
-        radius = player.radius + 13;
+        cooldown = 5000L;
+        radius = player.radius + 25;
     }
 
     @Override
@@ -57,29 +61,29 @@ public class Slicer extends Ability {
         super.Tick();
 
         if (isOn) {
+            Set<Base> objs = player.game.grid.retrieve(player.position, radius);
+            for (Base o : objs) {
+                if (o instanceof Player) {
+                    if (o != player) {
+                        if (Physics.circleInCircle(player.position.x, player.position.y, radius, o.position.x, o.position.y, o.radius)) {
+                            Player p = (Player) o;
+                            p.TakeDamage(damage, shieldDamageMultiplier, player);
+                        }
+                    }
+                } else if (o instanceof TurretObject) {
+                    TurretObject turret = (TurretObject)o;
+                    if (turret.ability.player != player) {
+                        turret.TakeDamage(damage, player);
+                    }
+                }
+            }
+
             if (lastCreated + duration < player.game.tickStartTime) {
                 Off();
             }
         }
     }
 
-
-    @Override
-    public void Collision(Collision collision) {
-        if (isOn) {
-            if (collision.b instanceof Player) {
-                if (collision.b != player) {
-                    ((Player)collision.b).TakeDamage(damage, shieldDamageMultiplier, player);
-                }
-            } else if (collision.b instanceof TurretObject) {
-                TurretObject turret = (TurretObject)collision.b;
-                if (turret.ability.player != player) {
-                    System.out.println(damage);
-                    turret.TakeDamage(damage, player);
-                }
-            }
-        }
-    }
 
     @Override
     public void Destroy() {

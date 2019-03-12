@@ -7,11 +7,11 @@ import arenaworker.lib.Vector2;
 
 public class Dash extends Ability {
 
-    double extraForce = 2;
+    double extraForce = 1.5;
     
     public Dash(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 2000L;
+        cooldown = 1500L;
     }
 
     @Override

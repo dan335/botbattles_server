@@ -15,7 +15,7 @@ public class Boost extends Ability {
     
     public Boost(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 7000L;
+        cooldown = 6000L;
     }
 
     @Override

@@ -15,7 +15,7 @@ public class Silencer extends Ability {
     
     public Silencer(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 5000L;
+        cooldown = 4000L;
     }
 
     @Override

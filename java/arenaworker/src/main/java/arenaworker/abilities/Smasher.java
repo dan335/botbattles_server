@@ -12,7 +12,7 @@ public class Smasher extends Ability {
     double duration = 1500L;
     double lastCreated;
     boolean isOn = false;
-    double damage = 60;
+    double damage = 50;
     double shieldDamageMultiplier = 1;
     double radius;
     boolean hasDoneDamange = false;
@@ -20,8 +20,8 @@ public class Smasher extends Ability {
     
     public Smasher(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 3500L;
-        radius = player.radius + 13;
+        cooldown = 5000L;
+        radius = player.radius + 15;
     }
 
     @Override
@@ -80,7 +80,6 @@ public class Smasher extends Ability {
             if (collision.b instanceof Player) {
                 if (collision.b != player) {
                     if (!hasDoneDamange) {
-                        System.out.println(collision.magnitude);
                         ((Player) collision.b).TakeDamage(damage * collision.magnitude, shieldDamageMultiplier, player);
                         hasDoneDamange = true;
                     }

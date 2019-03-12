@@ -91,9 +91,11 @@ public class IncomingMessage {
         }
 
         String name = json.optString("name");
-        String userId = json.optString("userId");
+        name = name.replaceAll("[^0-9a-zA-Z_\\s]", "").trim();
 
         if (name.length() == 0) name = "Noname";
+
+        String userId = json.optString("userId");
         if (userId.length() == 0) userId = null;
 
         if (game != null) {

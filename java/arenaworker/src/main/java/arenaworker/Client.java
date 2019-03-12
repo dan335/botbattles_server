@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 // client contains a session
 // one per session
@@ -87,6 +88,12 @@ public class Client {
                 try {
                     Future<Void> future = session.getRemote().sendStringByFuture(m.toString());
                     future.get(2, TimeUnit.SECONDS);
+                }
+                catch (NullPointerException e) {
+                    // ignore
+                }
+                catch (TimeoutException e) {
+                    // ignore
                 }
                 catch (Throwable e)
                 {

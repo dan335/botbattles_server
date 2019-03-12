@@ -79,7 +79,7 @@ public class Base {
     public void SetRadius(double radius) {
         if (Double.isInfinite(radius) || Double.isNaN(radius)) {
             System.out.println("radius is infinite");
-            Arrays.toString(Thread.currentThread().getStackTrace());
+            System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
             return;
         };
         this.radius = radius;
@@ -92,7 +92,7 @@ public class Base {
     public void SetRotation(double r) {
         if (Double.isInfinite(r) || Double.isNaN(r)) {
             System.out.println("rotation is infinite");
-            Arrays.toString(Thread.currentThread().getStackTrace());
+            System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
             return;
         };
         this.rotation = r;
