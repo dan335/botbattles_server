@@ -96,6 +96,7 @@ public class Base {
             return;
         };
         this.rotation = r;
+        needsUpdate = true;
     }
 
 
