@@ -95,6 +95,8 @@ public class IncomingMessage {
 
         if (name.length() == 0) name = "Noname";
 
+        name = name.substring(0, 32);
+
         String userId = json.optString("userId");
         if (userId.length() == 0) userId = null;
 
