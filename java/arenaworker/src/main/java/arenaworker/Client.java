@@ -4,12 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.eclipse.jetty.io.EofException;
 
 // client contains a session
 // one per session
@@ -87,26 +81,7 @@ public class Client {
             m.put("t", "mass");
             m.put("m", group);
 
-            if (session.isOpen()) {
-                try {
-                    Future<Void> future = session.getRemote().sendStringByFuture(m.toString());
-                    future.get(2, TimeUnit.SECONDS);
-                }
-                catch (NullPointerException e) {
-                    // ignore
-                }
-                catch (TimeoutException e) {
-                    // ignore
-                }
-                catch (ExecutionException e) {
-                    // ignore
-                }
-                catch (Throwable e)
-                {
-                    System.out.println("Error sending message from client.");
-                    e.printStackTrace();
-                }
-            }
+            SocketListener.SendJsonToSession(session, m.toString());
         }
     }
 

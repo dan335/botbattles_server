@@ -69,6 +69,39 @@ public class Settings {
         CreateMap2();
         CreateMap3();
         CreateMap4();
+        CreateMap5();
+    }
+
+
+    void CreateMap5() {
+        JSONObject json = new JSONObject();
+        json.put("startSize", 1800);
+
+        JSONArray obstacles = new JSONArray();
+
+        int num = 8;
+        double radius = 100;
+        double obsRadius = 40;
+        double mass = 3;
+        for (int i = 0; i < num * 2; i++) {
+            double angle = 2 * i * Math.PI / num ;
+            double x = Math.cos(angle) * radius;
+            double y = Math.sin(angle) * radius;
+            JSONObject obstacle = new JSONObject();
+            obstacle.put("x", x);
+            obstacle.put("y", y);
+            obstacle.put("radius", obsRadius);
+            obstacle.put("mass", mass);
+            obstacle.put("shape", "circle");    // not used?
+            obstacles.put(obstacle);
+            radius += 40;
+            obsRadius += 3;
+            mass++;
+        }
+
+        json.put("obstacles", obstacles);
+
+        maps.add(json);
     }
 
 
@@ -115,6 +148,23 @@ public class Settings {
             o.put("y", pos.y + rotated.y);
             o.put("radius", 70);
             o.put("mass", 10);
+            o.put("shape", "circle");
+            obstacles.put(o);
+        }
+
+        coords.clear();
+
+        coords.add(new Vector2(0, 1));
+        coords.add(new Vector2(1, 0));
+        coords.add(new Vector2(0, -1));
+        coords.add(new Vector2(-1, 0));
+
+        for (Vector2 coord : coords) {
+            JSONObject o = new JSONObject();
+            o.put("x", coord.x * 100);
+            o.put("y", coord.y * 100);
+            o.put("radius", 50);
+            o.put("mass", 4);
             o.put("shape", "circle");
             obstacles.put(o);
         }
@@ -184,7 +234,7 @@ public class Settings {
             obstacles.put(o);
 
             int num = 4;
-            double radius = 300;
+            double radius = 200;
             for (int i = 0; i < num; i++) {
                 double angle = 2 * i * Math.PI / num ;
                 double x = coord.x + Math.cos(angle) * radius;
@@ -192,8 +242,8 @@ public class Settings {
                 JSONObject obstacle = new JSONObject();
                 obstacle.put("x", x);
                 obstacle.put("y", y);
-                obstacle.put("radius", 40);
-                obstacle.put("mass", 3);
+                obstacle.put("radius", 50);
+                obstacle.put("mass", 4);
                 obstacle.put("shape", "circle");    // not used?
                 obstacles.put(obstacle);
             }

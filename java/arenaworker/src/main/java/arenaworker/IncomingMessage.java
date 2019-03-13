@@ -3,8 +3,6 @@ package arenaworker;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
@@ -32,7 +30,7 @@ public class IncomingMessage {
         JSONObject obj = new JSONObject();
         obj.put("gameId", game.id);
         obj.put("t", "gameId");
-        SendJsonToSession(session, obj.toString());
+        SocketListener.SendJsonToSession(session, obj.toString());
     }
 
 
@@ -40,7 +38,7 @@ public class IncomingMessage {
         JSONObject obj = new JSONObject();
         obj.put("t", "pong");
         obj.put("time", Calendar.getInstance().getTimeInMillis());
-        SendJsonToSession(session, obj.toString());
+        SocketListener.SendJsonToSession(session, obj.toString());
     }
 
 
@@ -145,22 +143,6 @@ public class IncomingMessage {
         Client client = Clients.GetClient(session);
         if (client != null && client.player != null) {
             client.player.SetMousePosition(json.getDouble("x"), json.getDouble("y"));
-        }
-    }
-
-
-
-    static void SendJsonToSession(Session session, String json) {
-        if (session.isOpen()) {
-            try {
-                Future<Void> future = session.getRemote().sendStringByFuture(json);
-                future.get(2, TimeUnit.SECONDS);
-            }
-            catch (Throwable e)
-            {
-                System.out.println("Error sending message to session.");
-                e.printStackTrace();
-            }
         }
     }
 }

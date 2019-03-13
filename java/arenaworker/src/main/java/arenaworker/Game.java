@@ -138,7 +138,8 @@ public class Game implements Runnable {
             .append("_id", replayId);
         
         Document replayDataDoc = new Document("_id", replayId)
-        .append("json", replayJson.toString());
+        .append("json", replayJson.toString())
+        .append("createdAt", new Date());
 
         replays.insertOne(replayDoc);
         replaydata.insertOne(replayDataDoc);

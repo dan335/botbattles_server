@@ -1,6 +1,5 @@
 package arenaworker;
 
-import java.util.Calendar;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -70,13 +69,13 @@ public class Party {
         JSONObject json = ChatJson();
 
         for (PartyMember m : members) {
-            m.SendJson(json);
+            SocketListener.SendJsonToSession(m.session, json.toString());
         }
     }
 
 
     void SendChatTo(PartyMember member) {
-        member.SendJson(ChatJson());
+        SocketListener.SendJsonToSession(member.session, ChatJson().toString());
     }
 
 
@@ -129,7 +128,7 @@ public class Party {
                 obj.put("t", "gameId");
 
                 for (PartyMember m : members) {
-                    m.SendJson(obj);
+                    SocketListener.SendJsonToSession(m.session, obj.toString());
                 }
             }
         }
@@ -153,7 +152,7 @@ public class Party {
         json.put("list", list);
 
         for (PartyMember m : members) {
-            m.SendJson(json);
+            SocketListener.SendJsonToSession(m.session, json.toString());
         }
     }
 

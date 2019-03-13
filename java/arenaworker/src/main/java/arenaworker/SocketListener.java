@@ -1,6 +1,10 @@
 package arenaworker;
 
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
@@ -18,6 +22,29 @@ public class SocketListener implements WebSocketListener {
     double allowance;
     long lastCheck;
 
+
+    public static void SendJsonToSession(Session session, String json) {
+        if (session.isOpen()) {
+            try {
+                Future<Void> future = session.getRemote().sendStringByFuture(json);
+                future.get(2, TimeUnit.SECONDS);
+            }
+            catch (NullPointerException e) {
+                // ignore
+            }
+            catch (TimeoutException e) {
+                // ignore
+            }
+            catch (ExecutionException e) {
+                // ignore
+            }
+            catch (Throwable e)
+            {
+                System.out.println("Error sending message.");
+                e.printStackTrace();
+            }
+        }
+    }
     
     @Override
     public void onWebSocketBinary(byte[] payload, int offset, int len)
@@ -66,6 +93,7 @@ public class SocketListener implements WebSocketListener {
             if (allowance < 1) {
                 // limit
                 System.out.println("Rate limiting session.");
+                System.out.println(session.getRemoteAddress().getAddress().getHostAddress());
                 session.close();
                 return;
             } else {
