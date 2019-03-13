@@ -18,6 +18,7 @@ public class WebStatsHandler implements HttpHandler {
 
         int numPlayers = 0;
         int numClients = 0;
+        int numGames = 0;
 
         for (Game game : GameManager.games.values()) {
             if (!game.isEnded) {
@@ -31,12 +32,13 @@ public class WebStatsHandler implements HttpHandler {
                 gameInfo.put("numPlayers", game.players.size());
                 gameInfo.put("numSpectators", game.clients.size() - game.players.size());
                 games.put(gameInfo);
+                numGames++;
             }
         }
 
         json.put("numPlayers", numPlayers);
         json.put("numSpectators", numClients - numPlayers);
-        json.put("numGames", GameManager.games.size());
+        json.put("numGames", numGames);
         json.put("games", games);
 
         String response = json.toString();
