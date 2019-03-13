@@ -12,7 +12,7 @@ public class Cannon extends Ability {
     long chargeTime = 1000L;
     long chargeStart;
     boolean isCharging = false;
-    double damage = 40;
+    double damage = 60;
     double bulletSpeed = 0.9;
     
 
