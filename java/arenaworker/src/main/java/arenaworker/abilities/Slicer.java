@@ -15,7 +15,7 @@ public class Slicer extends Ability {
     double duration = 1500L;
     double lastCreated;
     boolean isOn = false;
-    double damage = 3;
+    double damage = 2.5;
     double shieldDamageMultiplier = 1;
     double radius;
     

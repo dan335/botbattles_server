@@ -20,10 +20,11 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
     public double damage = 10;
     public double shieldDamageMultiplier = 1;
     String color;
+    double explosionRadius = 200;
 
     // sendInitial boolean is so that Mine.java can override initialUpdateName etc
     
-    public Grenade(Ability ability, double rotation, double radius, double amountOfForce, double damage, boolean sendInitial, String color) {
+    public Grenade(Ability ability, double rotation, double radius, double amountOfForce, double damage, boolean sendInitial, String color, double explosionRadius) {
         super(ability, ability.player.position.x, ability.player.position.y, radius, rotation, true);
         initialUpdateName = "grenadeInitial";
         updateName = "grenadeUpdate";
@@ -32,6 +33,7 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
         shieldDamageMultiplier = 1;
         this.damage = damage;
         this.color = color;
+        this.explosionRadius = explosionRadius;
 
         if (ability.player.game.isInBulletTime) {
             amountOfForce *= 2;
@@ -81,7 +83,7 @@ public class Grenade extends AbilityObjectPhysics implements Comparable<Grenade>
 
     public void Explode() {
         Destroy();
-        new Explosion(ability.player.game, position.x, position.y, 200, damage, 1, "0xff4444", ability.player);
+        new Explosion(ability.player.game, position.x, position.y, explosionRadius, damage, 1, "0xff4444", ability.player);
     }
 
     @Override

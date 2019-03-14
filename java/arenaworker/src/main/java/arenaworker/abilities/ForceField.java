@@ -11,7 +11,7 @@ public class ForceField extends Ability {
     
     public ForceField(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 5000L;
+        cooldown = 6000L;
     }
 
     @Override
