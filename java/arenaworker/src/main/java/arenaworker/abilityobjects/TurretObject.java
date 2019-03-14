@@ -61,7 +61,10 @@ public class TurretObject extends AbilityObjectPhysics {
 
         if (target != null) {
             FindInterceptPos();
-            RotateTowardsTarget();
+            
+            if (!Double.isNaN(interceptPos.x)) {
+                RotateTowardsTarget();
+            }
         }
 
         if (target != null) {
@@ -130,16 +133,15 @@ public class TurretObject extends AbilityObjectPhysics {
         // add vj and vi to get v
         interceptPos.x = position.x + vjx + vix;
         interceptPos.y = position.y + vjy + viy;
+
+        if (Double.isNaN(interceptPos.x)) {
+            System.out.println("findInterceptPos " + target.position.x + "," + target.position.y);
+        }
     }
 
 
     void RotateTowardsTarget() {
-        double r = Math.atan2(interceptPos.y - position.y, interceptPos.x - position.x);
-        if (Double.isInfinite(r) || Double.isNaN(r)) {
-            System.out.println("interceptPos=" + interceptPos.toString() + " position=" + position.toString() + " r=" + r);
-        } else {
-            SetRotation(r);
-        }
+        SetRotation(Math.atan2(interceptPos.y - position.y, interceptPos.x - position.x));
     }
 
 
