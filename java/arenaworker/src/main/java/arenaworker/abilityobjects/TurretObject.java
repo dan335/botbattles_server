@@ -134,9 +134,12 @@ public class TurretObject extends AbilityObjectPhysics {
 
 
     void RotateTowardsTarget() {
-        if (target == null) return;
-        //rotation = Physics.slowlyRotateToward(position, rotation, interceptPos, 5);
-        SetRotation(Math.atan2(interceptPos.y - position.y, interceptPos.x - position.x));
+        double r = Math.atan2(interceptPos.y - position.y, interceptPos.x - position.x);
+        if (Double.isInfinite(r) || Double.isNaN(r)) {
+            System.out.println("interceptPos=" + interceptPos.toString() + " position=" + position.toString() + " r=" + r);
+        } else {
+            SetRotation(r);
+        }
     }
 
 

@@ -96,8 +96,7 @@ public class SocketListener implements WebSocketListener {
             }
             if (allowance < 1) {
                 // limit
-                System.out.println("Rate limiting session.");
-                System.out.println(session.getRemoteAddress().getAddress().getHostAddress());
+                System.out.println("Rate limiting session. " + session.getRemoteAddress().getAddress().getHostAddress());
                 session.close();
                 return;
             } else {
