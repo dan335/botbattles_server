@@ -603,7 +603,12 @@ public class Player extends Obj {
     public void SetPosition(double x, double y) {
         if (position.x != x || position.y != y) {
             for (int i = 0; i < game.settings.numAbilities; i++) {
-                abilities.get(i).PlayerPositionChanged();
+                if (abilities.size() == game.settings.numAbilities) {
+                    abilities.get(i).PlayerPositionChanged();
+                } else {
+                    System.out.println("player does not have 3 abilities");
+                    System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+                }
             }
         }
         super.SetPosition(x, y);

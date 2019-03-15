@@ -235,6 +235,11 @@ public class Game implements Runnable {
             return;
         }
 
+        if (abilityTypes.size() != settings.numAbilities) {
+            System.out.println("not enough abilities in joinGame");
+            return;
+        }
+
         Client client = new Client(session, this, name, userId);
         clients.add(client);
 
