@@ -27,6 +27,7 @@ public class WebStatsHandler implements HttpHandler {
 
                 JSONObject gameInfo = new JSONObject();
                 gameInfo.put("id", game.id);
+                gameInfo.put("createdAt", (double)game.gameCreatedTime);
                 gameInfo.put("isStarted", game.isStarted);
                 gameInfo.put("isEnded", game.isEnded);
                 gameInfo.put("numPlayers", game.players.size());

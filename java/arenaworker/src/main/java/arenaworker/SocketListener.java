@@ -6,6 +6,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.eclipse.jetty.io.EofException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
 
@@ -40,8 +41,8 @@ public class SocketListener implements WebSocketListener {
             }
             catch (Throwable e)
             {
-                System.out.println("Error sending message.");
-                e.printStackTrace();
+                //System.out.println("Error sending message.");
+                //e.printStackTrace();
             }
         }
     }

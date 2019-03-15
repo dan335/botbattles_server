@@ -62,6 +62,7 @@ public class TurretObject extends AbilityObjectPhysics {
         if (target != null) {
             FindInterceptPos();
             
+            // intercept pos is sometimes NaN for some reason
             if (!Double.isNaN(interceptPos.x)) {
                 RotateTowardsTarget();
             }
@@ -118,12 +119,8 @@ public class TurretObject extends AbilityObjectPhysics {
         final double uix = target.velocity.x - ujx;
         final double uiy = target.velocity.y - ujy;
         
-        // set vi to ui (for clarity)
-        final double vix = uix;
-        final double viy = uiy;
-        
         // calculate the magnitude of vj
-        final double viMag = Math.sqrt(vix * vix + viy * viy);
+        final double viMag = Math.sqrt(uix * uix + uiy * uiy);
         final double vjMag = Math.sqrt(bulletSpeed * bulletSpeed - viMag * viMag);
         
         // get vj by multiplying it's magnitude with the unit vector AB
@@ -131,12 +128,8 @@ public class TurretObject extends AbilityObjectPhysics {
         final double vjy = ABy * vjMag;
         
         // add vj and vi to get v
-        interceptPos.x = position.x + vjx + vix;
-        interceptPos.y = position.y + vjy + viy;
-
-        if (Double.isNaN(interceptPos.x)) {
-            System.out.println("findInterceptPos " + target.position.x + "," + target.position.y);
-        }
+        interceptPos.x = position.x + vjx + uix;
+        interceptPos.y = position.y + vjy + uiy;
     }
 
 

@@ -10,7 +10,7 @@ import arenaworker.lib.Physics;
 
 public class Emp extends Ability {
 
-    double radius = 250;
+    double radius = 275;
     
     public Emp(Player player, int abilityNum) {
         super(player, abilityNum);

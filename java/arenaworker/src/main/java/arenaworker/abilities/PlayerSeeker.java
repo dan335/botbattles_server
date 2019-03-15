@@ -5,10 +5,9 @@ import arenaworker.abilityobjects.PlayerSeekingMissle;
 
 public class PlayerSeeker extends Ability {
 
-    int numBullets = 10;
     double angleInDegrees = 30;
     String color = "0xff4444";
-    double damage = 30;
+    double damage = 27;
     
     public PlayerSeeker(Player player, int abilityNum) {
         super(player, abilityNum);

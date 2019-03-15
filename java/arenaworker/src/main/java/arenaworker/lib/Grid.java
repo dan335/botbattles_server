@@ -2,6 +2,7 @@ package arenaworker.lib;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -55,9 +56,12 @@ public class Grid {
     
     
     public void remove(Base obj) {
-        for (String grid : obj.grids) {
-            objects.get(grid).remove(obj);
+        for (Iterator<String> i = obj.grids.iterator(); i.hasNext();) {
+            objects.get(i.next()).remove(obj);
         }
+        // for (String grid : obj.grids) {
+        //     objects.get(grid).remove(obj);
+        // }
         obj.grids.clear();
     }
     
