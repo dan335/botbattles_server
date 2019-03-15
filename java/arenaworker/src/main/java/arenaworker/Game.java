@@ -240,6 +240,10 @@ public class Game implements Runnable {
             return;
         }
 
+        if (!session.isOpen()) {
+            return;
+        }
+
         Client client = new Client(session, this, name, userId);
         clients.add(client);
 
