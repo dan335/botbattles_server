@@ -67,6 +67,25 @@ public class Game implements Runnable {
     }
 
 
+    double ComputeQuality() {
+        double maxDamage = 0;
+
+        for (PlayerInfo info : playerInfo) {
+            if (maxDamage < info.damageDealt) {
+                maxDamage = info.damageDealt;
+            }
+        }
+
+        double damageDiff = 0;
+
+        for (PlayerInfo info : playerInfo) {
+            damageDiff += maxDamage - info.damageDealt;
+        }
+
+        return (1000 - damageDiff) / (playerInfo.size() - 1) + playerInfo.size() * 200;
+    }
+
+
     void SaveGameToDb() {
         // add game to db
         MongoCollection<Document> games = App.database.getCollection("games");
@@ -76,7 +95,9 @@ public class Game implements Runnable {
             .append("_id", new ObjectId(id))
             .append("startedAt", (double)gameStartTime)
             .append("endedAt", new Date())
-            .append("length", (double)(tickStartTime - gameCreatedTime));
+            .append("length", (double)(tickStartTime - gameCreatedTime))
+            .append("replayId", null)
+            .append("quality", ComputeQuality());
 
         List<Document> playerInfoDocs = new ArrayList<Document>();
 
@@ -130,19 +151,22 @@ public class Game implements Runnable {
 
         MongoCollection<Document> replays = App.database.getCollection("replays");
         MongoCollection<Document> replaydata = App.database.getCollection("replaydatas");
+        MongoCollection<Document> games = App.database.getCollection("games");
 
         ObjectId replayId = new ObjectId();
 
-        Document replayDoc = new Document("createdAt", new Date())
-            .append("gameId", id)
-            .append("_id", replayId);
+        // Document replayDoc = new Document("createdAt", new Date())
+        //     .append("gameId", id)
+        //     .append("_id", replayId);
         
         Document replayDataDoc = new Document("_id", replayId)
         .append("json", replayJson.toString())
         .append("createdAt", new Date());
 
-        replays.insertOne(replayDoc);
+        //replays.insertOne(replayDoc);
         replaydata.insertOne(replayDataDoc);
+
+        games.updateOne(eq("_id", new ObjectId(id)), new Document("$set", new Document("replayId", replayId)));
 
         hasReplayBeenSaved = true;
     }

@@ -5,6 +5,9 @@ import java.io.EOFException;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
+
+import org.bson.BSON;
+import org.bson.BsonBoolean;
 import org.bson.Document;
 
 import org.eclipse.jetty.server.Server;
@@ -41,10 +44,12 @@ public class App
             database = mongoClient.getDatabase("arena");
 
             // erase old replays
-            MongoCollection<Document> replays = database.getCollection("replays");
-            replays.drop();
+            // MongoCollection<Document> replays = database.getCollection("replays");
+            // replays.drop();
             MongoCollection<Document> replaydata = database.getCollection("replaydatas");
             replaydata.drop();
+            MongoCollection<Document> games = database.getCollection("games");
+            games.updateMany(new Document(), new Document("$set", new Document("replayId", null)));
 
             Server server = new Server(3020);
             
