@@ -1,12 +1,9 @@
 package arenaworker;
 
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import org.eclipse.jetty.io.EofException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
 
@@ -30,20 +27,23 @@ public class SocketListener implements WebSocketListener {
                 Future<Void> future = session.getRemote().sendStringByFuture(json);
                 future.get(2, TimeUnit.SECONDS);
             }
-            catch (NullPointerException e) {
-                // ignore
+            catch (Throwable e) {
+                
             }
-            catch (TimeoutException e) {
-                // ignore
-            }
-            catch (ExecutionException e) {
-                // ignore
-            }
-            catch (Throwable e)
-            {
-                //System.out.println("Error sending message.");
-                //e.printStackTrace();
-            }
+            // catch (NullPointerException e) {
+            //     // ignore
+            // }
+            // catch (TimeoutException e) {
+            //     // ignore
+            // }
+            // catch (ExecutionException e) {
+            //     // ignore
+            // }
+            // catch (Throwable e)
+            // {
+            //     //System.out.println("Error sending message.");
+            //     //e.printStackTrace();
+            // }
         }
     }
     

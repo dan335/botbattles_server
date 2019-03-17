@@ -76,13 +76,15 @@ public class Game implements Runnable {
             }
         }
 
+        if (maxDamage < 350) return 0;
+
         double damageDiff = 0;
 
         for (PlayerInfo info : playerInfo) {
             damageDiff += maxDamage - info.damageDealt;
         }
 
-        return (1000 - damageDiff) / (playerInfo.size() - 1) + playerInfo.size() * 200;
+        return (1000 - damageDiff) / (playerInfo.size() - 1) + playerInfo.size() * 400;
     }
 
 
