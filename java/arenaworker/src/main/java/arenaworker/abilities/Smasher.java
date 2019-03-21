@@ -32,6 +32,10 @@ public class Smasher extends Ability {
     }
 
     void On() {
+        if (isOn) {
+            Off();
+        }
+        
         isOn = true;
         lastCreated = player.game.tickStartTime;
         JSONObject json = new JSONObject();

@@ -26,7 +26,7 @@ public class Vacuum extends Ability {
     
     public Vacuum(Player player, int abilityNum) {
         super(player, abilityNum);
-        cooldown = 4000L;
+        cooldown = 5000L;
     }
 
     @Override
@@ -58,19 +58,28 @@ public class Vacuum extends Ability {
             }
 
             if (vacuumStart + duration < player.game.tickStartTime) {
-                isVacuuming = false;
-                JSONObject json = new JSONObject();
-                json.put("t", "vacuumEnd");
-                json.put("id", id);
-                json.put("shipId", player.id);
-                player.game.SendJsonToClients(json);
+                End();
             }
         }
+    }
+
+
+    void End() {
+        isVacuuming = false;
+        JSONObject json = new JSONObject();
+        json.put("t", "vacuumEnd");
+        json.put("id", id);
+        json.put("shipId", player.id);
+        player.game.SendJsonToClients(json);
     }
 
     @Override
     public void Fire() {
         super.Fire();
+
+        if (isVacuuming) {
+            End();
+        }
 
         isVacuuming = true;
         vacuumStart = player.game.tickStartTime;

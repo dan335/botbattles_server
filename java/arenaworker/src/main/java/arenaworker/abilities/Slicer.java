@@ -32,6 +32,10 @@ public class Slicer extends Ability {
     }
 
     void On() {
+        if (isOn) {
+            Off();
+        }
+
         isOn = true;
         lastCreated = player.game.tickStartTime;
         JSONObject json = new JSONObject();

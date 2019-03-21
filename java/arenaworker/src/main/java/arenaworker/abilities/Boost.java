@@ -22,8 +22,6 @@ public class Boost extends Ability {
     public void Fire() {
         super.Fire();
 
-        isActive = true;
-        start = player.game.tickStartTime;
         Activate();
     }
 
@@ -31,13 +29,19 @@ public class Boost extends Ability {
     public void Tick() {
         if (isActive) {
             if (start + duration < player.game.tickStartTime) {
-                isActive = false;
                 Deactivate();
             }
         }
     }
 
     void Activate() {
+        if (isActive) {
+            Deactivate();
+        }
+        
+        isActive = true;
+        start = player.game.tickStartTime;
+
         player.shipSpeedMultiplier += 1;
         
         JSONObject json = new JSONObject();
@@ -48,6 +52,7 @@ public class Boost extends Ability {
     }
 
     void Deactivate() {
+        isActive = false;
         player.shipSpeedMultiplier -= 1;
 
         JSONObject json = new JSONObject();

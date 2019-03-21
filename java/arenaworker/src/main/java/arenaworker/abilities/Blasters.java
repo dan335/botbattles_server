@@ -6,7 +6,7 @@ import arenaworker.abilityobjects.BlasterBullet;
 public class Blasters extends Ability {
 
     String color = "0xff4444";
-    double damage = 15;
+    double damage = 13;
     double shieldDamageMultiplier = 1;
     double size = 8;
     double bulletSpeed = 0.9;

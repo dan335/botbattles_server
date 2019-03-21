@@ -5,7 +5,6 @@ import arenaworker.abilityobjects.MouseSeekingMissle;
 
 public class MouseSeeker extends Ability {
 
-    int numBullets = 10;
     double angleInDegrees = 30;
     String color = "0xff4444";
     double damage = 45;
