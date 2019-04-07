@@ -21,7 +21,7 @@ public class StunGunBullet extends Projectile {
         initialUpdateName = "stunGunBulletInitial";
         updateName = "stunGunBulletUpdate";
         destroyUpdateName = "stunGunBulletDestroy";
-        speed = 0.8;
+        speed = 1;
         mass = 0.2;
         this.stunDuration = stunDuration;
         this.color = color;
