@@ -5,7 +5,7 @@ import arenaworker.abilityobjects.StunGunBullet;
 
 public class StunGun extends Ability {
 
-    long stunDuration = 1000L;
+    long stunDuration = 1500L;
     String color = "0x888888";
     double size = 15;
     

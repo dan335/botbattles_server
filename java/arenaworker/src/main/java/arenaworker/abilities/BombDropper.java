@@ -22,11 +22,11 @@ public class BombDropper extends Ability {
 
     @Override
     public void Fire() {
-        super.Fire();
-        grenades.add(new Mine(this, player.GetRotation(), mineRadius, 0, damage, color));
-
-        if (grenades.size() > maxGrenades) {
+        if (grenades.size() > maxGrenades-1) {
             grenades.last().Explode();
         }
+
+        super.Fire();
+        grenades.add(new Mine(this, player.GetRotation(), mineRadius, 0, damage, color)); 
     }
 }

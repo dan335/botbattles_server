@@ -7,7 +7,7 @@ public class PlayerSeeker extends Ability {
 
     double angleInDegrees = 30;
     String color = "0xff4444";
-    double damage = 27;
+    double damage = 25;
     
     public PlayerSeeker(Player player, int abilityNum) {
         super(player, abilityNum);

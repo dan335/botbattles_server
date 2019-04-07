@@ -30,6 +30,7 @@ public class Player extends Obj {
     public boolean[] abilityKeysDown;
     public double shield;
     public double health;
+    double maxShield;
     long lastTakenDamage = 0;
     boolean isHealing = false;
     public PlayerInfo playerInfo;
@@ -63,6 +64,7 @@ public class Player extends Obj {
 
         health = game.settings.maxHealth;
         shield = game.settings.maxShield;
+        maxShield = game.settings.maxShield;
         
         this.abilityKeysDown = new boolean[game.settings.numAbilities];
 
@@ -295,18 +297,28 @@ public class Player extends Obj {
             abilities.get(i).Tick();
         }
 
-        if (shield < game.settings.maxShield && lastTakenDamage + game.settings.playerHealDelay < game.tickStartTime) {
+        if (shield < maxShield && lastTakenDamage + game.settings.playerHealDelay < game.tickStartTime) {
             StartShieldRecharging();
         }
 
         if (isHealing) {
-            if (shield < game.settings.maxShield) {
-                shield = Math.min(shield + game.settings.playerHealPerInterval * game.deltaTime, game.settings.maxShield);
+            if (shield < maxShield) {
+                shield = Math.min(shield + game.settings.playerHealPerInterval * game.deltaTime, maxShield);
                 needsUpdate = true;
             } else {
                 StopShieldRecharging();
             }
         }
+    }
+
+
+    public void increaseMaxShieldBy(double increaseBy) {
+        maxShield += increaseBy;
+        JSONObject json = new JSONObject();
+        json.put("t", "maxShieldChange");
+        json.put("newMax", maxShield);
+        json.put("shipId", id);
+        game.SendJsonToClients(json);
     }
 
 
@@ -575,6 +587,7 @@ public class Player extends Obj {
             } else {
                 if (otherPlayer != null) {
                     otherPlayer.AddKill();
+                    otherPlayer.increaseMaxShieldBy(game.settings.maxShieldIncreaseAfterKill);
                     if (playerInfo != null) {
                         playerInfo.killer = otherPlayer.playerInfo;
                     }

@@ -1,9 +1,16 @@
 package arenaworker;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import com.mongodb.client.MongoCollection;
+
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 // client contains a session
 // one per session
@@ -20,6 +27,7 @@ public class Client {
     Game game;
     Player player;
     String userId;
+    public Document userData = null;
     public String name = "Noname";
     ConcurrentLinkedQueue<JSONObject> massMessages = new ConcurrentLinkedQueue<JSONObject>();
     int maxMassMessageBatchSize = 5;
@@ -28,8 +36,21 @@ public class Client {
         this.session = session;
         this.game = game;
         this.name = name;
-        this.userId = userId;
+        SetUserId(userId);
         Clients.AddClient(this);
+    }
+
+
+    void SetUserId(String userId) {
+        if (userId.equals("")) {
+            this.userId = null;
+            return;
+        }
+
+        this.userId = userId;
+
+        MongoCollection<Document> collection = App.database.getCollection("users");
+        userData = collection.find(eq("_id", new ObjectId(userId))).first();
     }
 
 
@@ -42,6 +63,8 @@ public class Client {
         if (player != null) {
             player.Destroy();
         }
+
+        App.chat.LeaveAllChats(session);
 
         JSONObject json = new JSONObject();
         json.put("t", "clientDisconnected");

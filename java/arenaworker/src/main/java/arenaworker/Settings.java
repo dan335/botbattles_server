@@ -33,6 +33,7 @@ public class Settings {
     public final double defaultRating = 1000;
     public final double playerDefaultMass = 1;
     public static final int maxPlayers = 10;
+    public final double maxShieldIncreaseAfterKill = 10;
     public final Set<String> abilityNames = new HashSet<>(Arrays.asList(
         "Blasters",
         "BlastersHealth",

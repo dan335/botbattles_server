@@ -145,4 +145,37 @@ public class IncomingMessage {
             client.player.SetMousePosition(json.getDouble("x"), json.getDouble("y"));
         }
     }
+
+    static void chat(JSONObject json, Session session) {
+        if (json.optString("roomId").equals("frontpage")) {
+            App.chat.AddChatMessage("frontpage", json.optString("msg"), null, json.optString("userId"));
+        } else {
+            Client client = Clients.GetClient(session);
+            if (client != null) {
+                App.chat.AddChatMessage(json.optString("roomId"), json.optString("msg"), client, json.optString("userId"));
+            }
+        }
+    }
+
+    static void joinChat(JSONObject json, Session session) {
+        if (json.optString("roomId").equals("frontpage")) {
+            App.chat.JoinChat(session, json.optString("roomId"));
+        } else {
+            Client client = Clients.GetClient(session);
+            if (client != null) {
+                App.chat.JoinChat(session, json.optString("roomId"));
+            }
+        }
+    }
+
+    static void leaveChat(JSONObject json, Session session) {
+        if (json.optString("roomId").equals("frontpage")) {
+
+        } else {
+            Client client = Clients.GetClient(session);
+            if (client != null) {
+                App.chat.LeaveChat(session, json.optString("roomId"));
+            }
+        }
+    }
 }

@@ -15,12 +15,12 @@ import arenaworker.lib.Physics;
 import arenaworker.lib.Vector2;
 import arenaworker.other.Explosion;
 
-public class TurretObject extends AbilityObjectPhysics {
+public class TurretObject extends AbilityObjectPhysics implements Comparable<TurretObject> {
 
     Obj target;
     long lastFired = 0L;
     long fireCooldown = 500L;
-    double health = 100;
+    double health = 90;
     double aquireRadius = 700;
     double bulletDamage = 8;
     double shieldDamageMultiplier = 1;
@@ -220,5 +220,10 @@ public class TurretObject extends AbilityObjectPhysics {
         JSONObject json = super.UpdateData();
         json.put("health", health);
         return json;
+    }
+
+
+    public int compareTo(TurretObject o) {
+        return id.compareTo(o.id);
     }
 }

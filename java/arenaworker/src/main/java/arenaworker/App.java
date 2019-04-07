@@ -3,13 +3,10 @@ package arenaworker;
 import java.io.EOFException;
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
-import org.bson.BSON;
-import org.bson.BsonBoolean;
 import org.bson.Document;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -20,11 +17,12 @@ public class App
 
     public static MongoDatabase database;
     public static MongoClient mongoClient;
+    public static Chat chat;
+    public static boolean isProduction = true;
 
     public static void main( String[] args )
     {
         try {
-            boolean isProduction = true;
             String ISPRODUCTION = System.getenv("ISPRODUCTION");
             
             if (ISPRODUCTION == null) {
@@ -42,6 +40,8 @@ public class App
             }
 
             database = mongoClient.getDatabase("arena");
+
+            chat = new Chat();
 
             // erase old replays
             // MongoCollection<Document> replays = database.getCollection("replays");
