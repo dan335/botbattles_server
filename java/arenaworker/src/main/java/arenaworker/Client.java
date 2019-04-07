@@ -42,7 +42,7 @@ public class Client {
 
 
     void SetUserId(String userId) {
-        if (userId.equals("")) {
+        if (userId == null || userId.equals("")) {
             this.userId = null;
             return;
         }
