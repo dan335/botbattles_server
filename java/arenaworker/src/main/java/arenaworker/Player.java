@@ -583,7 +583,7 @@ public class Player extends Obj {
 
             if (resurrection != null) {
                 health = game.settings.maxHealth;
-                resurrection.Fire();
+                ((Resurrection)resurrection).TriggerRevive();
             } else {
                 if (otherPlayer != null) {
                     otherPlayer.AddKill();

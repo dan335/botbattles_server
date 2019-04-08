@@ -23,7 +23,16 @@ public class Resurrection extends Ability {
 
     @Override
     public void Fire() {
-        super.Fire();
+        //super.Fire();
+    }
+
+    
+    // use this instead of fire
+    // fire just returns so that if player triggers ability
+    // it won't reset
+    public void TriggerRevive() {
+        lastFired = player.game.tickStartTime;
+        SendCooldownMessage();
         JSONObject json = new JSONObject();
         json.put("t", "reviveInitial");
         json.put("shipId", player.id);
