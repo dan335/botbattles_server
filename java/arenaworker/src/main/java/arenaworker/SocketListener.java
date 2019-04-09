@@ -78,8 +78,8 @@ public class SocketListener implements WebSocketListener {
             cause.getClass() != java.io.EOFException.class &&
             cause.getClass() != java.nio.channels.ClosedChannelException.class
         ) {
-            System.out.println("Error in onWebSocketError.");
-            cause.printStackTrace();
+            //System.out.println("Error in onWebSocketError.");
+            //cause.printStackTrace();
         }
     }
 
@@ -106,8 +106,8 @@ public class SocketListener implements WebSocketListener {
 
             IncomingMessage.Decode(message, session);
         } catch (Throwable ex) {
-            System.err.println("Uncaught exception in SocketListener - " + ex.getMessage());
-            ex.printStackTrace(System.err);
+            //System.err.println("Uncaught exception in SocketListener - " + ex.getMessage());
+            //ex.printStackTrace(System.err);
         }
         
     }

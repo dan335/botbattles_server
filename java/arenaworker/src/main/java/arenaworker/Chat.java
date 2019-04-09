@@ -18,6 +18,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Chat {
 
@@ -109,10 +110,12 @@ public class Chat {
                     .build();
     
                 try {
-                    httpClient.newCall(request).execute();
+                    Response res = httpClient.newCall(request).execute();
+                    res.body().close();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
+
             }
         }
     }
