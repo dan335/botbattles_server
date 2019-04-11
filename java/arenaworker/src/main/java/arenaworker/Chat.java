@@ -62,7 +62,7 @@ public class Chat {
     OkHttpClient httpClient = new OkHttpClient();
     
     public void AddChatMessage(String roomId, String message, Client client, String usrId) {
-        message = message.replaceAll("[^0-9a-zA-Z<>{}\"/|;:.,~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©0-9_+\\s]", "").trim();
+        message = message.replaceAll("[^0-9a-zA-Z<>{}\"|;:.,~!?#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©0-9_+\\s]", "").trim();
         if (message == null || message.length() == 0) return;
         if (message.length() > 2000) return;
 
