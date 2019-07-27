@@ -12,7 +12,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 
-public class App 
+public class App
 {
 
     public static MongoDatabase database;
@@ -24,7 +24,7 @@ public class App
     {
         try {
             String ISPRODUCTION = System.getenv("ISPRODUCTION");
-            
+
             if (ISPRODUCTION == null) {
                 isProduction = false;
             } else {
@@ -34,7 +34,7 @@ public class App
             }
 
             if (isProduction) {
-                mongoClient = new MongoClient("arena-mongodb", 27017);
+                mongoClient = new MongoClient("mongo", 27017);
             } else {
                 mongoClient = new MongoClient("127.0.0.1", 27017);
             }
@@ -52,11 +52,11 @@ public class App
             games.updateMany(new Document(), new Document("$set", new Document("replayId", null)));
 
             Server server = new Server(3020);
-            
+
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
             server.setHandler(context);
-            
+
             // Add websocket servlet
             ServletHolder wsHolder = new ServletHolder("servlet", new SocketServlet());
             context.addServlet(wsHolder, "/ws");
