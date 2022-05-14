@@ -15,7 +15,7 @@ public class SocketListener implements WebSocketListener {
     Session session;
 
     // rate limiting
-    double rate = 300;   // num messages
+    double rate = 400;   // num messages
     double per = 5000;  // per ms
     double allowance;
     long lastCheck;
